@@ -1,7 +1,4 @@
 
-### Test account
-Access Key ID: AKIAJJMIRJPJRIL7FGGQ
-Secret Access Key: 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
 
 ### Building
 
