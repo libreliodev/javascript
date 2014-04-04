@@ -1,19 +1,11 @@
-Metis Admin Template with Twitter Bootstrap 
-[![Build Status](https://travis-ci.org/onokumus/Bootstrap-Admin-Template.png)](http://travis-ci.org/onokumus/Bootstrap-Admin-Template) [![Dependency Status](https://david-dm.org/onokumus/Bootstrap-Admin-Template.svg?theme=shields.io)](https://david-dm.org/onokumus/Bootstrap-Admin-Template) [![devDependency Status](https://david-dm.org/onokumus/Bootstrap-Admin-Template/dev-status.svg?theme=shields.io)](https://david-dm.org/onokumus/Bootstrap-Admin-Template#info=devDependencies)
-------------------------------------------
 
-### Download
-Bootstrap 2.3.2 [V.1.2](https://github.com/onokumus/Bootstrap-Admin-Template/archive/v1.2.zip)
-ready for use
-
-Bootstrap 3.1.1 [V2.2.0](https://github.com/onokumus/Bootstrap-Admin-Template/archive/master.zip)
-ready `dist` folder your use
-
-
+### Test account
+Access Key ID: AKIAJJMIRJPJRIL7FGGQ
+Secret Access Key: cou4683f3Vz0JtWoD4nzkKE0z7ixvNb4zpI0pzpz
 
 ### Building
 
-#### 2.2.0 Version
+#### 
 required [node.js](http://nodejs.org/) & [bower](http://bower.io/) & [grunt](http://gruntjs.com/getting-started)
 
     $ git clone https://github.com/onokumus/Bootstrap-Admin-Template.git yourfoldername
@@ -21,17 +13,11 @@ required [node.js](http://nodejs.org/) & [bower](http://bower.io/) & [grunt](htt
     $ git submodule init
     $ git submodule update
     $ npm install
-    $ bower install (./node_modules/bower/bin/bower install)
-    $ grunt (./node_modules/grunt-cli/bin/grunt)
+    $ bower install 
+    $ grunt 
     $ cd dist/
     $ open index.html
     
-#### 1.2 Version
-    $ git clone -b v1.2 https://github.com/onokumus/Bootstrap-Admin-Template.git yourfoldername
-    $ cd yourfoldername
-    $ git submodule init
-    $ git submodule update
-    $ open index.html
 
 ### Demo
 
