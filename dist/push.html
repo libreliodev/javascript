@@ -21,7 +21,16 @@
     <!-- Metis core stylesheet -->
     <link rel="stylesheet" href="assets/css/main.min.css">
     <link rel="stylesheet" href="assets/css/theme.css">
-    <link rel="stylesheet" href="assets/lib/prettify/prettify.css">
+    <link rel="stylesheet" href="assets/lib/uniform/themes/default/css/uniform.default.css">
+    <link rel="stylesheet" href="assets/lib/inputlimiter/jquery.inputlimiter.1.0.css">
+    <link rel="stylesheet" href="assets/lib/chosen/chosen.min.css">
+    <link rel="stylesheet" href="assets/lib/colorpicker/css/colorpicker.css">
+    <link rel="stylesheet" href="assets/lib/tagsinput/jquery.tagsinput.css">
+    <link rel="stylesheet" href="assets/lib/daterangepicker/daterangepicker-bs3.css">
+    <link rel="stylesheet" href="assets/lib/datepicker/css/datepicker.css">
+    <link rel="stylesheet" href="assets/lib/timepicker/css/bootstrap-timepicker.min.css">
+    <link rel="stylesheet" href="assets/lib/switch/build/css/bootstrap3/bootstrap-switch.min.css">
+    <link rel="stylesheet" href="assets/lib/jasny/css/jasny-bootstrap.min.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
 
@@ -67,19 +76,6 @@
                 </a> 
               </div>
               <div class="btn-group">
-                <a data-placement="bottom" data-original-title="E-mail" data-toggle="tooltip" class="btn btn-default btn-sm">
-                  <i class="fa fa-envelope"></i>
-                  <span class="label label-warning">5</span> 
-                </a> 
-                <a data-placement="bottom" data-original-title="Messages" href="#" data-toggle="tooltip" class="btn btn-default btn-sm">
-                  <i class="fa fa-comments"></i>
-                  <span class="label label-danger">4</span> 
-                </a> 
-              </div>
-              <div class="btn-group">
-                <a data-placement="bottom" data-original-title="Document" href="#" data-toggle="tooltip" class="btn btn-default btn-sm">
-                  <i class="fa fa-file"></i>
-                </a> 
                 <a data-toggle="modal" data-original-title="Help" data-placement="bottom" class="btn btn-default btn-sm" href="#helpModal">
                   <i class="fa fa-question"></i>
                 </a> 
@@ -95,19 +91,14 @@
 
             <!-- .nav -->
             <ul class="nav navbar-nav">
-              <li> <a href="dashboard.html">Dashboard</a>  </li>
-              <li> <a href="table.html">Tables</a>  </li>
-              <li> <a href="file.html">File Manager</a>  </li>
-              <li class='dropdown '>
+              <li class='dropdown'>
                 <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  Form Elements
+                  Application
                   <b class="caret"></b>
                 </a> 
                 <ul class="dropdown-menu">
-                  <li> <a href="form-general.html">General</a>  </li>
-                  <li> <a href="form-validation.html">Validation</a>  </li>
-                  <li> <a href="form-wysiwyg.html">WYSIWYG</a>  </li>
-                  <li> <a href="form-wizard.html">Wizard &amp; File Upload</a>  </li>
+                  <li> <a href="#">Application 1</a>  </li>
+                  <li> <a href="#">Application 2</a>  </li>
                 </ul>
               </li>
             </ul><!-- /.nav -->
@@ -133,7 +124,7 @@
           <!-- ."main-bar -->
           <div class="main-bar">
             <h3>
-              <i class="glyphicon glyphicon-cloud-download"></i>Push</h3>
+              <i class="fa fa-bell"></i>Push</h3>
           </div><!-- /.main-bar -->
         </header>
 
@@ -145,37 +136,71 @@
         <ul id="menu" class="">
           <li class="nav-header">Menu</li>
           <li class="nav-divider"></li>
+          <li class="">
+            <a href="javascript:;">
+              <i class="fa fa-cog"></i>
+              <span class="link-title">
+              Setup
+            </span> 
+              <span class="fa arrow"></span> 
+            </a> 
+            <ul>
+              <li class="">
+                <a href="icons.html">
+                  <i class="fa fa-angle-right"></i>&nbsp;Icons</a> 
+              </li>
+              <li class="">
+                <a href="button.html">
+                  <i class="fa fa-angle-right"></i>&nbsp;Button</a> 
+              </li>
+              <li class="">
+                <a href="progress.html">
+                  <i class="fa fa-angle-right"></i>&nbsp;Progress</a> 
+              </li>
+              <li class="">
+                <a href="pricing.html">
+                  <i class="fa fa-credit-card"></i>&nbsp;Pricing Table</a> 
+              </li>
+              <li class="">
+                <a href="bgimage.html">
+                  <i class="fa fa-angle-right"></i>&nbsp;Bg Image</a> 
+              </li>
+              <li class="">
+                <a href="bgcolor.html">
+                  <i class="fa fa-angle-right"></i>&nbsp;Bg Color</a> 
+              </li>
+            </ul>
+          </li>
+          <li>
+            <a href="publications.html">
+              <i class="fa fa-file"></i>
+              <span class="link-title">
+     Publications
+          </span> 
+            </a> 
+          </li>
+          <li>
+            <a href="interstitials.html">
+              <i class="fa fa-usd"></i>
+              <span class="link-title">
+     Interstitials
+          </span> 
+            </a> 
+          </li>
           <li class="active">
             <a href="push.html">
-              <i class="glyphicon glyphicon-cloud-download"></i>
+              <i class="fa fa-bell"></i>
               <span class="link-title">
             Push
           </span>  
             </a> 
           </li>
           <li>
-            <a href="file.html">
-              <i class="fa fa-file"></i>
-              <span class="link-title">
-      File Manager
-          </span> 
-            </a> 
-          </li>
-          <li>
-            <a href="chart.html">
+            <a href="tracking.html">
               <i class="fa fa fa-bar-chart-o"></i>
               <span class="link-title">
-            Charts
+            Tracking
           </span> 
-            </a> 
-          </li>
-          <li class="nav-divider"></li>
-          <li>
-            <a href="login.html">
-              <i class="fa fa-sign-in"></i>
-              <span class="link-title">
-    Login Page
-    </span> 
             </a> 
           </li>
         </ul><!-- /#menu -->
@@ -184,7 +209,26 @@
         <div class="outer">
           <div class="inner">
             <div class="row">
-              Push
+              <div class="col-lg-12">
+                <div class="box">
+                  <div class="body">
+                    <form class="form-horizontal">
+                      <div class="form-group">
+                        <label for="autosize" class="control-label col-lg-4">Message</label>
+                        <div class="col-lg-8">
+                          <textarea id="autosize" class="form-control"></textarea>
+                        </div>
+                      </div>
+                      <div class="form-group">
+                        <div class=" col-lg-4"></div>
+                        <div class="col-lg-8">
+                          <input type="submit" value="Send" class="btn btn-primary">
+                        </div>
+                      </div>
+                    </form>
+                  </div>
+                </div>
+              </div>
             </div><!-- /.row -->
           </div>
 
@@ -197,7 +241,7 @@
       <!-- end #content -->
     </div><!-- /#wrap -->
     <div id="footer">
-      <p>2013 &copy; Metis Admin</p>
+      <p>2014 &copy; Librelio Admin</p>
     </div>
 
     <!-- #helpModal -->
@@ -222,7 +266,25 @@
     </div><!-- /.modal --><!-- /#helpModal -->
     <script src="assets/lib/jquery.min.js"></script>
     <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/lib/prettify/prettify.js"></script>
+    <script src="assets/lib/uniform/jquery.uniform.min.js"></script>
+    <script src="assets/lib/inputlimiter/jquery.inputlimiter.1.3.1.min.js"></script>
+    <script src="assets/lib/chosen/chosen.jquery.min.js"></script>
+    <script src="assets/lib/colorpicker/js/bootstrap-colorpicker.js"></script>
+    <script src="assets/lib/tagsinput/jquery.tagsinput.min.js"></script>
+    <script src="assets/lib/validVal/src/js/jquery.validVal.min.js"></script>
+    <script src="assets/lib/daterangepicker/daterangepicker.js"></script>
+    <script src="assets/lib/daterangepicker/moment.min.js"></script>
+    <script src="assets/lib/datepicker/js/bootstrap-datepicker.js"></script>
+    <script src="assets/lib/timepicker/js/bootstrap-timepicker.min.js"></script>
+    <script src="assets/lib/switch/build/js/bootstrap-switch.min.js"></script>
+    <script src="assets/lib/jquery.dualListbox-1.3/jquery.dualListBox-1.3.min.js"></script>
+    <script src="assets/lib/autosize/jquery.autosize.min.js"></script>
+    <script src="assets/lib/jasny/js/jasny-bootstrap.min.js"></script>
+    <script>
+      $(function() {
+        formGeneral();
+      });
+    </script>
     <script src="assets/lib/screenfull/screenfull.js"></script>
     <script src="assets/js/main.min.js"></script>
 

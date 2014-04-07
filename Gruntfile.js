@@ -135,7 +135,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'src/assets/lib',
-                        src: ['./**/*.*'],
+                        src: ['./*/*.*'],
                         dest: 'dist/assets/lib'
                     },
                     {
@@ -147,7 +147,8 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'src/assets/submodule',
-                        src: ['./**/*.*'],
+                        src: ['./*/*.*'],
+                        filter: 'isFile',
                         dest: 'dist/assets/lib'
                     },
                     {
