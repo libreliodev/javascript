@@ -168,8 +168,10 @@
 
 
         <script src="{{assets}}/lib/bootstrap/js/bootstrap.min.js"></script>
+	  <script src="{{assets}}/lib/utils.js"></script>
 
-
+        {{!-- Check login --}}
+        {{> check_auth }}
 
 
         {{#if cdnjs}}

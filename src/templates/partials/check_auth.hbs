@@ -1,0 +1,13 @@
+<script>
+if(!supports_html5_storage())
+    alert("This app does not support your browser");
+else
+{
+    var auth_obj = JSON.parse(localStorage.getItem('libreliodev-auth'));
+    if(!auth_obj)
+    {
+        $('body > *').hide();
+        document.location = "login.html";
+    }
+}
+</script>

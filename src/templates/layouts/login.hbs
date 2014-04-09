@@ -26,9 +26,64 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 	      {{> body }}
 
 	      
-	      
       <script src="{{assets}}/lib/jquery.min.js"></script>
       <script src="{{assets}}/lib/bootstrap/js/bootstrap.js"></script>
+	  <script src="{{assets}}/lib/utils.js"></script>
+      
+      <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc13.min.js"></script>
+      <script type="text/javascript">
+        // Configure your region
+        AWS.config.region = 'us-west-2';
+        $('.form-signin').bind('submit', function()
+           {
+               try{
+               var form = this,
+               accessKeyId = $('input[name=access-key-id]', form).val(),
+               secretAccessKey = $('input[name=secret-access-key]', form).val(),
+               rootDiectory = $('input[name=root-directory]', form).val();
+               
+               AWS.config.update({
+                   accessKeyId: accessKeyId,
+                   secretAccessKey: secretAccessKey
+               });
+               var s3 = new AWS.S3({ region: 'us-west-2' }),
+               bucket = 'serverfire-mybucket';
+               $('button', form).prop('disabled', true);
+               s3.listBuckets({}, function(err, data)
+                  {
+                      if(err)
+                      {
+                          alert("Couldn't connect to aws s3: " + err);
+                      }
+                      else
+                      {
+                          console.log(data);
+                          /*
+                            if(!supports_html5_storage())
+                                alert("This app does not support your browser");
+                            else
+                            {
+                                var auth_obj = {
+                                    accessKeyId: accessKeyId,
+                                    secretAccessKey: secretAccessKey,
+                                    rootDirectory: rootDirectory
+                                };
+                                localStorage.setItem('libreliodev-auth', JSON.stringify(auth_obj));
+                                document.location = "index.html";
+                            }
+                          */
+                      }
+                      $('button', form).prop('disabled', false);
+                  });
+               }catch(e) {
+                   alert(e);
+               }
+               /*s3.headObject({
+                   Bucket: bucket,
+                   Key: */
+               return false;
+           });
+      </script>
       
       <script>
             $('.list-inline li > a').click(function() {
