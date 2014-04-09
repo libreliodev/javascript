@@ -34,6 +34,20 @@
 
     <!--Modernizr 3.0-->
     <script src="assets/lib/modernizr-build.min.js"></script>
+    <script src="assets/lib/jquery.min.js"></script>
+    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/lib/utils.js"></script>
+    <script>
+      if (!supports_html5_storage())
+        alert("This app does not support your browser");
+      else {
+        var auth_obj = JSON.parse(localStorage.getItem('libreliodev-auth'));
+        if (!auth_obj) {
+          $('body > *').hide();
+          document.location = "login.html";
+        }
+      }
+    </script>
   </head>
   <body>
     <div id="wrap">
@@ -72,9 +86,15 @@
                 </a> 
               </div>
               <div class="btn-group">
-                <a href="login.html" data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm">
+                <a id="logout-anchor" href="login.html" data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm">
                   <i class="fa fa-power-off"></i>
                 </a> 
+                <script>
+                  $('#logout-anchor').click(function() {
+                    if (supports_html5_storage())
+                      localStorage.setItem('libreliodev-auth', null);
+                  });
+                </script>
               </div>
             </div>
           </div><!-- /.topnav -->
@@ -117,12 +137,12 @@
           </div>
           <div class="user-wrapper">
             <a class="user-link" href="">
-              <img class="media-object img-thumbnail user-img" alt="User Picture" src="assets/img/user.gif">
+              <img class="media-object img-thumbnail user-img" alt="App Icon" src="assets/img/user.gif">
             </a> 
             <div class="media-body">
-              <h5 id="admin" class="media-heading">Admin1</h5>
+              <h5 id="publisher" class="media-heading">Publisher1</h5>
               <ul id="app" class="list-unstyled user-info">
-                <li>Application 1</li>
+                <li>Application1</li>
               </ul>
             </div>
           </div>
@@ -434,8 +454,6 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal --><!-- /#helpModal -->
-    <script src="assets/lib/jquery.min.js"></script>
-    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script src="assets/lib/prettify/prettify.js"></script>
     <script src="assets/lib/touch-punch/jquery.ui.touch-punch.min.js"></script>
