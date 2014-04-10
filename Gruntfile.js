@@ -171,6 +171,12 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/jQuery-Storage-API/',
+                        src: ['./**/jquery.storageapi.min.js'],
+                        dest: 'dist/assets/lib'
+                    },
+                    {
+                        expand: true,
                         cwd: 'bower_components/bootstrap/dist/',
                         src: ['./**/*.*'],
                         dest: 'dist/assets/lib/bootstrap'

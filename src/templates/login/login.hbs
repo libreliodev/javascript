@@ -11,12 +11,12 @@ title: Login Page
                 <p class="text-muted text-center">
                     Enter your AWS Access Key ID and password
                 </p>
-                <input type="text" placeholder="Access Key ID" class="form-control">
-                <input type="password" placeholder="Secret Access Key" class="form-control">
-                <input type="text" placeholder="Root directory" class="form-control">
+                <input type="text" id="key" placeholder="Access Key ID" class="form-control">
+                <input type="password" id="secret" placeholder="Secret Access Key" class="form-control">
+                <input type="text" id="dir" placeholder="Root directory" class="form-control">
 			   <div class="text-muted text-center">
 					<label>
-						<input class="uniform" type="checkbox" value="remember">&nbsp; Remember me on this computer
+						<input class="uniform" type="checkbox" id="remember" value="1">&nbsp; Remember me on this computer
 					</label>
 				</div>
                  <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>

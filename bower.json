@@ -24,6 +24,7 @@
         "font-awesome": "~4.0.3",
         "gmaps": "~0.4.9",
         "html5shiv": "~3.7.0",
-        "respond": "~1.4.0"
+        "respond": "~1.4.0",
+        "jQuery-Storage-API": "git@github.com:julien-maurel/jQuery-Storage-API.git"
     }
 }

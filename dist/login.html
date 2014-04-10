@@ -35,12 +35,12 @@
             <p class="text-muted text-center">
               Enter your AWS Access Key ID and password
             </p>
-            <input type="text" placeholder="Access Key ID" class="form-control">
-            <input type="password" placeholder="Secret Access Key" class="form-control">
-            <input type="text" placeholder="Root directory" class="form-control">
+            <input type="text" id="key" placeholder="Access Key ID" class="form-control">
+            <input type="password" id="secret" placeholder="Secret Access Key" class="form-control">
+            <input type="text" id="dir" placeholder="Root directory" class="form-control">
             <div class="text-muted text-center">
               <label>
-                <input class="uniform" type="checkbox" value="remember">&nbsp; Remember me on this computer
+                <input class="uniform" type="checkbox" id="remember" value="1">&nbsp; Remember me on this computer
               </label>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>
@@ -48,6 +48,7 @@
         </div>
       </div><!-- /container -->
       <script src="assets/lib/jquery.min.js"></script>
+      <script src="assets/lib/jquery.storageapi.min.js"></script>
       <script src="assets/lib/bootstrap/js/bootstrap.js"></script>
       <script>
         $('.list-inline li > a').click(function() {
@@ -58,6 +59,15 @@
           setTimeout(function() {
             $(activeForm).removeClass('magictime swap');
           }, 1000);
+        });
+         // store credentials upon submit
+        $('.form-signin').submit(function() {
+          var ns = $.initNamespaceStorage('auth');
+          ns.sessionStorage.set('submit_key', $('#key').val());
+          ns.sessionStorage.set('submit_secret', $('#secret').val());
+          ns.sessionStorage.set('submit_dir', $('#dir').val());
+          //ns.localStorage.set('remember', $('#remember').is(':checked')));
+          return true;
         });
       </script>
   </body>
