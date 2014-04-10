@@ -66,7 +66,7 @@
           ns.sessionStorage.set('submit_key', $('#key').val());
           ns.sessionStorage.set('submit_secret', $('#secret').val());
           ns.sessionStorage.set('submit_dir', $('#dir').val());
-          //ns.localStorage.set('remember', $('#remember').is(':checked')));
+          ns.localStorage.set('remember', $('#remember').prop('checked'));
           return true;
         });
       </script>
