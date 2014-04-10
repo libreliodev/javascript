@@ -6,7 +6,7 @@ function formGeneral() {
     });
 
     /*----------- BEGIN autosize CODE -------------------------*/
-    $('#autosize').autosize();
+    $('.autosize').autosize();
     /*----------- END autosize CODE -------------------------*/
 
     /*----------- BEGIN inputlimiter CODE -------------------------*/

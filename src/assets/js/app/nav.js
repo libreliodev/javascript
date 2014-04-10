@@ -25,7 +25,8 @@ $(function(){
                    var dir = cprefixes[i].Prefix,
                    match;
                    if(dir.indexOf(prefix) == 0 && 
-                      (match = pttrn.exec(dir.substr(prefix.length))))
+                      (match = pttrn.exec(dir.substr(prefix.length))) &&
+                      apps.indexOf(match[0]) < 0)
                        apps.push(match[0]);
                }
                function add_app(app)
@@ -35,8 +36,10 @@ $(function(){
                            .text(app)
                            .click(function()
                              {
-                                 changeApplication(app);
+                                 localStorage.setItem(
+                                     config.localStorageAppNameKey, app);
                                  list_dropdown.dropdown('toggle');
+                                 location.reload();
                                  return false;
                              })).appendTo(list_dropdown);
                }
@@ -44,19 +47,14 @@ $(function(){
                list_dropdown.children().remove();
                for(var i = 0, l = apps.length; i < l; ++i)
                    add_app(apps[i]);
-               
+
+               if(!localStorage.getItem(config.localStorageAppNameKey) &&
+                  apps.length > 0)
+               {
+                   localStorage.setItem(config.localStorageAppNameKey, apps[0]);
+                   location.reload();
+               }
                $('#app-list-dropdown-toggle .loading').hide();
            });
-        /*
-        awsS3.listObjects({
-            Bucket: config.s3Bucket,
-            Prefix: s3AuthObj.rootDirectory + '/',
-            Delimiter: '/'
-        }, function(err, res)
-           {
-               $('#app-list-dropdown-toggle .loading').hide();
-               console.log(err, res);
-           });
-        */
     }
 });
