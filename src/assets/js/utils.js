@@ -1,11 +1,3 @@
-function supports_html5_storage()
-{
-  try {
-    return 'localStorage' in window && window.localStorage !== null;
-  } catch (e) {
-    return false;
-  }
-}
 
 function s3ListAllObjects(s3, opts, cb, marker)
 {

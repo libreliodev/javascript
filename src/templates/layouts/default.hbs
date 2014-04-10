@@ -37,14 +37,15 @@
         <script src="{{assets}}/lib/jquery.min.js"></script>
         <script src="{{assets}}/lib/bootstrap/js/bootstrap.min.js"></script>
 	    <script src="{{assets}}/js/utils.js"></script>
+	    <script src="{{assets}}/js/storage.js"></script>
         <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc13.min.js"></script>
         <script src="{{assets}}/lib/screenfull/screenfull.js"></script>
         <script>
           var config = {
-              "localStorageAuthKey": "{{ config.localStorageAuthKey }}",
+              "storageAuthKey": "{{ config.storageAuthKey }}",
               "s3Bucket": "{{ config.s3Bucket }}",
               "s3BucketRegion": "{{ config.s3BucketRegion }}",
-              "localStorageAppNameKey": "{{ config.localStorageAppNameKey }}"
+              "storageAppNameKey": "{{ config.storageAppNameKey }}"
           };
         </script>
         <script src="{{assets}}/js/main.min.js"></script>

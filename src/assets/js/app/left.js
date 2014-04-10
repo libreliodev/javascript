@@ -3,7 +3,7 @@ $(function(){
 })
 function leftStatusBarUpdate()
 {
-    var app_name = localStorage.getItem(config.localStorageAppNameKey);
+    var app_name = storage.getItem(config.storageAppNameKey);
     if(s3AuthObj)
         $('#publisher-name').text(s3AuthObj.rootDirectory);
     

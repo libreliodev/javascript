@@ -1,6 +1,6 @@
 {
-    "localStorageAuthKey": "librelio-auth",
+    "storageAuthKey": "librelio-auth",
     "s3Bucket": "librelio-europe",
     "s3BucketRegion": "eu-west-1",
-    "localStorageAppNameKey": "librelio-app"
+    "storageAppNameKey": "librelio-app"
 }

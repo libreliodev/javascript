@@ -1,8 +1,8 @@
 $(function(){
     $('#logout-anchor').click(function()
        {
-           if(supports_html5_storage())
-               localStorage.setItem(config.localStorageAuthKey, null);
+           if(storage)
+               storage.setItem(config.storageAuthKey, null);
        });
     
     // app-list dropdown impl
@@ -36,8 +36,7 @@ $(function(){
                            .text(app)
                            .click(function()
                              {
-                                 localStorage.setItem(
-                                     config.localStorageAppNameKey, app);
+                                 storage.setItem(config.storageAppNameKey, app);
                                  list_dropdown.dropdown('toggle');
                                  location.reload();
                                  return false;
@@ -48,10 +47,10 @@ $(function(){
                for(var i = 0, l = apps.length; i < l; ++i)
                    add_app(apps[i]);
 
-               if(!localStorage.getItem(config.localStorageAppNameKey) &&
+               if(!storage.getItem(config.storageAppNameKey) &&
                   apps.length > 0)
                {
-                   localStorage.setItem(config.localStorageAppNameKey, apps[0]);
+                   storage.setItem(config.storageAppNameKey, apps[0]);
                    location.reload();
                }
                $('#app-list-dropdown-toggle .loading').hide();

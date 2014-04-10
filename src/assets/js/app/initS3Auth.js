@@ -1,10 +1,13 @@
 var s3AuthObj,
 awsS3;
-if(!supports_html5_storage())
+if(!storage)
     alert("This app does not support your browser");
 else
 {
-    s3AuthObj = JSON.parse(localStorage.getItem(config.localStorageAuthKey));
+    storage.type = 'local';
+    storage.type = storage.getItem('storage-type') || 'session';
+    
+    s3AuthObj = JSON.parse(storage.getItem(config.storageAuthKey));
     if(!s3AuthObj)
     {
         $('body > *').hide();

@@ -9,7 +9,7 @@ $(function(){
            $('input[type=submit]', form).prop('disabled', true);
            var sns = new AWS.SNS(),
            publisher_name = s3AuthObj.rootDirectory,
-           app_name = localStorage.getItem(config.localStorageAppNameKey),
+           app_name = storage.getItem(config.storageAppNameKey),
            msg = $('#message-textarea').val();
 
            if(!app_name)
