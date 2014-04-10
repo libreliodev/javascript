@@ -36,10 +36,9 @@
 
         <script src="{{assets}}/lib/jquery.min.js"></script>
         <script src="{{assets}}/lib/bootstrap/js/bootstrap.min.js"></script>
-	    <script src="{{assets}}/lib/utils.js"></script>
-
-        {{!-- Check login --}}
-        {{> check_auth }}
+	    <script src="{{assets}}/js/utils.js"></script>
+        <script src="{{assets}}/lib/screenfull/screenfull.js"></script>
+        <script src="{{assets}}/js/main.min.js"></script>
 
     </head>
     <body {{#is title "Dashboard Alterne"}} class="three-columns" {{/is}}>
@@ -186,8 +185,6 @@
         </script>
         {{/if}}
         
-        <script src="{{assets}}/lib/screenfull/screenfull.js"></script>
-        <script src="{{assets}}/js/main.min.js"></script>
         
         <!--For Demo Only. Not required -->
         <script type="text/javascript" src="assets/js/style-switcher.js"></script>

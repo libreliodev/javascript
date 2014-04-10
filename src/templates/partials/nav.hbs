@@ -34,13 +34,6 @@
                 <a id="logout-anchor" href="login.html" data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm">
 		  <i class="fa fa-power-off"></i>
                 </a>
-                <script>
-                $('#logout-anchor').click(function()
-                  {
-                      if(supports_html5_storage())
-                          localStorage.setItem('libreliodev-auth', null);
-                  });
-                </script>
             </div>
         </div>
 
@@ -57,10 +50,10 @@
         <!-- .nav -->
         <ul class="nav navbar-nav">
             <li class='dropdown'>
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                <a id="app-list-dropdown-toggle" href="#" class="dropdown-toggle" data-toggle="dropdown">
                     Application<b class="caret"></b>
                 </a>
-                <ul class="dropdown-menu">
+                <ul id="app-list-dropdown" class="dropdown-menu">
                     <li><a href="#">Application 1</a></li>
                     <li><a href="#">Application 2</a></li>
                 </ul>

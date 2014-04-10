@@ -47,18 +47,6 @@ module.exports = function (grunt) {
             main: {
                 src: ['src/assets/js/app/*.js'],
                 dest: 'dist/assets/js/main.js'
-            },
-            countdown: {
-                src: ['src/assets/js/countdown.js'],
-                dest: 'dist/assets/js/countdown.js'
-            },
-            styleSwitcher: {
-                src: ['src/assets/js/style-switcher.js'],
-                dest: 'dist/assets/js/style-switcher.js'
-            },
-            emberApp: {
-                src: ['src/assets/js/app.js'],
-                dest: 'dist/assets/js/app.js'
             }
         },
         uglify: {
@@ -134,8 +122,14 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'src/assets/js',
+                        src: ['./*.js'],
+                        dest: 'dist/assets/js'
+                    },
+                    {
+                        expand: true,
                         cwd: 'src/assets/lib',
-                        src: ['./*/*.*', './*.*'],
+                        src: ['./*.*','./*/*.*','./*/css/*.*','./*/js/*.*'],
                         dest: 'dist/assets/lib'
                     },
                     {
@@ -147,7 +141,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'src/assets/submodule',
-                        src: ['./*/*.*'],
+                        src: ['./*/*.*','./*/css/*.*','./*/js/*.*'],
                         filter: 'isFile',
                         dest: 'dist/assets/lib'
                     },

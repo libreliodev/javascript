@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>Push</title>
+    <title>Form Wizard</title>
 
     <!--Mobile first-->
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -21,15 +21,10 @@
     <!-- Metis core stylesheet -->
     <link rel="stylesheet" href="assets/css/main.min.css">
     <link rel="stylesheet" href="assets/css/theme.css">
-    <link rel="stylesheet" href="assets/lib/uniform/themes/default/css/uniform.default.css">
-    <link rel="stylesheet" href="assets/lib/inputlimiter/jquery.inputlimiter.1.0.css">
-    <link rel="stylesheet" href="assets/lib/chosen/chosen.min.css">
-    <link rel="stylesheet" href="assets/lib/colorpicker/css/colorpicker.css">
-    <link rel="stylesheet" href="assets/lib/tagsinput/jquery.tagsinput.css">
-    <link rel="stylesheet" href="assets/lib/daterangepicker/daterangepicker-bs3.css">
-    <link rel="stylesheet" href="assets/lib/datepicker/css/datepicker.css">
-    <link rel="stylesheet" href="assets/lib/timepicker/css/bootstrap-timepicker.min.css">
-    <link rel="stylesheet" href="assets/lib/switch/build/css/bootstrap3/bootstrap-switch.min.css">
+    <link rel="stylesheet" href="assets/lib/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css">
+    <link rel="stylesheet" href="assets/lib/gritter/css/jquery.gritter.css">
+    <link rel="stylesheet" href="assets/lib/uniform/themes/default/css/uniform.default.min.css">
+    <link rel="stylesheet" href="assets/css/bootstrap-fileupload.min.css">
     <link rel="stylesheet" href="assets/lib/jasny/css/jasny-bootstrap.min.css">
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -43,20 +38,6 @@
 
     <!--Modernizr 3.0-->
     <script src="assets/lib/modernizr-build.min.js"></script>
-    <script src="assets/lib/jquery.min.js"></script>
-    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/lib/utils.js"></script>
-    <script>
-      if (!supports_html5_storage())
-        alert("This app does not support your browser");
-      else {
-        var auth_obj = JSON.parse(localStorage.getItem('libreliodev-auth'));
-        if (!auth_obj) {
-          $('body > *').hide();
-          document.location = "login.html";
-        }
-      }
-    </script>
   </head>
   <body>
     <div id="wrap">
@@ -95,15 +76,9 @@
                 </a> 
               </div>
               <div class="btn-group">
-                <a id="logout-anchor" href="login.html" data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm">
+                <a href="login.html" data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm">
                   <i class="fa fa-power-off"></i>
                 </a> 
-                <script>
-                  $('#logout-anchor').click(function() {
-                    if (supports_html5_storage())
-                      localStorage.setItem('libreliodev-auth', null);
-                  });
-                </script>
               </div>
             </div>
           </div><!-- /.topnav -->
@@ -133,7 +108,7 @@
           <!-- ."main-bar -->
           <div class="main-bar">
             <h3>
-              <i class="fa fa-bell"></i>&nbsp; Push</h3>
+              <i class="fa fa-magic"></i>&nbsp; Form Wizard</h3>
           </div><!-- /.main-bar -->
         </header>
 
@@ -212,7 +187,7 @@
           </span> 
             </a> 
           </li>
-          <li class="active">
+          <li>
             <a href="push.html">
               <i class="fa fa-bell"></i>
               <span class="link-title">
@@ -237,27 +212,39 @@
               <div class="col-lg-12">
                 <div class="box danger">
                   <header>
-                    <h5>Under construction</h5>
+                    <h5>Page under construction</h5>
                   </header>
                   <div class="body">
                     <form class="form-horizontal">
                       <div class="form-group">
-                        <label for="autosize" class="control-label col-lg-4">Message</label>
+                        <label class="control-label col-lg-4">Link to</label>
                         <div class="col-lg-8">
-                          <textarea id="autosize" class="form-control"></textarea>
+                          <input type="text">
                         </div>
                       </div>
                       <div class="form-group">
-                        <div class=" col-lg-4"></div>
+                        <label class="control-label col-lg-4">Ad Image</label>
                         <div class="col-lg-8">
-                          <input type="submit" value="Send" class="btn btn-primary">
+                          <div class="fileinput fileinput-new" data-provides="fileinput">
+                            <div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
+                              <img data-src="holder.js/100%x100%" alt="...">
+                            </div>
+                            <div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
+                            <div>
+                              <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span> <span class="fileinput-exists">Change</span> 
+                                <input type="file" name="...">
+                              </span> 
+                              <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a> 
+                            </div>
+                          </div>
                         </div>
                       </div>
+                      <div class="alert alert-warning"><strong>Notice!</strong>  Image preview only works in IE10+, FF3.6+, Chrome6.0+ and Opera11.1+. In older browsers and Safari, the filename is shown instead.</div>
                     </form>
                   </div>
                 </div>
-              </div>
-            </div><!-- /.row -->
+              </div><!-- /.col-lg-12 -->
+            </div>
           </div>
 
           <!-- end .inner -->
@@ -292,23 +279,21 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal --><!-- /#helpModal -->
+    <script src="assets/lib/jquery.min.js"></script>
+    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
+    <script src="assets/lib/plupload/js/plupload.full.min.js"></script>
+    <script src="assets/lib/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
+    <script src="assets/lib/gritter/js/jquery.gritter.min.js"></script>
     <script src="assets/lib/uniform/jquery.uniform.min.js"></script>
-    <script src="assets/lib/inputlimiter/jquery.inputlimiter.1.3.1.min.js"></script>
-    <script src="assets/lib/chosen/chosen.jquery.min.js"></script>
-    <script src="assets/lib/colorpicker/js/bootstrap-colorpicker.js"></script>
-    <script src="assets/lib/tagsinput/jquery.tagsinput.min.js"></script>
-    <script src="assets/lib/validVal/src/js/jquery.validVal.min.js"></script>
-    <script src="assets/lib/daterangepicker/daterangepicker.js"></script>
-    <script src="assets/lib/daterangepicker/moment.min.js"></script>
-    <script src="assets/lib/datepicker/js/bootstrap-datepicker.js"></script>
-    <script src="assets/lib/timepicker/js/bootstrap-timepicker.min.js"></script>
-    <script src="assets/lib/switch/build/js/bootstrap-switch.min.js"></script>
-    <script src="assets/lib/jquery.dualListbox-1.3/jquery.dualListBox-1.3.min.js"></script>
-    <script src="assets/lib/autosize/jquery.autosize.min.js"></script>
     <script src="assets/lib/jasny/js/jasny-bootstrap.min.js"></script>
+    <script src="assets/lib/form/jquery.form.js"></script>
+    <script src="assets/lib/formwizard/js/jquery.form.wizard.js"></script>
+    <script src="assets/lib/jquery-validation-1.11.1/dist/jquery.validate.min.js"></script>
+    <script src="assets/lib/jquery-validation-1.11.1/localization/messages_ja.js"></script>
     <script>
       $(function() {
-        formGeneral();
+        formWizard();
       });
     </script>
     <script src="assets/lib/screenfull/screenfull.js"></script>
