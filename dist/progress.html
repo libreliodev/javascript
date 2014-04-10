@@ -36,18 +36,18 @@
     <script src="assets/lib/modernizr-build.min.js"></script>
     <script src="assets/lib/jquery.min.js"></script>
     <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="assets/lib/utils.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc13.min.js"></script>
+    <script src="assets/lib/screenfull/screenfull.js"></script>
     <script>
-      if (!supports_html5_storage())
-        alert("This app does not support your browser");
-      else {
-        var auth_obj = JSON.parse(localStorage.getItem('libreliodev-auth'));
-        if (!auth_obj) {
-          $('body > *').hide();
-          document.location = "login.html";
-        }
-      }
+      var config = {
+        "localStorageAuthKey": "librelio-auth",
+        "s3Bucket": "librelio-europe",
+        "s3BucketRegion": "eu-west-1",
+        "localStorageAppNameKey": "librelio-app"
+      };
     </script>
+    <script src="assets/js/main.min.js"></script>
   </head>
   <body>
     <div id="wrap">
@@ -89,12 +89,6 @@
                 <a id="logout-anchor" href="login.html" data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm">
                   <i class="fa fa-power-off"></i>
                 </a> 
-                <script>
-                  $('#logout-anchor').click(function() {
-                    if (supports_html5_storage())
-                      localStorage.setItem('libreliodev-auth', null);
-                  });
-                </script>
               </div>
             </div>
           </div><!-- /.topnav -->
@@ -103,11 +97,11 @@
             <!-- .nav -->
             <ul class="nav navbar-nav">
               <li class='dropdown'>
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  Application
+                <a id="app-list-dropdown-toggle" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <img class="loading" alt="loading" src="assets/img/loading-light.gif" />Application
                   <b class="caret"></b>
                 </a> 
-                <ul class="dropdown-menu">
+                <ul id="app-list-dropdown" class="dropdown-menu">
                   <li> <a href="#">Application 1</a>  </li>
                   <li> <a href="#">Application 2</a>  </li>
                 </ul>
@@ -137,12 +131,12 @@
           </div>
           <div class="user-wrapper">
             <a class="user-link" href="">
-              <img class="media-object img-thumbnail user-img" alt="App Icon" src="assets/img/user.gif">
+              <img id="app-icon" class="media-object img-thumbnail user-img" alt="App Icon" src="assets/img/user.gif">
             </a> 
             <div class="media-body">
-              <h5 id="publisher" class="media-heading">Publisher1</h5>
-              <ul id="app" class="list-unstyled user-info">
-                <li>Application1</li>
+              <h5 id="publisher-name" class="media-heading">Publisher</h5>
+              <ul id="app-list" class="list-unstyled user-info">
+                <li></li>
               </ul>
             </div>
           </div>
@@ -482,8 +476,6 @@
         progRess();
       });
     </script>
-    <script src="assets/lib/screenfull/screenfull.js"></script>
-    <script src="assets/js/main.min.js"></script>
 
     <!--For Demo Only. Not required -->
     <script type="text/javascript" src="assets/js/style-switcher.js"></script>

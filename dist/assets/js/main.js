@@ -416,7 +416,7 @@ function formGeneral() {
     });
 
     /*----------- BEGIN autosize CODE -------------------------*/
-    $('#autosize').autosize();
+    $('.autosize').autosize();
     /*----------- END autosize CODE -------------------------*/
 
     /*----------- BEGIN inputlimiter CODE -------------------------*/
@@ -557,6 +557,7 @@ $('#dimension-switch').bootstrapSwitch('setSizeClass', 'switch-large');
     $.configureBoxes();
     /*----------- END dualListBox CODE -------------------------*/
 }
+
 function formValidation() {
     "use strict";
     /*----------- BEGIN validationEngine CODE -------------------------*/
@@ -856,6 +857,47 @@ var boxHiding = {
   }
 };
 boxHiding.init();
+var s3AuthObj,
+awsS3;
+if(!supports_html5_storage())
+    alert("This app does not support your browser");
+else
+{
+    s3AuthObj = JSON.parse(localStorage.getItem(config.localStorageAuthKey));
+    if(!s3AuthObj)
+    {
+        $('body > *').hide();
+        document.location = "login.html";
+    }
+    else
+    {
+        AWS.config.update({
+            accessKeyId: s3AuthObj.accessKeyId,
+            secretAccessKey: s3AuthObj.secretAccessKey
+        });
+        AWS.config.region = config.s3BucketRegion;
+        awsS3 = new AWS.S3({ region: config.s3BucketRegion });
+    }
+}
+
+$(function(){
+    leftStatusBarUpdate();
+})
+function leftStatusBarUpdate()
+{
+    var app_name = localStorage.getItem(config.localStorageAppNameKey);
+    if(s3AuthObj)
+        $('#publisher-name').text(s3AuthObj.rootDirectory);
+    
+    if(app_name)
+        $('#app-list > li').first().text(app_name);
+    
+    if(s3AuthObj && app_name)
+        $("#app-icon").attr("src", "https://librelio-europe.s3.amazonaws.com/" +
+                            s3AuthObj.rootDirectory + "/" + app_name +
+                            "/APP/SOURCES/iOS/Icon.png");
+}
+
 function metisCalendar() {
     "use strict";
 
@@ -1243,6 +1285,67 @@ function metisTable() {
     /*----------- END action table CODE -------------------------*/
 
 }
+$(function(){
+    $('#logout-anchor').click(function()
+       {
+           if(supports_html5_storage())
+               localStorage.setItem(config.localStorageAuthKey, null);
+       });
+    
+    // app-list dropdown impl
+    /* load app's list and remove loading sign */
+    if(s3AuthObj && awsS3)
+    {
+        s3ListAllObjects(awsS3, {
+            Bucket: config.s3Bucket,
+            Prefix: s3AuthObj.rootDirectory + '/',
+            Delimiter: '/'
+        }, function(err, res)
+           {
+               var apps = [],
+               cprefixes = res.CommonPrefixes,
+               pttrn = /[^\/]+/,
+               prefix = s3AuthObj.rootDirectory + '/';
+               
+               for(var i = 0, l = cprefixes.length; i < l; ++i)
+               {
+                   var dir = cprefixes[i].Prefix,
+                   match;
+                   if(dir.indexOf(prefix) == 0 && 
+                      (match = pttrn.exec(dir.substr(prefix.length))) &&
+                      apps.indexOf(match[0]) < 0)
+                       apps.push(match[0]);
+               }
+               function add_app(app)
+               {
+                   $('<li/>').append(
+                       $('<a/>').attr('href', '#')
+                           .text(app)
+                           .click(function()
+                             {
+                                 localStorage.setItem(
+                                     config.localStorageAppNameKey, app);
+                                 list_dropdown.dropdown('toggle');
+                                 location.reload();
+                                 return false;
+                             })).appendTo(list_dropdown);
+               }
+               var list_dropdown = $('#app-list-dropdown');
+               list_dropdown.children().remove();
+               for(var i = 0, l = apps.length; i < l; ++i)
+                   add_app(apps[i]);
+
+               if(!localStorage.getItem(config.localStorageAppNameKey) &&
+                  apps.length > 0)
+               {
+                   localStorage.setItem(config.localStorageAppNameKey, apps[0]);
+                   location.reload();
+               }
+               $('#app-list-dropdown-toggle .loading').hide();
+           });
+    }
+});
+
 function metisPricing(){
   $("#dark-toggle label").on("click", function(){	      
 		var $this = $(this);
@@ -1272,3 +1375,59 @@ function progRess() {
 
     });
 }
+$(function(){
+    $("#notification-form input[type=submit]").click(function()
+        {
+            return confirm("Are you sure you want to send this message?");
+        });
+    $("#notification-form").bind('submit', function()
+       {
+           var form = this;
+           $('input[type=submit]', form).prop('disabled', true);
+           var sns = new AWS.SNS(),
+           publisher_name = s3AuthObj.rootDirectory,
+           app_name = localStorage.getItem(config.localStorageAppNameKey),
+           msg = $('#message-textarea').val();
+
+           if(!app_name)
+           {
+               alert("Please select application before sending notification");
+           }
+           else if(msg == '' || msg.length > 300)
+           {
+               alert("Message box is empty or is to long, "+
+                     "it should be less or equal than 300");
+           }
+           else
+           {
+               sns.publish({
+                   TargetArn: 'arn:aws:sns:eu-west-1:105216790221:' + 
+                       publisher_name + '_' + app_name + '_all',
+                   MessageStructure: 'json',
+                   Message: JSON.stringify({
+                       "default": msg,
+                       "APNS": JSON.stringify({
+                           "aps": {
+                               "alert": msg,
+                               "sound": "default"
+                           }
+                       }),
+                       "GCM": JSON.stringify({
+                           "data": {
+                               "message": msg
+                           }
+                       }),
+                       
+                   })
+               }, function(err, res)
+                  {
+                      if(err)
+                          alert(err);
+                      else
+                          alert("Message sent!");
+                      $('input[type=submit]', form).prop('disabled', false);
+                  });
+           }
+           return false;
+       });
+});
