@@ -1,9 +1,8 @@
 $(function(){
     $("#notification-form").bind('submit', function()
        {
-           try{
            var form = this;
-           $('button', form).prop('disabled', true);
+           $('input[type=submit]', form).prop('disabled', true);
            var sns = new AWS.SNS(),
            publisher_name = s3AuthObj.rootDirectory,
            app_name = localStorage.getItem(config.localStorageAppNameKey),
@@ -41,12 +40,10 @@ $(function(){
                    })
                }, function(err, res)
                   {
-                      console.log(err, res);
-                      $('button', form).prop('disabled', false);
+                      if(err)
+                          alert(err);
+                      $('input[type=submit]', form).prop('disabled', false);
                   });
-           }
-           }catch(e) {
-               console.error(e);
            }
            return false;
        });
