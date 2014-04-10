@@ -18,9 +18,9 @@ $(function(){
                 accessKeyId: accessKeyId,
                 secretAccessKey: secretAccessKey
             });
-            AWS.config.region = 'eu-west-1';
-            var s3 = new AWS.S3({ region: 'eu-west-1', maxRetries: 1 }),
-            bucket = 'librelio-europe';
+            AWS.config.region = config.s3BucketRegion;
+            var s3 = new AWS.S3({ region: config.s3BucketRegion, maxRetries: 1 }),
+            bucket = config.s3Bucket;
             $('button', form).prop('disabled', true);
             s3.listObjects({
                 Bucket: bucket,
@@ -48,7 +48,7 @@ $(function(){
                                secretAccessKey: secretAccessKey,
                                rootDirectory: rootDirectory
                            };
-                           localStorage.setItem("{{ config.localStorageAuthKey }}", JSON.stringify(auth_obj));
+                           localStorage.setItem(config.localStorageAuthKey, JSON.stringify(auth_obj));
                            document.location = "index.html";
                        }
                    }

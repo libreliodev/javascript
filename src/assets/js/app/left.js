@@ -1,5 +1,9 @@
 $(function(){
-    var app_name = localStorage.getItem("{{ config.localStorageAppNameKey }}");
+    leftStatusBarUpdate();
+})
+function leftStatusBarUpdate()
+{
+    var app_name = localStorage.getItem(config.localStorageAppNameKey);
     if(s3AuthObj)
         $('#publisher-name').text(s3AuthObj.rootDirectory);
     
@@ -10,4 +14,4 @@ $(function(){
         $("#app-icon").attr("src", "https://librelio-europe.s3.amazonaws.com/" +
                             s3AuthObj.rootDirectory + "/" + app_name +
                             "/APP/SOURCES/iOS/Icon.png");
-});
+}
