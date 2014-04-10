@@ -154,7 +154,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'node_modules/assemble-less/node_modules/less/dist/',
-                        src: ['less-1.7.0.min.js'],
+                        src: ['less-1.6.3.min.js'],
                         dest: 'dist/assets/lib'
                     },
                     {

@@ -38,6 +38,20 @@
 
     <!--Modernizr 3.0-->
     <script src="assets/lib/modernizr-build.min.js"></script>
+    <script src="assets/lib/jquery.min.js"></script>
+    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="assets/js/utils.js"></script>
+    <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc13.min.js"></script>
+    <script src="assets/lib/screenfull/screenfull.js"></script>
+    <script>
+      var config = {
+        "localStorageAuthKey": "librelio-auth",
+        "s3Bucket": "librelio-europe",
+        "s3BucketRegion": "eu-west-1",
+        "localStorageAppNameKey": "librelio-app"
+      };
+    </script>
+    <script src="assets/js/main.min.js"></script>
   </head>
   <body>
     <div id="wrap">
@@ -76,7 +90,7 @@
                 </a> 
               </div>
               <div class="btn-group">
-                <a href="login.html" data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm">
+                <a id="logout-anchor" href="login.html" data-toggle="tooltip" data-original-title="Logout" data-placement="bottom" class="btn btn-metis-1 btn-sm">
                   <i class="fa fa-power-off"></i>
                 </a> 
               </div>
@@ -87,11 +101,11 @@
             <!-- .nav -->
             <ul class="nav navbar-nav">
               <li class='dropdown'>
-                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
-                  Application
+                <a id="app-list-dropdown-toggle" href="#" class="dropdown-toggle" data-toggle="dropdown">
+                  <img class="loading" alt="loading" src="assets/img/loading-light.gif" />Application
                   <b class="caret"></b>
                 </a> 
-                <ul class="dropdown-menu">
+                <ul id="app-list-dropdown" class="dropdown-menu">
                   <li> <a href="#">Application 1</a>  </li>
                   <li> <a href="#">Application 2</a>  </li>
                 </ul>
@@ -121,12 +135,12 @@
           </div>
           <div class="user-wrapper">
             <a class="user-link" href="">
-              <img class="media-object img-thumbnail user-img" alt="App Icon" src="assets/img/user.gif">
+              <img id="app-icon" class="media-object img-thumbnail user-img" alt="App Icon" src="assets/img/user.gif">
             </a> 
             <div class="media-body">
-              <h5 id="publisher" class="media-heading">Publisher1</h5>
-              <ul id="app" class="list-unstyled user-info">
-                <li>Application1</li>
+              <h5 id="publisher-name" class="media-heading">Publisher</h5>
+              <ul id="app-list" class="list-unstyled user-info">
+                <li></li>
               </ul>
             </div>
           </div>
@@ -279,8 +293,6 @@
         </div><!-- /.modal-content -->
       </div><!-- /.modal-dialog -->
     </div><!-- /.modal --><!-- /#helpModal -->
-    <script src="assets/lib/jquery.min.js"></script>
-    <script src="assets/lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="//ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js"></script>
     <script src="assets/lib/plupload/js/plupload.full.min.js"></script>
     <script src="assets/lib/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js"></script>
@@ -296,8 +308,6 @@
         formWizard();
       });
     </script>
-    <script src="assets/lib/screenfull/screenfull.js"></script>
-    <script src="assets/js/main.min.js"></script>
 
     <!--For Demo Only. Not required -->
     <script type="text/javascript" src="assets/js/style-switcher.js"></script>

@@ -1,9 +1,3 @@
-/**
-* Metis - Bootstrap-Admin-Template v2.2.0
-* Author : Osman Nuri Okumuş 
-* Copyright 2014
-* Licensed under MIT
-*/
 /*
  Name    : style-switcher.js
  Author  : ono <http://onokumus.com />
@@ -43,7 +37,7 @@ var styleSwitcher = {
                     load: 'less!assets/less/theme.less'
                 },
                 {
-                    load: 'assets/lib/less-1.7.0.min.js',
+                    load: 'assets/lib/less-1.6.3.min.js',
                     complete: function () {
                         $this.build();
                         if (Modernizr.localstorage) {

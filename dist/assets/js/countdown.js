@@ -1,9 +1,3 @@
-/**
-* Metis - Bootstrap-Admin-Template v2.2.0
-* Author : Osman Nuri Okumuş 
-* Copyright 2014
-* Licensed under MIT
-*/
 /* Start Countdown Settings */
 
 var startDate = new Date("01/01/2013");
