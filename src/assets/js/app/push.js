@@ -1,4 +1,8 @@
 $(function(){
+    $("#notification-form input[type=submit]").click(function()
+        {
+            return confirm("Are you sure you want to send this message?");
+        });
     $("#notification-form").bind('submit', function()
        {
            var form = this;
@@ -42,6 +46,8 @@ $(function(){
                   {
                       if(err)
                           alert(err);
+                      else
+                          alert("Message sent!");
                       $('input[type=submit]', form).prop('disabled', false);
                   });
            }
