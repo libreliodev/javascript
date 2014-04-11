@@ -2,7 +2,7 @@ $(function(){
     $('#logout-anchor').click(function()
        {
            if(storage)
-               storage.setItem(config.storageAuthKey, null);
+               storage.setItem(config.storageAuthKey, '');
        });
     
     // app-list dropdown impl

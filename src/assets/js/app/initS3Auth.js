@@ -6,8 +6,11 @@ else
 {
     storage.type = 'local';
     storage.type = storage.getItem('storage-type') || 'session';
-    
-    s3AuthObj = JSON.parse(storage.getItem(config.storageAuthKey));
+    try {
+        s3AuthObj = JSON.parse(storage.getItem(config.storageAuthKey));
+    }catch(e) {
+        s3AuthObj = null;
+    }
     if(!s3AuthObj)
     {
         $('body > *').hide();
