@@ -141,7 +141,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'src/assets/submodule',
-                        src: ['./*/*.*','./*/css/*.*','./*/js/*.*'],
+                        src: ['./*/*.*','./*/css/*.*','./*/build/css/bootstrap3/*.*','./*/js/*.*','./*/src/js/*.*','./*/build/js/*.*','./*/themes/**'],
                         filter: 'isFile',
                         dest: 'dist/assets/lib'
                     },
