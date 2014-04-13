@@ -1,5 +1,7 @@
 $(function() {
     "use strict";
+    
+    $('body').hide();
 
     // define storages
     var ns = $.initNamespaceStorage('auth'),
@@ -12,8 +14,11 @@ $(function() {
     // callback for validation
     var checkAuth = function() {
         // check authentication
-        if (!storage.isSet(authkeys) && storage.get('authvalid') !== true) {
+        if (storage.isSet(authkeys) !== true || storage.get('authvalid') !== true) {
             location.href = 'login.html';
+        }
+        else {
+            $('body').show();
         }
     }
 
@@ -36,6 +41,7 @@ $(function() {
         // check auth + directory
         var s3 = new AWS.S3({region: AWS.config.region, maxRetries: 1});
         s3.listObjects({Bucket: bucket, Prefix: dir + "/", MaxKeys: 1}, function(error, data) {
+            data = data || {};
             data.Contents = data.Contents || [];
             if (error === null && data.Contents.length > 0) {
                 storage.set('key', key);
@@ -43,7 +49,7 @@ $(function() {
                 storage.set('dir', dir);
                 storage.set('authvalid', true);
             } else {
-                alert("Couldn't connect to aws s3: " + err);
+                session.set('error', "Couldn't connect to aws s3. " + error);
             }
 
             // check the authentication
@@ -54,9 +60,11 @@ $(function() {
         session.remove(submitkeys);
     }
     else {
+
         // check the authentication
         checkAuth();
     }
+
 
     // logout button
     $('.fa-power-off').click(function() {

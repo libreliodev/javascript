@@ -41,6 +41,14 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
                     $(activeForm).removeClass('magictime swap');
                 }, 1000);
             });
+            
+            // show error if given
+            var ns = $.initNamespaceStorage('auth');
+            if (ns.sessionStorage.isSet('error')) {
+                $('#error').html(ns.sessionStorage.get('error'));
+                $('#error').show('slow');
+                ns.sessionStorage.remove('error');
+            }
 
 
             // store credentials upon submit
