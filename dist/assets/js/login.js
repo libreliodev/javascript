@@ -39,7 +39,7 @@ $(function(){
                    }
                    else
                    {
-                       if(!supports_html5_storage())
+                       if(!storage)
                            alert("This app does not support your browser");
                        else
                        {
@@ -48,7 +48,19 @@ $(function(){
                                secretAccessKey: secretAccessKey,
                                rootDirectory: rootDirectory
                            };
-                           localStorage.setItem(config.localStorageAuthKey, JSON.stringify(auth_obj));
+                           storage.type = 'local';
+                           var storage_t = $('#remember-me').prop('checked') ?
+                               'local' : 'session';
+                           storage.setItem('storage-type', storage_t);
+                           
+                           storage.type = storage_t;
+                           var prevObj = storage.getItem(config.storageAuthKey);
+                           if(!prevObj || prevObj.accessKeyId != accessKeyId)
+                           {
+                               // clear user info
+                               storage.setItem(config.storageAppNameKey, '');
+                           }
+                           storage.setItem(config.storageAuthKey, JSON.stringify(auth_obj));
                            document.location = "index.html";
                        }
                    }

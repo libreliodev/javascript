@@ -31,24 +31,26 @@ scripts: $(function() { formGeneral(); });
 ---
 <div class="row">
 	<div class="col-lg-12">
-		<div class="box danger">
+		<div class="box ">
+
 			<header>
-				<h5>Under construction</h5>
+				<div class="icons"><i class="fa fa-bell"></i></div>
+				<h5>New message</h5>
 			</header>
 			<div class="body">
            <form class="form-horizontal" id="notification-form">
 
                  <div class="form-group">
-                    <label for="autosize" class="control-label col-lg-4">Message</label>
+                    <label for="autosize" class="control-label col-lg-2">Message text</label>
 
-                    <div class="col-lg-8">
+                    <div class="col-lg-10">
                         <textarea id="message-textarea" class="autosize form-control"></textarea>
                     </div>
                 </div> 
                   <div class="form-group">
-                    <div class=" col-lg-4"></div>
+                    <div class=" col-lg-2"></div>
 
-                    <div class="col-lg-8">
+                    <div class="col-lg-10">
                         <input type="submit" value="Send" class="btn btn-primary">
                     </div>
                 </div> 
@@ -58,3 +60,19 @@ scripts: $(function() { formGeneral(); });
     </div>
 </div>
 <!-- /.row -->
+
+<div class="row">
+  <div class="col-lg-12">
+        <div class="box">
+            <header>
+                <div class="icons"><i class="fa fa-table"></i></div>
+                <h5>Dynamic Table</h5>
+            </header>
+            <div id="collapse4" class="body">
+                <table id="dataTable" class="table table-bordered table-condensed table-hover table-striped">
+                    {{> dataTable}}
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

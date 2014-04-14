@@ -11,13 +11,14 @@
     <script src="assets/lib/jquery.min.js"></script>
     <script src="assets/lib/bootstrap/js/bootstrap.js"></script>
     <script src="assets/js/utils.js"></script>
+    <script src="assets/js/storage.js"></script>
     <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc13.min.js"></script>
     <script>
       var config = {
-        "localStorageAuthKey": "librelio-auth",
+        "storageAuthKey": "librelio-auth",
         "s3Bucket": "librelio-europe",
         "s3BucketRegion": "eu-west-1",
-        "localStorageAppNameKey": "librelio-app"
+        "storageAppNameKey": "librelio-app"
       };
     </script>
     <script src="assets/js/login.js"></script>
@@ -53,7 +54,7 @@
             <input name="root-directory" type="text" placeholder="Root directory" class="form-control">
             <div class="text-muted text-center">
               <label>
-                <input class="uniform" type="checkbox" value="remember">&nbsp; Remember me on this computer
+                <input id="remember-me" class="uniform" type="checkbox" value="remember">&nbsp; Remember me on this computer
               </label>
             </div>
             <button class="btn btn-lg btn-primary btn-block" type="submit">Log in</button>

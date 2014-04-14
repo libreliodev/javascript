@@ -859,11 +859,17 @@ var boxHiding = {
 boxHiding.init();
 var s3AuthObj,
 awsS3;
-if(!supports_html5_storage())
+if(!storage)
     alert("This app does not support your browser");
 else
 {
-    s3AuthObj = JSON.parse(localStorage.getItem(config.localStorageAuthKey));
+    storage.type = 'local';
+    storage.type = storage.getItem('storage-type') || 'session';
+    try {
+        s3AuthObj = JSON.parse(storage.getItem(config.storageAuthKey));
+    }catch(e) {
+        s3AuthObj = null;
+    }
     if(!s3AuthObj)
     {
         $('body > *').hide();
@@ -885,7 +891,7 @@ $(function(){
 })
 function leftStatusBarUpdate()
 {
-    var app_name = localStorage.getItem(config.localStorageAppNameKey);
+    var app_name = storage.getItem(config.storageAppNameKey);
     if(s3AuthObj)
         $('#publisher-name').text(s3AuthObj.rootDirectory);
     
@@ -1288,8 +1294,8 @@ function metisTable() {
 $(function(){
     $('#logout-anchor').click(function()
        {
-           if(supports_html5_storage())
-               localStorage.setItem(config.localStorageAuthKey, null);
+           if(storage)
+               storage.setItem(config.storageAuthKey, '');
        });
     
     // app-list dropdown impl
@@ -1323,8 +1329,7 @@ $(function(){
                            .text(app)
                            .click(function()
                              {
-                                 localStorage.setItem(
-                                     config.localStorageAppNameKey, app);
+                                 storage.setItem(config.storageAppNameKey, app);
                                  list_dropdown.dropdown('toggle');
                                  location.reload();
                                  return false;
@@ -1335,10 +1340,10 @@ $(function(){
                for(var i = 0, l = apps.length; i < l; ++i)
                    add_app(apps[i]);
 
-               if(!localStorage.getItem(config.localStorageAppNameKey) &&
+               if(!storage.getItem(config.storageAppNameKey) &&
                   apps.length > 0)
                {
-                   localStorage.setItem(config.localStorageAppNameKey, apps[0]);
+                   storage.setItem(config.storageAppNameKey, apps[0]);
                    location.reload();
                }
                $('#app-list-dropdown-toggle .loading').hide();
@@ -1386,7 +1391,7 @@ $(function(){
            $('input[type=submit]', form).prop('disabled', true);
            var sns = new AWS.SNS(),
            publisher_name = s3AuthObj.rootDirectory,
-           app_name = localStorage.getItem(config.localStorageAppNameKey),
+           app_name = storage.getItem(config.storageAppNameKey),
            msg = $('#message-textarea').val();
 
            if(!app_name)

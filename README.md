@@ -16,27 +16,9 @@ required [node.js](http://nodejs.org/) & [bower](http://bower.io/) & [grunt](htt
     $ open index.html
     
 
-### Demo
-
-#### For 2.2.0 version
-http://demo.onokumus.com/metis/
-
-#### For 1.2 version 
-(not development)
-http://demo.onokumus.com/metis/v12
-
-### Release History
- * 2014-02-28   v2.2.0 rewrite menu, layout, etc...
- * 2014-02-16   v2.1.4 update bootsrap 3.1.1 && add screenfull.js && fixed #menu
- * 2014-01-19	v2.1.3 add suitcss 's flex-embed component
- * 2013-11-30   v2.1.2 create menu plugin, rewrite menu.less
- * 2013-10-28   v2.1.1 add bower 
- * 2013-10-28   v2.1.1 remove bootsrap, font awesome, gmaps submodule.
- * 2013-10-23   v2.1.1 Adds `bgimage.html` and `bgcolor.html` pages.
- * 2013 [02-15, 10-22] v1.0 - v2.1 I don't remember. Whatever I did.
- * 2013-02-14   v1.0   First Commit.
 
 ### Credits
+ * [Metis - Twitter Bootstrap Admin Template](https://github.com/onokumus/Bootstrap-Admin-Template)
  * [node.js](http://nodejs.org/)
  * [bower](http://bower.io/)
  * [Grunt](http://gruntjs.com/)
@@ -85,4 +67,4 @@ http://demo.onokumus.com/metis/v12
 
 ### Licensing
 
-Bootstrap Admin template is open-sourced software licensed under the [MIT License](LICENSE.md).
+Librelio Admin is open-sourced software licensed under the [MIT License](LICENSE.md).
