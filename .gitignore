@@ -3,4 +3,5 @@ nbproject/
 .idea/
 bower_components/
 dist/
+src/assets/submodule/
 
