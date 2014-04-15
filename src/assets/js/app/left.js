@@ -10,8 +10,14 @@ function leftStatusBarUpdate()
     if(app_name)
         $('#app-list > li').first().text(app_name);
     
-    if(s3AuthObj && app_name)
+    if(s3AuthObj && app_name) {
         $("#app-icon").attr("src", "https://librelio-europe.s3.amazonaws.com/" +
-                            s3AuthObj.rootDirectory + "/" + app_name +
-                            "/APP/SOURCES/iOS/Icon.png");
+            s3AuthObj.rootDirectory + "/" + app_name +
+            "/APP/SOURCES/iOS/Icon.png");
+
+        $("#app-icon").error(function() {
+            $("#app-icon").attr("src", "assets/img/no-icon.png");
+        });
+    }
+
 }
