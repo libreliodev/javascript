@@ -5,7 +5,14 @@ $(function(){
         });
     $("#notification-form").bind('submit', function()
        {
+
            var form = this;
+
+           if ($('input[type=submit]', form).hasClass("loadingAnimation")) {
+               var oldValue = $('input[type=submit]', form).attr("value");
+               $('input[type=submit]', form).attr("value", "Loading...")
+           }
+
            $('input[type=submit]', form).prop('disabled', true);
            var sns = new AWS.SNS(),
            publisher_name = s3AuthObj.rootDirectory,
@@ -49,6 +56,10 @@ $(function(){
                       else
                           alert("Message sent!");
                       $('input[type=submit]', form).prop('disabled', false);
+
+                      if ($('input[type=submit]', form).hasClass("loadingAnimation")) {
+                          $('input[type=submit]', form).attr("value", oldValue);
+                      }
                   });
            }
            return false;
