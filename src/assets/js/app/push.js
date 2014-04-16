@@ -8,10 +8,9 @@ $(function(){
 
            var form = this;
 
-           if ($('input[type=submit]', form).hasClass("loadingAnimation")) {
-               var oldValue = $('input[type=submit]', form).attr("value");
-               $('input[type=submit]', form).attr("value", "Loading...")
-           }
+           // Loading animation on click
+           var $submitBtn = $('button', form).ladda();
+           $submitBtn.ladda( 'start' );
 
            $('input[type=submit]', form).prop('disabled', true);
            var sns = new AWS.SNS(),
@@ -31,7 +30,7 @@ $(function(){
            else
            {
                sns.publish({
-                   TargetArn: 'arn:aws:sns:eu-west-1:105216790221:' + 
+                   TargetArn: 'arn:aws:sns:eu-west-1:105216790221:' +
                        publisher_name + '_' + app_name + '_all',
                    MessageStructure: 'json',
                    Message: JSON.stringify({
@@ -47,7 +46,7 @@ $(function(){
                                "message": msg
                            }
                        }),
-                       
+
                    })
                }, function(err, res)
                   {
@@ -57,9 +56,8 @@ $(function(){
                           alert("Message sent!");
                       $('input[type=submit]', form).prop('disabled', false);
 
-                      if ($('input[type=submit]', form).hasClass("loadingAnimation")) {
-                          $('input[type=submit]', form).attr("value", oldValue);
-                      }
+                      // Stop loading animation
+                      $submitBtn.ladda( 'stop' );
                   });
            }
            return false;
