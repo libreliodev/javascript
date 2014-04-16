@@ -44,10 +44,9 @@ javascripts:
 - lib/gritter/js/jquery.gritter.min.js
 - lib/uniform/jquery.uniform.min.js
 - lib/form/jquery.form.js
-- lib/formwizard/js/jquery.form.wizard.js
 - lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
 - lib/jquery-validation-1.11.1/localization/messages_ja.js
-- lib/plist_parser.js.js
+- lib/plist_parser.js
 
 scripts: 
 - $(function() { formGeneral(); }); $(function() { metisTable();});
@@ -62,12 +61,14 @@ scripts:
             </header>
             <div id="collapse4" class="body">
             	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn  btn-primary" href="#uploadModal">New publication</a></p>
-                <table id="dataTable" class="table table-bordered table-condensed table-hover table-striped">
+                <table id="publicationDataTable" class="table table-bordered table-condensed table-hover table-striped">
 					<thead>
 					<tr>
 						<th>Folder name</th>
 						<th>Title</th>
 						<th>Subtitle</th>
+						<th class="text-center" style="width: 20px;">Edit</th>
+						<th class="text-center" style="width: 20px;">Status</th>
 					</tr>
 					</thead>
 					<tbody>

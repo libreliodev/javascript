@@ -1,18 +1,22 @@
 $(function(){
 
     var appName = storage.getItem(config.storageAppNameKey);
-    var publicationsTable = $("#dataTable");
+    var publicationsTable = $("#publicationDataTable");
 
     if (s3AuthObj && awsS3) {
 
         awsS3.getObject({
                 Bucket: config.s3Bucket,
-                Key: 'developer/sportguide/Magazines.plist'
-            },
-            function(error, respons) {
-                console.log(respons);
+                Key: 'developer/sportguide/Magazines.plist',
+            }, function(err, data) {
+                if (err)
+                    console.log(err, err.stack); // an error occurred
+                else {
+                    console.log(data);
+                }
             });
 
+        /*
         s3ListAllObjects(awsS3, {
                 Bucket: config.s3Bucket,
                 Prefix: s3AuthObj.rootDirectory + '/'+appName+'/',
@@ -32,7 +36,7 @@ $(function(){
                     addRowToTable(respons.CommonPrefixes[i]);
                 }
 
-            });
+            });*/
 
     }
 
@@ -40,7 +44,9 @@ $(function(){
         publicationsTable.dataTable().fnAddData( [
             isolateFolderName(data.Prefix),
             "",
-            "" ]
+            "",
+            "<a class='btn  btn-primary btn-xs text-center' href='#'>Edit</a>",
+            "<a class='btn  btn-success btn-xs text-center' href='#'>Active</a>"]
         );
     }
 
