@@ -9,10 +9,16 @@ $(function(){
                 Bucket: config.s3Bucket,
                 Key: 'developer/sportguide/Magazines.plist',
             }, function(err, data) {
-                if (err)
-                    console.log(err, err.stack); // an error occurred
+                if (err){
+                	console.log('error');
+                   console.log(err, err.stack); // an error occurred
+ 
+                }
+                
                 else {
+                    console.log('no error');
                     console.log(data);
+                    console.log(data.Body.toString());
                 }
             });
 
