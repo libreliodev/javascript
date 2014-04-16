@@ -8,9 +8,16 @@ $(function(){
 
            var form = this;
 
+<<<<<<< HEAD
            // Loading animation on click
            var $submitBtn = $('button', form).ladda();
            $submitBtn.ladda( 'start' );
+=======
+           if ($('input[type=submit]', form).hasClass("loadingAnimation")) {
+               var oldValue = $('input[type=submit]', form).attr("value");
+               $('input[type=submit]', form).attr("value", "Loading...")
+           }
+>>>>>>> ce2109833c6326ea8b0e1ef65a442438ddb9f014
 
            $('input[type=submit]', form).prop('disabled', true);
            var sns = new AWS.SNS(),
@@ -56,8 +63,14 @@ $(function(){
                           alert("Message sent!");
                       $('input[type=submit]', form).prop('disabled', false);
 
+<<<<<<< HEAD
                       // Stop loading animation
                       $submitBtn.ladda( 'stop' );
+=======
+                      if ($('input[type=submit]', form).hasClass("loadingAnimation")) {
+                          $('input[type=submit]', form).attr("value", oldValue);
+                      }
+>>>>>>> ce2109833c6326ea8b0e1ef65a442438ddb9f014
                   });
            }
            return false;
