@@ -5,7 +5,13 @@ $(function(){
         });
     $("#notification-form").bind('submit', function()
        {
+
            var form = this;
+
+           // Loading animation on click
+           var $submitBtn = $('button', form).ladda();
+           $submitBtn.ladda( 'start' );
+
            $('input[type=submit]', form).prop('disabled', true);
            var sns = new AWS.SNS(),
            publisher_name = s3AuthObj.rootDirectory,
@@ -49,6 +55,9 @@ $(function(){
                       else
                           alert("Message sent!");
                       $('input[type=submit]', form).prop('disabled', false);
+
+                      // Stop loading animation
+                      $submitBtn.ladda( 'stop' );
                   });
            }
            return false;

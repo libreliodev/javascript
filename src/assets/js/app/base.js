@@ -5,7 +5,6 @@ $(function () {
         e.preventDefault();
     });
 
-
     $('a[data-toggle=tooltip]').tooltip();
     $('a[data-tooltip=tooltip]').tooltip();
 

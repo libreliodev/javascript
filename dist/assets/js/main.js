@@ -11,7 +11,6 @@ $(function () {
         e.preventDefault();
     });
 
-
     $('a[data-toggle=tooltip]').tooltip();
     $('a[data-tooltip=tooltip]').tooltip();
 
@@ -898,10 +897,16 @@ function leftStatusBarUpdate()
     if(app_name)
         $('#app-list > li').first().text(app_name);
     
-    if(s3AuthObj && app_name)
+    if(s3AuthObj && app_name) {
         $("#app-icon").attr("src", "https://librelio-europe.s3.amazonaws.com/" +
-                            s3AuthObj.rootDirectory + "/" + app_name +
-                            "/APP/SOURCES/iOS/Icon.png");
+            s3AuthObj.rootDirectory + "/" + app_name +
+            "/APP/SOURCES/iOS/Icon.png");
+
+        $("#app-icon").error(function() {
+            $("#app-icon").attr("src", "assets/img/no-icon.png");
+        });
+    }
+
 }
 
 function metisCalendar() {
@@ -1387,7 +1392,13 @@ $(function(){
         });
     $("#notification-form").bind('submit', function()
        {
+
            var form = this;
+
+           // Loading animation on click
+           var $submitBtn = $('button', form).ladda();
+           $submitBtn.ladda( 'start' );
+
            $('input[type=submit]', form).prop('disabled', true);
            var sns = new AWS.SNS(),
            publisher_name = s3AuthObj.rootDirectory,
@@ -1431,6 +1442,9 @@ $(function(){
                       else
                           alert("Message sent!");
                       $('input[type=submit]', form).prop('disabled', false);
+
+                      // Stop loading animation
+                      $submitBtn.ladda( 'stop' );
                   });
            }
            return false;
