@@ -33,7 +33,7 @@ $(function(){
                 console.log(err, err.stack); // an error occurred
             else {
                 var xmlData = $.plist($.parseXML(data.Body.toString()));
-console.log(xmlData);
+
                 for(var i = 0, l = xmlData.length; i < l; ++i) {
                     $("td:contains("+isolateFolderName2(xmlData[i].FileName)+")").closest('td').next().html(xmlData[i].Title).closest('td').next().html(xmlData[i].Subtitle);
 
