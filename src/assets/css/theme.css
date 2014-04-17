@@ -13,3 +13,6 @@
 	color: #fff;
 }
 
+.littleModal .modal-dialog {
+    width: 380px;
+}
