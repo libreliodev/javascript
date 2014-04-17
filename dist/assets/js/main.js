@@ -1392,31 +1392,12 @@ $(function(){
 
     if (s3AuthObj && awsS3) {
 
-        awsS3.getObject({
-                Bucket: config.s3Bucket,
-                Key: 'developer/sportguide/Magazines.plist',
-            }, function(err, data) {
-                if (err){
-                	console.log('error');
-                   console.log(err, err.stack); // an error occurred
- 
-                }
-                
-                else {
-                    console.log('no error');
-                    console.log(data);
-                    console.log(data.Body.toString());
-                }
-            });
-
-        /*
         s3ListAllObjects(awsS3, {
                 Bucket: config.s3Bucket,
                 Prefix: s3AuthObj.rootDirectory + '/'+appName+'/',
                 Delimiter: '/'
             },
             function(error, respons) {
-                //console.log(respons);
 
                 for(var i = 0, l = respons.CommonPrefixes.length; i < l; ++i) {
 
@@ -1429,7 +1410,23 @@ $(function(){
                     addRowToTable(respons.CommonPrefixes[i]);
                 }
 
-            });*/
+            });
+
+        awsS3.getObject({
+            Bucket: config.s3Bucket,
+            Key: s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist'
+        }, function(err, data) {
+            if (err)
+                console.log(err, err.stack); // an error occurred
+            else {
+                var xmlData = $.plist($.parseXML(data.Body.toString()));
+console.log(xmlData);
+                for(var i = 0, l = xmlData.length; i < l; ++i) {
+                    $("td:contains("+isolateFolderName2(xmlData[i].FileName)+")").closest('td').next().html(xmlData[i].Title).closest('td').next().html(xmlData[i].Subtitle);
+
+                }
+            }
+        });
 
     }
 
@@ -1445,6 +1442,10 @@ $(function(){
 
     function isolateFolderName(name) {
         return name.replace(s3AuthObj.rootDirectory + '/' + appName + '/', "").replace("/", "");
+    }
+
+    function isolateFolderName2(name) {
+        return name.substring(	name.indexOf("/")+1, name.length-5);
     }
 });
 $(function(){
