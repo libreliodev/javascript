@@ -1,0 +1,209 @@
+---
+title: Setup
+icon: fa fa-cogs
+stylesheets:
+- lib/uniform/themes/default/css/uniform.default.css
+- lib/inputlimiter/jquery.inputlimiter.1.0.css
+- lib/chosen/chosen.min.css
+- lib/colorpicker/css/colorpicker.css
+- lib/tagsinput/jquery.tagsinput.css
+- lib/daterangepicker/daterangepicker-bs3.css
+- lib/datepicker/css/datepicker.css
+- lib/timepicker/css/bootstrap-timepicker.min.css
+- lib/switch/build/css/bootstrap3/bootstrap-switch.min.css
+- lib/jasny/css/jasny-bootstrap.min.css
+- lib/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css
+- lib/gritter/css/jquery.gritter.css
+- lib/uniform/themes/default/css/uniform.default.min.css
+- css/bootstrap-fileupload.min.css
+cdnjs:
+- //ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js
+javascripts:
+- lib/uniform/jquery.uniform.min.js
+- lib/inputlimiter/jquery.inputlimiter.1.3.1.min.js
+- lib/chosen/chosen.jquery.min.js
+- lib/colorpicker/js/bootstrap-colorpicker.js
+- lib/tagsinput/jquery.tagsinput.min.js
+- lib/validVal/src/js/jquery.validVal.min.js
+- lib/daterangepicker/daterangepicker.js
+- lib/daterangepicker/moment.min.js
+- lib/datepicker/js/bootstrap-datepicker.js
+- lib/timepicker/js/bootstrap-timepicker.min.js
+- lib/switch/build/js/bootstrap-switch.min.js
+- lib/jquery.dualListbox-1.3/jquery.dualListBox-1.3.min.js
+- lib/autosize/jquery.autosize.min.js
+- lib/jasny/js/jasny-bootstrap.min.js
+- lib/touch-punch/jquery.ui.touch-punch.min.js
+- lib/plupload/js/plupload.full.min.js
+- lib/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js
+- lib/gritter/js/jquery.gritter.min.js
+- lib/uniform/jquery.uniform.min.js
+- lib/form/jquery.form.js
+- lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
+- lib/jquery-validation-1.11.1/localization/messages_ja.js
+- lib/jquery.plist.js
+
+scripts: 
+- $(function() { formGeneral(); }); $(function() { metisTable();});
+---
+
+<div class="row">
+  <div class="col-lg-12">
+        <div class="box">
+            <header>
+                <h5>General </h5>
+            </header>
+            <div id="collapse4" class="body">
+            <form class="form-horizontal">
+                 <div class="form-group">
+                    <label for="longname" class="control-label col-lg-4">Long name</label>
+
+                     <div class="col-lg-3">
+                        <input type="text" id="longname" placeholder="Long name" class="form-control">
+                    </div>
+		       	</div>
+                 <div class="form-group">
+                    <label for="shorname" class="control-label col-lg-4">Short name (<14 chars)</label>
+
+                     <div class="col-lg-3">
+                        <input type="text" id="shortname" placeholder="Short name" class="form-control">
+                    </div>
+		       	</div>
+                <div class="form-group">
+                    <label for="description" class="control-label col-lg-4">Description  for the stores</label>
+
+                    <div class="col-lg-8">
+                        <textarea id="description" class="autosize form-control"></textarea>
+                    </div>
+                </div> 
+             </form>
+            
+            </div>
+    	</div>
+    </div>
+  <div class="col-lg-12">
+        <div class="box">
+            <header>
+                <h5>Graphics </h5>
+            </header>
+            <div id="collapse4" class="body">
+            	<form class="form-horizontal">
+                    <div class="form-group">
+                        <label class="control-label col-lg-4">Logo</label>
+                        <div class="col-lg-8">
+                            <div class="fileinput fileinput-new" data-provides="fileinput">
+				<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				<div>
+				  <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
+				  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+				</div>
+			      </div>
+
+                        </div>
+                    </div>
+                     <div class="form-group">
+                        <label for="cp1" class="control-label col-lg-4">Background color</label>
+
+                        <div class="col-lg-3">
+                            <input type="text" class="form-control" value="#8fff00" id="cp1">
+                        </div>
+                    </div>
+
+                 </form>
+            
+            </div>
+        </div>
+    </div>
+  <div class="col-lg-12">
+        <div class="box">
+            <header>
+                <h5>Navigation </h5>
+            </header>
+            <div id="collapse4" class="body">
+            <form class="form-horizontal">
+                 <div class="form-group">
+                    <label for="website" class="control-label col-lg-4">Web site</label>
+
+                     <div class="col-lg-6">
+                        <input type="text" id="website" placeholder="URL" class="form-control">
+                    </div>
+		       	</div>
+                 <div class="form-group">
+                    <label for="facebook" class="control-label col-lg-4">Facebook page</label>
+
+                     <div class="col-lg-6">
+                        <input type="text" id="facebook" placeholder="URL" class="form-control">
+                    </div>
+		       	</div>
+                 <div class="form-group">
+                    <label for="rss" class="control-label col-lg-4">RSS feed</label>
+
+                     <div class="col-lg-6">
+                        <input type="text" id="rss" placeholder="URL" class="form-control">
+                    </div>
+		       	</div>
+             </form>
+            
+            </div>
+    	</div>
+    </div>
+	 <div class="col-lg-12">
+        <div class="box">
+            <header>
+                <h5>Tracking </h5>
+            </header>
+            <div id="collapse4" class="body">
+            <form class="form-horizontal">
+                 <div class="form-group">
+                    <label for="ga" class="control-label col-lg-4">Google Analytics Code</label>
+
+                     <div class="col-lg-3">
+                        <input type="text" id="ga" placeholder="GA Code" class="form-control">
+                    </div>
+		       	</div>
+                 <div class="form-group">
+                    <label for="la" class="control-label col-lg-4">Librelio Analytics Code</label>
+
+                     <div class="col-lg-3">
+                        <input type="text" id="la" placeholder="LA Code" class="form-control">
+                    </div>
+		       	</div>
+             </form>
+            
+            </div>
+    	</div>
+    </div>
+
+</div>
+<!-- modal-->
+    <div id="newApp" class="modal fade">
+      <div class="modal-dialog">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+            <h4 class="modal-title">Create new app</h4>
+          </div>
+          <div class="modal-body">
+           <form class="form-horizontal" id="newapp-form">
+
+                 <div class="form-group">
+                    <label for="autosize" class="control-label col-lg-4">Name of the app</label>
+
+                     <div class="col-lg-8">
+                        <input type="text" id="text1" placeholder="appname" class="form-control">
+                    </div>
+                </div> 
+                  <div class="form-group">
+                    <div class=" col-lg-4"></div>
+
+                    <div class="col-lg-8">
+                        <button class="btn btn-primary ladda-button" data-style="slide-down">
+                            <span class="ladda-label">Create</span>
+                        </button>
+                    </div>
+                </div> 
+            </form>
+          </div>
+        </div><!-- /.modal-content -->
+      </div><!-- /.modal-dialog -->
+    </div><!-- /.modal --><!-- /#helpModal -->
