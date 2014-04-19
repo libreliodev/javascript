@@ -8,6 +8,7 @@
 	color: #fff;
 }
 
+<<<<<<< HEAD
 #wrap,
 #left {
 	background-color: #333;
@@ -47,3 +48,8 @@ body:not(.sidebar-left-mini) #menu {
   }
 }*/
 
+=======
+.littleModal .modal-dialog {
+    width: 380px;
+}
+>>>>>>> FETCH_HEAD
