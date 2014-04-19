@@ -42,12 +42,13 @@ javascripts:
 - lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
 - lib/jquery-validation-1.11.1/localization/messages_ja.js
 - lib/jquery.plist.js
+- js/pages/setup.min.js
 
 scripts: 
 - $(function() { formGeneral(); }); $(function() { metisTable();});
 ---
 
-<div class="row">
+<div class="row" id="setup-wrapper">
   <div class="col-lg-12">
         <div class="box">
             <header>
@@ -59,21 +60,21 @@ scripts:
                     <label for="longname" class="control-label col-lg-4">Long name</label>
 
                      <div class="col-lg-3">
-                        <input type="text" id="longname" placeholder="Long name" class="form-control">
+                        <input type="text" name="LongName" id="longname" placeholder="Long name" class="form-control">
                     </div>
 		       	</div>
                  <div class="form-group">
                     <label for="shorname" class="control-label col-lg-4">Short name (<14 chars)</label>
 
                      <div class="col-lg-3">
-                        <input type="text" id="shortname" placeholder="Short name" class="form-control">
+                        <input type="text" name="ShortName" id="shortname" placeholder="Short name" class="form-control">
                     </div>
 		       	</div>
                 <div class="form-group">
                     <label for="description" class="control-label col-lg-4">Description  for the stores</label>
 
                     <div class="col-lg-8">
-                        <textarea id="description" class="autosize form-control"></textarea>
+                        <textarea name="Description" id="description" class="autosize form-control"></textarea>
                     </div>
                 </div> 
              </form>
@@ -94,8 +95,8 @@ scripts:
                             <div class="fileinput fileinput-new" data-provides="fileinput">
 				<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
 				<div>
-				  <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
-				  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
+				  <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" name="..."></span>
+				  <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
 				</div>
 			      </div>
 
@@ -105,7 +106,7 @@ scripts:
                         <label for="cp1" class="control-label col-lg-4">Background color</label>
 
                         <div class="col-lg-3">
-                            <input type="text" class="form-control" value="#8fff00" id="cp1">
+                            <input type="text" class="form-control" value="#8fff00" id="cp1" name="BackgroundColor">
                         </div>
                     </div>
 
@@ -125,21 +126,21 @@ scripts:
                     <label for="website" class="control-label col-lg-4">Web site</label>
 
                      <div class="col-lg-6">
-                        <input type="text" id="website" placeholder="URL" class="form-control">
+                        <input type="text" name="WebSite" id="website" placeholder="URL" class="form-control">
                     </div>
 		       	</div>
                  <div class="form-group">
                     <label for="facebook" class="control-label col-lg-4">Facebook page</label>
 
                      <div class="col-lg-6">
-                        <input type="text" id="facebook" placeholder="URL" class="form-control">
+                        <input type="text" name="Facebook" id="facebook" placeholder="URL" class="form-control">
                     </div>
 		       	</div>
                  <div class="form-group">
                     <label for="rss" class="control-label col-lg-4">RSS feed</label>
 
                      <div class="col-lg-6">
-                        <input type="text" id="rss" placeholder="URL" class="form-control">
+                        <input type="text" name="RSS" id="rss" placeholder="URL" class="form-control">
                     </div>
 		       	</div>
              </form>
@@ -158,14 +159,14 @@ scripts:
                     <label for="ga" class="control-label col-lg-4">Google Analytics Code</label>
 
                      <div class="col-lg-3">
-                        <input type="text" id="ga" placeholder="GA Code" class="form-control">
+                        <input type="text" name="GACode" id="ga" placeholder="GA Code" class="form-control">
                     </div>
 		       	</div>
                  <div class="form-group">
                     <label for="la" class="control-label col-lg-4">Librelio Analytics Code</label>
 
                      <div class="col-lg-3">
-                        <input type="text" id="la" placeholder="LA Code" class="form-control">
+                        <input type="text" name="LACode" id="la" placeholder="LA Code" class="form-control">
                     </div>
 		       	</div>
              </form>
