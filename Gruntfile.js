@@ -56,6 +56,13 @@ module.exports = function (grunt) {
             main: {
                 src: ['<%= concat.main.dest %>'],
                 dest: 'dist/assets/js/main.min.js'
+            },
+            setupPage: {
+                src: 'src/assets/js/pages/*.js',
+                dest: 'dist/assets/js/pages/',
+                expand: true,    // allow dynamic building
+                flatten: true,   // remove all unnecessary nesting
+                ext: '.min.js'   // replace .js to .min.js
             }
         },
         jshint: {
@@ -227,6 +234,10 @@ module.exports = function (grunt) {
             assemble: {
                 files: ['**/*.hbs', '**/*.html'],
                 tasks: ['assemble']
+            },
+            js: {
+                files: 'js/*.js',
+                tasks: [ 'uglify' ]
             }
         }
 
