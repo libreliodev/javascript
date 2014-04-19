@@ -1,8 +1,7 @@
 $(function(){
     $('#logout-anchor').click(function()
        {
-           if(storage)
-               storage.setItem(config.storageAuthKey, '');
+           userLogout();
        });
     
     // app-list dropdown impl
@@ -15,11 +14,15 @@ $(function(){
             Delimiter: '/'
         }, function(err, res)
            {
+               if(err)
+               {
+                   handleAWSS3Error(err);
+                   return;
+               }
                var apps = [],
                cprefixes = res.CommonPrefixes,
                pttrn = /[^\/]+/,
                prefix = s3AuthObj.rootDirectory + '/';
-               
                for(var i = 0, l = cprefixes.length; i < l; ++i)
                {
                    var dir = cprefixes[i].Prefix,
