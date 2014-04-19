@@ -45,10 +45,10 @@ javascripts:
 - lib/jquery-validation-1.11.1/localization/messages_ja.js
 - lib/datatables/jquery.dataTables.js
 - lib/datatables/DT_bootstrap.js
-- lib/jquery.plist.js
+- lib/plist_parser.js
 
 scripts:
-- $(function() { formGeneral(); }); $(function() { metisTable();});
+- $(function() { formGeneral(); });
 ---
 
 <div class="row">
@@ -60,7 +60,7 @@ scripts:
             </header>
             <div id="collapse4" class="body">
             	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn  btn-primary" href="#uploadModal">New publication</a></p>
-                <table id="publicationDataTable" class="table table-bordered table-condensed table-hover table-striped">
+                <table id="dataTable" class="table table-bordered table-condensed table-hover table-striped publicationDataTable">
 					<thead>
 					<tr>
 						<th>Folder name</th>
@@ -87,7 +87,20 @@ scripts:
           </div>
           <div class="modal-body">
               <form class="form-horizontal">
-                    <div class="form-group">
+                  <div class="form-group">
+                      <label class="control-label col-lg-4">Folder name</label>
+                      <div class="col-lg-8">
+                          <input type="text" />
+                      </div>
+                  </div>
+
+                  <div class="form-group">
+                      <input type="radio">
+                      <label class="control-label col-lg-4">Free</label>
+                      <input type="radio">
+                      <label class="control-label col-lg-4">Paid</label>
+                  </div>
+                      <div class="form-group">
                         <label class="control-label col-lg-4">Bootstrap Style</label>
                         <div class="col-lg-8">
                             <div class="fileinput fileinput-new" data-provides="fileinput">
