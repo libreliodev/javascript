@@ -26,17 +26,37 @@ module.exports = function (grunt) {
                 }
             },
             development: {
-                files: {
-                    'dist/assets/css/main.css': ['src/assets/less/style.less']
-                }
+                files: [
+                    {
+                        src: ['src/assets/less/style.less'],
+                        dest: 'dist/assets/css/main.css'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/assets/less/pages',
+                        src: ['*.less'],
+                        dest: 'dist/assets/css/pages/',
+                        ext: '.css'
+                    }
+                ]
             },
             production: {
                 options: {
                     compress: true
                 },
-                files: {
-                    'dist/assets/css/main.min.css': ['src/assets/less/style.less']
-                }
+                files: [
+                    {
+                        src: ['src/assets/less/style.less'],
+                        dest: 'dist/assets/css/main.min.css'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/assets/less/pages',
+                        src: ['*.less'],
+                        dest: 'dist/assets/css/pages/',
+                        ext: '.min.css'
+                    }
+                ]
             }
         },
         concat: {
