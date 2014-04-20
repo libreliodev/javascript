@@ -13,3 +13,8 @@ function userLogout()
     if(storage)
         storage.setItem(config.storageAuthKey, '');
 }
+
+function notifyUserError(err)
+{
+    alert(err);
+}
