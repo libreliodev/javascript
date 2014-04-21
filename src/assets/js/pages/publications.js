@@ -1,5 +1,7 @@
 $(function() {
 
+    formDisplay();
+
     var appName = storage.getItem(config.storageAppNameKey);
     var publicationsTable = $(".publicationDataTable").dataTable();
     //publicationsTable.fnSort( [ [1,'asc'] ] );
@@ -37,6 +39,8 @@ $(function() {
 
                         if (isolateFolderName(appsList[i].Prefix) == "AAD" ||
                             isolateFolderName(appsList[i].Prefix) == "APP__" ||
+                            isolateFolderName(appsList[i].Prefix) == "APP_" ||
+                            isolateFolderName(appsList[i].Prefix) == "APP_" ||
                             isolateFolderName(appsList[i].Prefix) == "APW_") {
                             continue;
                         }
@@ -50,7 +54,7 @@ $(function() {
                             Title: "",
                             Subtitle: "",
                             status: "inactive",
-                            statusBtn: "<a data-filename='" + isolateFolderName(appsList[i].Prefix) + "' class='btn  btn-success btn-xs text-center btnActive' href='#'>Active</a>",
+                            statusBtn: "<a data-filename='" + isolateFolderName(appsList[i].Prefix) + "' class='btn  btn-danger btn-xs text-center btnActive' href='#'>Inactive</a>",
                             id: 0
                         }
 
@@ -74,11 +78,12 @@ $(function() {
                             // and status
                             //---------------------------------------------------
 
-                            if (isolateFolderName2(activeList[j].FileName) == temp[count].FolderName) {
+                            if (isolateFolderName2(activeList[j].FileName) == temp[count].FolderName ||
+                                isolateFolderName3(activeList[j].FileName) == temp[count].FolderName) {
                                 temp[count].Title = activeList[j].Title;
                                 temp[count].Subtitle = activeList[j].Subtitle;
                                 temp[count].status = "active";
-                                temp[count].statusBtn = "<a data-filename='" + isolateFolderName(appsList[i].Prefix) + "' data-id='" + j + "' class='btn  btn-danger btn-xs text-center btnInactive' href='#'>Inactive</a>";
+                                temp[count].statusBtn = "<a data-filename='" + isolateFolderName(appsList[i].Prefix) + "' data-id='" + j + "' class='btn  btn-success btn-xs text-center btnInactive' href='#'>Active</a>";
                                 temp[count].id = j;
                                 break;
                             }
@@ -106,6 +111,12 @@ $(function() {
     }
 
 });
+
+function formDisplay() {
+    $("input[name='folderName']").bind("keyup", function() {
+        $(".hiddenFields").show();
+    });
+}
 
 function activeInactiveEvents(publicationsTable) {
 
@@ -272,6 +283,10 @@ function isolateFolderName(name) {
 
 function isolateFolderName2(name) {
     return name.substring(	name.indexOf("/")+1, name.length-5);
+}
+
+function isolateFolderName3(name) {
+    return name.substring(	name.indexOf("/")+1, name.length-4);
 }
 
 function deleteFromObject(obj, deleteValue) {
