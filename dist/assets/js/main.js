@@ -909,6 +909,22 @@ function leftStatusBarUpdate()
 
 }
 
+function handleAWSS3Error(err)
+{
+    alert(err);
+    if(err.code == 'InvalidAccessKeyId')
+    {
+        userLogout();
+        document.location = 'login.html';
+    }
+}
+
+function userLogout()
+{
+    if(storage)
+        storage.setItem(config.storageAuthKey, '');
+}
+
 function metisCalendar() {
     "use strict";
 
@@ -1299,8 +1315,7 @@ function metisTable() {
 $(function(){
     $('#logout-anchor').click(function()
        {
-           if(storage)
-               storage.setItem(config.storageAuthKey, '');
+           userLogout();
        });
     
     // app-list dropdown impl
@@ -1313,11 +1328,15 @@ $(function(){
             Delimiter: '/'
         }, function(err, res)
            {
+               if(err)
+               {
+                   handleAWSS3Error(err);
+                   return;
+               }
                var apps = [],
                cprefixes = res.CommonPrefixes,
                pttrn = /[^\/]+/,
                prefix = s3AuthObj.rootDirectory + '/';
-               
                for(var i = 0, l = cprefixes.length; i < l; ++i)
                {
                    var dir = cprefixes[i].Prefix,
@@ -1533,68 +1552,3 @@ function isolateFolderName(name) {
 function isolateFolderName2(name) {
     return name.substring(	name.indexOf("/")+1, name.length-5);
 }
-$(function(){
-    $("#notification-form input[type=submit]").click(function()
-        {
-            return confirm("Are you sure you want to send this message?");
-        });
-    $("#notification-form").bind('submit', function()
-       {
-
-           var form = this;
-
-           // Loading animation on click
-           var $submitBtn = $('button', form).ladda();
-           $submitBtn.ladda( 'start' );
-
-           $('input[type=submit]', form).prop('disabled', true);
-           var sns = new AWS.SNS(),
-           publisher_name = s3AuthObj.rootDirectory,
-           app_name = storage.getItem(config.storageAppNameKey),
-           msg = $('#message-textarea').val();
-
-           if(!app_name)
-           {
-               alert("Please select application before sending notification");
-           }
-           else if(msg == '' || msg.length > 300)
-           {
-               alert("Message box is empty or is to long, "+
-                     "it should be less or equal than 300");
-           }
-           else
-           {
-               sns.publish({
-                   TargetArn: 'arn:aws:sns:eu-west-1:105216790221:' +
-                       publisher_name + '_' + app_name + '_all',
-                   MessageStructure: 'json',
-                   Message: JSON.stringify({
-                       "default": msg,
-                       "APNS": JSON.stringify({
-                           "aps": {
-                               "alert": msg,
-                               "sound": "default"
-                           }
-                       }),
-                       "GCM": JSON.stringify({
-                           "data": {
-                               "message": msg
-                           }
-                       }),
-
-                   })
-               }, function(err, res)
-                  {
-                      if(err)
-                          alert(err);
-                      else
-                          alert("Message sent!");
-                      $('input[type=submit]', form).prop('disabled', false);
-
-                      // Stop loading animation
-                      $submitBtn.ladda( 'stop' );
-                  });
-           }
-           return false;
-       });
-});
