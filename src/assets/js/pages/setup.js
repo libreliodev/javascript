@@ -109,7 +109,7 @@ $(function(){
                    $new_btn.text('Uploading...');
                    $change_btn.text('Uploading...');
                    
-                   awsS3.putObject({
+                   var request = awsS3.putObject({
                        Bucket: config.s3Bucket,
                        Key: s3AuthObj.rootDirectory + '/' + app_name + 
                            '/APP_/Uploads/' + image_name,
@@ -127,6 +127,18 @@ $(function(){
                           $change_btn.text(change_v);
                           $this.prop('disabled', false);
                       });
+                   var httpRequest = request.httpRequest.stream;
+                   if(httpRequest.upload)
+                       $(httpRequest.upload).on('progress', function(ev)
+                          {
+                              ev = ev.originalEvent;
+                              var complete = ev.loaded / ev.total,
+                              upload_str = 'Uploading... ' + 
+                                  Math.floor(complete * 100) + '%';
+                              
+                              $new_btn.text(upload_str);
+                              $change_btn.text(upload_str);
+                          });
                }
            });
     }
