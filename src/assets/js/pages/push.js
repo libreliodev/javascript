@@ -1,4 +1,12 @@
 $(function(){
+
+    var app_name = storage.getItem(config.storageAppNameKey),
+    $messages_table = $('#dataTable');
+    if(!app_name)
+        return;
+    
+    updateMessagesSentTable(app_name, $messages_table)
+
     $("#notification-form input[type=submit]").click(function()
         {
             return confirm("Are you sure you want to send this message?");
@@ -62,4 +70,48 @@ $(function(){
            }
            return false;
        });
+    
+    function updateMessagesSentTable(app_name, $table)
+    {
+        awsS3.getObject({
+            Bucket: config.s3Bucket,
+            Key: s3AuthObj.rootDirectory + '/' + app_name + 
+                '/APP_/REPORTS/push_.tsv',
+            ResponseContentEncoding: 'utf8'
+        }, function(err, res)
+           {
+               if(err/* && err.code != 'NoSuchKey'*/)
+               {
+                   handleAWSS3Error(err)
+                   return;
+               }
+               var tsvContent = res.Body.toString(),
+               tsv = d3.tsv.parse(tsvContent);
+               
+               if(!tsv)
+               {
+                   notifyUserError(err);
+                   return;
+               }
+               function createColumnData(key, val)
+               {       
+                   return $('<td/>').text(val || '')[0];
+               }
+               $tbody = $table.find('tbody');
+               $tbody.empty();
+               for(var i = 0, l = tsv.length; i < l; ++i)
+               {
+                   var row = tsv[i],
+                   tr = $('<tr/>'),
+                   tds = [];
+                   
+                   tds.push(createColumnData('Data', row.Date));
+                   tds.push(createColumnData('Message', row.Message));
+                   tds.push(createColumnData('Quantity', row.Quantity));
+                   
+                   tr.append(tds);
+                   $tbody.append(tr);
+               }
+           });
+    }
 });

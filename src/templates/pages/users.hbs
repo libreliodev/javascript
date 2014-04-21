@@ -18,6 +18,7 @@ stylesheets:
 - lib/gritter/css/jquery.gritter.css
 - lib/uniform/themes/default/css/uniform.default.min.css
 - css/bootstrap-fileupload.min.css
+- css/pages/users.min.css
 cdnjs:
 - //ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js
 javascripts:
@@ -45,6 +46,7 @@ javascripts:
 - lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
 - lib/jquery-validation-1.11.1/localization/messages_ja.js
 - lib/jquery.plist.js
+- js/pages/users.min.js
 
 scripts: 
 - $(function() { formGeneral(); }); $(function() { metisTable();});
@@ -58,15 +60,13 @@ scripts:
                 <h5>Users </h5>
             </header>
             <div id="collapse4" class="body">
-            	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn  btn-primary" href="#uploadModal">New user</a></p>
-                <table id="userDataTable" class="table table-bordered table-condensed table-hover table-striped">
+            	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn  btn-primary" href="#userInfoModal">New user</a></p>
+                <table id="usersDataTable" class="table table-bordered table-condensed table-hover table-striped">
 					<thead>
 					<tr>
-						<th>Folder name</th>
-						<th>Title</th>
-						<th>Subtitle</th>
-						<th class="text-center" style="width: 20px;">Edit</th>
-						<th class="text-center" style="width: 20px;">Status</th>
+						<th>User Name</th>
+						<th>Password</th>
+						<th class="text-center" style="width: 80px;">Status</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -77,12 +77,15 @@ scripts:
     </div>
 </div>
 <!-- modal-->
-    <div id="uploadModal" class="modal fade">
+    <div id="userInfoModal" class="modal fade new-user-dlg">
       <div class="modal-dialog">
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Create new user</h4>
+            <h4 class="modal-title">
+              <span class="userdlg-new">Create new user</span>
+              <span class="userdlg-update">Update user</span>
+            </h4>
           </div>
           <div class="modal-body">
               <form class="form-horizontal">
@@ -90,22 +93,25 @@ scripts:
                     <label for="id" class="control-label col-lg-4">User ID</label>
 
                      <div class="col-lg-3">
-                        <input type="text" id="id" placeholder="ID" class="form-control">
+                        <input type="text" name="username" placeholder="ID" class="form-control">
                     </div>
 		       	</div>
                  <div class="form-group">
                     <label for="pswd" class="control-label col-lg-4">Password</label>
 
                      <div class="col-lg-3">
-                        <input type="text" id="pswd" placeholder="Password" class="form-control">
+                        <input type="text" name="password" placeholder="Password" class="form-control">
                     </div>
 		       	</div>
 		       	 <div class="form-group">
                     <div class=" col-lg-4"></div>
 
                     <div class="col-lg-8">
-                        <button class="btn btn-primary ladda-button" data-style="slide-down">
-                            <span class="ladda-label">Create</span>
+                        <button class="btn btn-primary ladda-button action-btn" data-style="slide-down">
+                            <span class="ladda-label">
+                              <span class="userdlg-new">Create</span>
+                              <span class="userdlg-update">Update</span>
+                            </span>
                         </button>
                     </div>
                 </div> 
