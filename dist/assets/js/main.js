@@ -1317,6 +1317,7 @@ function metisTable() {
     /*----------- END action table CODE -------------------------*/
 
 }
+
 $(function(){
     $('#logout-anchor').click(function()
        {

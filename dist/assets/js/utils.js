@@ -1,5 +1,6 @@
+(function(root){
 
-function s3ListAllObjects(s3, opts, cb, marker)
+root.s3ListAllObjects = function(s3, opts, cb, marker)
 {
     opts_cpy = $.extend(true, {}, opts);
     opts_cpy.Marker = marker || '';
@@ -26,3 +27,12 @@ function s3ListAllObjects(s3, opts, cb, marker)
                cb(undefined, res);
        });
 }
+
+
+var illegal_class_chars_pttrn = /#.\(\)/g;
+root.encodeStringToClassName = function(s)
+{
+    return s.replace(illegal_class_chars_pttrn, '_');
+}
+
+})(window);
