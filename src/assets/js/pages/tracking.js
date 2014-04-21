@@ -1,7 +1,8 @@
 $(function(){
 
     var app_name = storage.getItem(config.storageAppNameKey),
-    $pubdl_table = $('#pubiction-downloads-table');
+    $pubdl_table = $('#publication-downloads-table'),
+    pubdl_tableData = $pubdl_table.dataTable();
     
     if(!app_name)
         return;
@@ -30,29 +31,25 @@ $(function(){
                    return;
                }
                
-               function createColumnData(key, val)
-               {       
-                   return $('<td/>').text(val || '')[0];
+               function columnData(key, val)
+               {
+                   return $('<td/>').text(val || '').html();
                }
-               console.log(tsv);
-               $tbody = $table.find('tbody');
-               $tbody.empty();
+               pubdl_tableData.fnClearTable();
                var columns = [ 'Title', 'Sample Downloads', 'Paid downloads' ];
                for(var i = 0, l = tsv.length; i < l; ++i)
                {
                    var row = tsv[i],
-                   tr = $('<tr/>'),
                    tds = [];
                    
                    for(var c = 0, cl = columns.length; c < cl; ++c)
                    {
                        var col = columns[c];
-                       tds.push(createColumnData(col, row[col]));
+                       tds.push(columnData(col, row[col]));
                    }
-                   
-                   tr.append(tds);
-                   $tbody.append(tr);
+                   pubdl_tableData.fnAddData(tds, false);
                }
+               pubdl_tableData.fnDraw();
            });
         
     }

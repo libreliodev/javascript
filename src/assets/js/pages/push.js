@@ -1,11 +1,12 @@
 $(function(){
 
     var app_name = storage.getItem(config.storageAppNameKey),
-    $messages_table = $('#dataTable');
+    $messages_table = $('#dataTable'),
+    messages_tableData = $messages_table.dataTable();
     if(!app_name)
         return;
     
-    updateMessagesSentTable(app_name, $messages_table)
+    updateMessagesSentTable(app_name, $messages_table, messages_tableData);
 
     $("#notification-form input[type=submit]").click(function()
         {
@@ -71,7 +72,7 @@ $(function(){
            return false;
        });
     
-    function updateMessagesSentTable(app_name, $table)
+    function updateMessagesSentTable(app_name, $table, tableData)
     {
         awsS3.getObject({
             Bucket: config.s3Bucket,
@@ -93,25 +94,25 @@ $(function(){
                    notifyUserError(err);
                    return;
                }
-               function createColumnData(key, val)
+               function columnData(key, val)
                {       
-                   return $('<td/>').text(val || '')[0];
+                   return $('<td/>').text(val || '').html();
                }
-               $tbody = $table.find('tbody');
-               $tbody.empty();
+               var columns = [ 'Date', 'Message', 'Quantity' ];
+               tableData.fnClearTable();
                for(var i = 0, l = tsv.length; i < l; ++i)
                {
                    var row = tsv[i],
-                   tr = $('<tr/>'),
                    tds = [];
                    
-                   tds.push(createColumnData('Data', row.Date));
-                   tds.push(createColumnData('Message', row.Message));
-                   tds.push(createColumnData('Quantity', row.Quantity));
-                   
-                   tr.append(tds);
-                   $tbody.append(tr);
+                   for(var c = 0, cl = columns.length; c < cl; ++c)
+                   {
+                       var col = columns[c];
+                       tds.push(columnData(col, row[col]));
+                   }
+                   tableData.fnAddData(tds, false);
                }
+               tableData.fnDraw();
            });
     }
 });

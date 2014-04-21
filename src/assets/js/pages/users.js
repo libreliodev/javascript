@@ -1,11 +1,11 @@
 $(function(){
     var app_name = storage.getItem(config.storageAppNameKey),
     $users_table = $('#usersDataTable'),
+    users_tableData = $users_table.dataTable(),
     $userInfoDlg = $('#userInfoModal');
     if(!app_name)
         return;
-    
-    updateUsersTable(app_name, $users_table);
+    updateUsersTable(app_name, $users_table, users_tableData);
     $userInfoDlg.find('.close').click(function()
          {
              // remove update info
@@ -50,8 +50,8 @@ $(function(){
                               handleAWSS3Error(err)
                               return;
                           }
-                          //user._tr.find('td').eq(0).text(nuser);
-                          user._tr.find('td').eq(1).text(npass);
+                          users_tableData.fnUpdate(npass, user._tr, 1, 
+                                                   true, false);
                           
                           alert('User info updated!')
                       });
@@ -83,7 +83,7 @@ $(function(){
              return false;
          });
 
-    function updateUsersTable(app_name, $table)
+    function updateUsersTable(app_name, $table, tableData)
     {
         var dynamodb = new AWS.DynamoDB();
         // get app's users
@@ -105,17 +105,27 @@ $(function(){
                    handleAWSS3Error(err)
                    return;
                }
+               function getUserByRowId(id)
+               {
+                   var pttrn = /row_([0-9]+)/,
+                   match = pttrn.exec(id);
+                   if(match)
+                   {
+                       var index = parseInt(match[1])
+                       if(index >= 0)
+                           return users[index];
+                   }
+               }
                function statusBtnClick()
                {
                    var $this = $(this);
                    if($this.data('isLoading'))
                        return false;
-                       
-                   var item = $this.parent().parent().data('userObj');
+                   var item = getUserByRowId($this.parent().parent()[0].id);
                    if(!item)
                        return;
                    // start request
-                   $this.ladda({}).ladda('start').data('isLoading', true);
+                   $this.toggleClass('disabled', true).data('isLoading', true);
                    updateUserInfo(item, {
                        Status: {
                            Action: 'PUT',
@@ -123,7 +133,8 @@ $(function(){
                        }
                    }, function(err, res)
                       {
-                          $this.ladda('stop').data('isLoading', false);
+                          $this.removeClass('disabled')
+                              .data('isLoading', false);
                           if(err)
                           {
                               handleAWSS3Error(err)
@@ -141,7 +152,7 @@ $(function(){
                }
                function userTRClick()
                {
-                   var item = $(this).data('userObj');
+                   var item = getUserByRowId($(this)[0].id);
                    if(!item)
                        return;
                    $userInfoDlg.data('userObj', item)
@@ -154,53 +165,58 @@ $(function(){
                        .val(item['Password']);
                    return false;
                }
-               function createColumnData(key, val)
+               function columnData(key, val, class_name)
                {
+                   function classStr(b)
+                   {
+                       return class_name ? (b ? ' class="' : ' ') + 
+                           class_name + (b ? '"' : '') : '';
+                   }
                    switch(key)
                    {
                    case 'Status':
-                       return $('<td/>').append(
-                           $('<a class="user-status-btn btn  ' + 
+                       return '<a class="user-status-btn btn' + 
+                               classStr(false) + ' ' +
                                (val == 1 ? 'btn-success' : 'btn-danger') +
-                               ' btn-xs text-center btnActive"'+
+                               ' btn-xs text-center"'+
                                ' href="#">'+ 
-                               (val == 1 ? 'Active' : 'Inactive') + '</a>')
-                             .bind('click', statusBtnClick));
+                               (val == 1 ? 'Active' : 'Inactive') + '</a>';
                    default:
-                       return $('<td/>').text(val || '')[0];   
+                       return '<span' + classStr(true) + '>' + 
+                         $('<td/>').text(val || '').html() +
+                         '</span>';
                    }
                }
                var items = res.Items,
-               $tbody = $table.find('tbody');
-               $tbody.empty();
-
+               users = [];
+               tableData.fnClearTable();
+               var columns = [ 'User Name', 'Password', 'Status' ],
+               columns_class = $.map(columns, encodeStringToClassName);
+               
                for(var i = 0, l = items.length; i < l; ++i)
                {
                    var row = items[i], item,
-                   tr = $('<tr/>'),
-                   tds = [];
+                   tds = {
+                       'DT_RowId': 'row_' + i
+                   };
                    
-                   try {
-                       item = {
-                           'App': row['App'].S,
-                           'User Name': row['User Name'].S,
-                           'Password': row['Password'].S,
-                           'Status': parseInt(row['Status'].N)
-                       };
-                   }catch(e) {
-                       continue;
+                   item = {
+                       'App': row['App'].S,
+                       'User Name': row['User Name'].S,
+                       'Password': row['Password'].S,
+                       'Status': parseInt(row['Status'].N)
+                   };
+                   users.push(item);
+                   for(var c = 0, cl = columns.length; c < cl; ++c)
+                   {
+                       var col = columns[c];
+                       tds[c+''] = columnData(col, item[col], columns_class[c]);
                    }
-
-                   tr.data('userObj', item);
-                   item._tr = tr;
-                   tds.push(createColumnData('User Name', item['User Name']));
-                   tds.push(createColumnData('Password', item['Password']));
-                   tds.push(createColumnData('Status', item['Status']));
-                   
-                   tr.bind('click', userTRClick)
-                       .append(tds);
-                   $tbody.append(tr);
+                   item._tr = tableData.fnAddData(tds, false)[0];
                }
+               $table.on('click', 'tbody > tr', userTRClick)
+                   .on('click', '.'+columns_class[2], statusBtnClick);
+               tableData.fnDraw();
            });
     }
     function updateUserInfo(user, updateAttrs, cb)

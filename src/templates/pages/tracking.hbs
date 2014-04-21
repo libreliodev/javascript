@@ -41,12 +41,11 @@ javascripts:
 - lib/jquery-validation-1.11.1/localization/messages_ja.js
 - lib/datatables/jquery.dataTables.js
 - lib/datatables/DT_bootstrap.js
-- lib/tablesorter/js/jquery.tablesorter.min.js
 - lib/touch-punch/jquery.ui.touch-punch.min.js
 - js/pages/tracking.min.js
 
 scripts: 
-- $(function() { metisTable();});
+
 ---
 
 <div class="row" id="setup-wrapper">
@@ -57,7 +56,7 @@ scripts:
         <h5>Publications</h5>
       </header>
       <div id="collapse4" class="body">
-        <table id="pubiction-downloads-table" class="table table-bordered table-condensed table-hover table-striped">
+        <table id="publication-downloads-table" class="table table-bordered table-condensed table-hover table-striped sortableTable">
 		  <thead>
 			<tr>
 			  <th>Name</th>
