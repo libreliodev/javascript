@@ -22,6 +22,7 @@ $(function() {
 
                     var appsList = apps.CommonPrefixes;
                     var activeList =  PlistParser.parse($.parseXML(activated.Body.toString()));
+                    //var activeList =  $.plist($.parseXML(activated.Body.toString()));
 
                     activeList = deleteFromObject(activeList, undefined);
                     var activeListLength = $.map(activeList, function(n, i) { return i; }).length;
@@ -201,7 +202,8 @@ function activeServerRequest(obj, publicationsTable) {
         Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist'
     }, function(err, activated) {
 
-        var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
+        //var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
+        var activeList = $.plist($.parseXML(activated.Body.toString()));
         var activeListLength = $.map(activeList, function(n, i) { return i; }).length;
 
         activeList[activeListLength] = {
@@ -213,7 +215,8 @@ function activeServerRequest(obj, publicationsTable) {
         var params = {
             Bucket: window.config.s3Bucket, // required
             Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist',
-            Body: PlistParser.toPlist(activeList)
+            //Body: PlistParser.toPlist(activeList)
+            Body: cleanKeys($.plist('toString', activeList))
         };
         window.awsS3.putObject(params, function(err, data) {
             if (err) {
@@ -237,7 +240,8 @@ function inactiveServerRequest(obj, publicationsTable) {
         Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist'
     }, function(err, activated) {
 
-        var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
+        //var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
+        var activeList = $.plist($.parseXML(activated.Body.toString()));
 
         var id = obj.data("id");
 
@@ -251,7 +255,8 @@ function inactiveServerRequest(obj, publicationsTable) {
         var params = {
             Bucket: window.config.s3Bucket, // required
             Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist',
-            Body: PlistParser.toPlist(activeList)
+            //Body: PlistParser.toPlist(activeList)
+            Body: cleanKeys($.plist('toString', activeList))
         };
         window.awsS3.putObject(params, function(err, data) {
             if (err) {
@@ -311,29 +316,7 @@ function ArrayToObject(arr) {
     return rv;
 }
 
-function del(keytr) {
-    var appName = storage.getItem(config.storageAppNameKey);
-
-    awsS3.getObject({
-        Bucket: window.config.s3Bucket,
-        Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist'
-    }, function(err, activated) {
-
-        var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
-
-        delete activeList[keytr];
-
-        activeList = deleteFromObject(activeList, undefined);
-
-
-        var params = {
-            Bucket: window.config.s3Bucket, // required
-            Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist',
-            Body: PlistParser.toPlist(activeList)
-        };
-        window.awsS3.putObject(params, function(err, data) {
-
-        });
-
-    });
+function cleanKeys(obj) {
+    //return obj.replace("\<key\>\d+\<\/key\>\n\<dict\>", "<dict>");
+    return obj.replace(/\n\<key\>\d+\<\/key\>\n\<dict\>/g, "\n<dict>");
 }
