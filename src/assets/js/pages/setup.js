@@ -6,7 +6,16 @@ $(function(){
     loadSetupPage(app_name, $page);
     $page.find('.fileinput').each(function()
         {
-            imageuploadInit(app_name, $(this));
+            s3ImageuploadInit($(this), {
+                Bucket: config.s3Bucket,
+                Prefix: s3AuthObj.rootDirectory + '/' + app_name + 
+                    '/APP_/Uploads/',
+                signExpires: function()
+                {
+                    return awsExpireReverse(config.awsExpireReverseInHours);
+                },
+                onerror: handleAWSS3Error
+            });
         });
     
     var isSaving = false;
@@ -64,84 +73,6 @@ $(function(){
                    }
                }
            });
-    function loadImageupload(app_name, $image_upload)
-    {
-        var $inp = $image_upload.find('input[type=file]'),
-        image_name = $inp.attr('name');
-        awsS3.getSignedUrl('getObject', {
-            Bucket: config.s3Bucket,
-            Key: s3AuthObj.rootDirectory + '/' + app_name + 
-                '/APP_/Uploads/' + image_name,
-        }, function (err, url) {
-            if(err)
-            {
-                handleAWSS3Error(err);
-                return;
-            }
-            var $img = $('<img/>');
-            $img.prop('src', url);
-            $img.hide()
-               .bind('load', function()
-                 {
-                     $img.show();
-                     $image_upload.removeClass('fileinput-new')
-                         .addClass('fileinput-exists');
-                 });
-            $image_upload.find('.fileinput-preview').append($img);
-        });
-            
-    }
-    function imageuploadInit(app_name, $image_upload)
-    {
-        loadImageupload(app_name, $image_upload);
-        $image_upload.find('input[type=file]').bind('change', function()
-           {
-               var $this = $(this),
-               image_name = $this.attr('name'),
-               file = this.files ? this.files[0] : null;
-               if(file)
-               {
-                   $this.prop('disabled', true);
-                   var $new_btn = $image_upload.find('.fileinput-new'),
-                   $change_btn = $image_upload.find('.fileinput-change'),
-                   new_v = $new_btn.text(),
-                   change_v = $change_btn.text();
-                   $new_btn.text('Uploading...');
-                   $change_btn.text('Uploading...');
-                   
-                   var request = awsS3.putObject({
-                       Bucket: config.s3Bucket,
-                       Key: s3AuthObj.rootDirectory + '/' + app_name + 
-                           '/APP_/Uploads/' + image_name,
-                       Body: file,
-                       ContentType: file.type
-                   }, function(err, res)
-                      {
-                          if(err)
-                          {
-                              handleAWSS3Error(err);
-                              return;
-                          }
-                          
-                          $new_btn.text(new_v);
-                          $change_btn.text(change_v);
-                          $this.prop('disabled', false);
-                      });
-                   var httpRequest = request.httpRequest.stream;
-                   if(httpRequest.upload)
-                       $(httpRequest.upload).on('progress', function(ev)
-                          {
-                              ev = ev.originalEvent;
-                              var complete = ev.loaded / ev.total,
-                              upload_str = 'Uploading... ' + 
-                                  Math.floor(complete * 100) + '%';
-                              
-                              $new_btn.text(upload_str);
-                              $change_btn.text(upload_str);
-                          });
-               }
-           });
-    }
     function loadSetupPage(app_name, $page, cb)
     {
         $page.find('input[type=text], textarea').prop('disabled', true);

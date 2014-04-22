@@ -95,6 +95,19 @@
             {
                 ret = elmToString('date', dateGetISOString(obj));
             }
+            else if($.isArray(obj))
+            {
+                function arrayData()
+                {
+                    var r = '';
+                    for(var i = 0, l = obj.length; i < l; ++i)
+                        r += plistElementsToString(obj[i]) + '\n';
+                    return r;
+                }
+                ret = '<array>\n' + 
+                    arrayData() +
+                    '</array>';
+            }
             else
             {
                 function dictData()
