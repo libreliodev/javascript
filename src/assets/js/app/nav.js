@@ -8,29 +8,15 @@ $(function(){
     /* load app's list and remove loading sign */
     if(s3AuthObj && awsS3)
     {
-        s3ListAllObjects(awsS3, {
+        s3ListDirectories(awsS3, {
             Bucket: config.s3Bucket,
-            Prefix: s3AuthObj.rootDirectory + '/',
-            Delimiter: '/'
-        }, function(err, res)
+            Prefix: s3AuthObj.rootDirectory + '/'
+        }, function(err, apps)
            {
                if(err)
                {
                    handleAWSS3Error(err);
                    return;
-               }
-               var apps = [],
-               cprefixes = res.CommonPrefixes,
-               pttrn = /[^\/]+/,
-               prefix = s3AuthObj.rootDirectory + '/';
-               for(var i = 0, l = cprefixes.length; i < l; ++i)
-               {
-                   var dir = cprefixes[i].Prefix,
-                   match;
-                   if(dir.indexOf(prefix) == 0 && 
-                      (match = pttrn.exec(dir.substr(prefix.length))) &&
-                      apps.indexOf(match[0]) < 0)
-                       apps.push(match[0]);
                }
                function add_app(app)
                {

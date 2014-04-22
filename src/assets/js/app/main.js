@@ -18,3 +18,4 @@ function notifyUserError(err)
 {
     alert(err);
 }
+

@@ -143,10 +143,7 @@ $(function(){
                           var b = (item.Status = !item.Status ? 1 : 0);
                           $this.toggleClass('btn-success', b)
                               .toggleClass('btn-danger', !b)
-                              .html(b ? 'Active' : 'Inactive')
-                              .removeAttr('data-ladda'); 
-                          // ladda's object has remove, remove it's attr for 
-                          // remake spinner at next init
+                              .html(b ? 'Active' : 'Inactive');
                       });
                    return false;
                }
