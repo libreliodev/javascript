@@ -10,7 +10,9 @@ $(function(){
     
     $adDlg.find('.fileinput').each(function()
          {
-             this._s3Imageupload = s3ImageuploadInit($(this), {
+             this._s3Upload = s3UploadInit($(this), {
+                 s3: awsS3,
+                 type: 'Image',
                  Bucket: config.s3Bucket,
                  Prefix: function()
                  {
@@ -77,8 +79,8 @@ $(function(){
                  $adDlg.find('.ad-body-form').show();
                  $adDlg.find('.fileinput').each(function()
                     {
-                        if(this._s3Imageupload)
-                            this._s3Imageupload.reload();
+                        if(this._s3Upload)
+                            this._s3Upload.reload();
                     });
              }
              else
@@ -144,7 +146,7 @@ $(function(){
                           $this.val() || '';
                   });
             return ret;
-        }
+        }1
         function savePlist(key)
         {
             qlen++;
@@ -260,7 +262,7 @@ $(function(){
                                      }
                              });   
                   }
-                  var item = getAdByRowId($(this)[0].id);
+                  var item = getAdByRowId(this.id);
                   if(!item)
                       return;
                   if(item.info)

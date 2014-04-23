@@ -72,8 +72,16 @@
             + pad(date.getUTCMinutes()) + ':'
             + pad(date.getUTCSeconds()) + 'Z';
     }
-    function plistElementsToString(obj)
+    function plistElementsToString(obj, opts, indentLen)
     {
+        function indentStr(l)
+        {
+            return opts.indent ? Array(l).join(opts.indent) : '';
+        }
+        function newline()
+        {
+            return opts.indent ? '\n' : '';
+        }
         function elmToString(tag, data, type)
         {
             var el = $('<'+tag+'/>');
@@ -93,7 +101,8 @@
         case 'object': 
             if(obj instanceof Date)
             {
-                ret = elmToString('date', dateGetISOString(obj));
+                ret = indentStr(indentLen) + 
+                    elmToString('date', dateGetISOString(obj));
             }
             else if($.isArray(obj))
             {
@@ -101,12 +110,13 @@
                 {
                     var r = '';
                     for(var i = 0, l = obj.length; i < l; ++i)
-                        r += plistElementsToString(obj[i]) + '\n';
+                        r += plistElementsToString(obj[i], opts, indentLen+1) +
+                                   newline();
                     return r;
                 }
-                ret = '<array>\n' + 
+                ret = indentStr(indentLen) + '<array>' + newline() +
                     arrayData() +
-                    '</array>';
+                    indentStr(indentLen) + '</array>';
             }
             else
             {
@@ -115,17 +125,19 @@
                     var r = '';
                     for(var key in obj)
                         if(typeof key != 'undefined')
-                            r += elmToString('key', key) + '\n' +
-                                plistElementsToString(obj[key]) + '\n';
+                            r += indentStr(indentLen+1) + 
+                                elmToString('key', key) + newline() +
+                                plistElementsToString(obj[key], opts, 
+                                                      indentLen+1) + newline();
                     return r;
                 }
-                ret = '<dict>\n' + 
+                ret = indentStr(indentLen) + '<dict>' + newline() +
                     dictData() +
-                    '</dict>';
+                    indentStr(indentLen) + '</dict>';
             }
             break;
         case 'string':
-            ret = elmToString('string', obj);
+            ret = indentStr(indentLen) + elmToString('string', obj);
             break;
         case 'number':
             var key;
@@ -133,10 +145,10 @@
                 key = 'integer';
             else
                 key = 'real';
-            ret = elmToString(key, obj);
+            ret = indentStr(indentLen) + elmToString(key, obj);
             break;
         case 'boolean':
-            ret = '<' + (obj ? 'true' : 'false') + '/>';
+            ret = indentStr(indentLen) + '<' + (obj ? 'true' : 'false') + '/>';
             break;
         default:
             ret = '';
@@ -144,12 +156,15 @@
         return ret;
     }
 	var methods = {
-        toString: function(obj)
+        toString: function(obj, opts)
         {
+            opts = opts || {
+                indent: '  '
+            };
             return '<?xml version="1.0" encoding="UTF-8"?>\n' +
                 '<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">\n' +
                 '<plist version="1.0">\n' +
-                plistElementsToString(obj) +
+                plistElementsToString(obj, opts, 1) +
                 '\n</plist>';
         }
     };

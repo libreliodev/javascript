@@ -6,7 +6,9 @@ $(function(){
     loadSetupPage(app_name, $page);
     $page.find('.fileinput').each(function()
         {
-            s3ImageuploadInit($(this), {
+            s3UploadInit($(this), {
+                s3: awsS3,
+                type: 'Image',
                 Bucket: config.s3Bucket,
                 Prefix: s3AuthObj.rootDirectory + '/' + app_name + 
                     '/APP_/Uploads/',
