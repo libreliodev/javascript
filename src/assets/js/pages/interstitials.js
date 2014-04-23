@@ -74,7 +74,7 @@ $(function(){
              {
                  $adDlg.find('.set-title-btn').parent().hide();
                  $adDlg.find('input[name=Title]').prop('disabled', true);
-                 
+                 $adDlg.find('.ad-body-form').show();
                  $adDlg.find('.fileinput').each(function()
                     {
                         if(this._s3Imageupload)
