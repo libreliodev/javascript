@@ -169,6 +169,9 @@ root.s3UploadInit = function($upload, opts)
                          typeof opts.onerror == 'function' && opts.onerror(err);
                          return;
                      }
+                     if(typeof opts.onUploadSuccess == 'function')
+                         opts.onUploadSuccess();
+                         
                  });
               $upload.find('.fileinput-remove').bind('click', 
                                                      rmHandler = function()

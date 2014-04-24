@@ -109,18 +109,6 @@ scripts:
         <div class="pub-body-form body">
           <form class="form-horizontal">
             <div class="form-group">
-              <label class="control-label col-lg-4">Title</label>
-              <div class="col-lg-3">
-                <input type="text" name="Title" placeholder="Title" class="form-control">
-              </div>
-		    </div>
-            <div class="form-group">
-              <label class="control-label col-lg-4">Subtitle</label>
-              <div class="col-lg-3">
-                <input type="text" name="Subtitle" placeholder="Subtitle" class="form-control">
-              </div>
-		    </div>
-            <div class="form-group">
               <input type="radio" name="Type" value="Free">
               <label class="control-label col-lg-4">Free</label>
               <input type="radio" name="Type" value="Paid">
@@ -135,7 +123,7 @@ scripts:
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" name="*FolderName*.Extension"></span>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" accept="application/pdf" name="*FolderName*.pdf"></span>
 				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
 				      </div>
 			        </div>
@@ -149,7 +137,7 @@ scripts:
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" name="*FolderName*_.Extension"></span>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" accept="application/pdf" name="*FolderName*_.pdf"></span>
 				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
 				      </div>
 			        </div>
@@ -191,20 +179,8 @@ scripts:
                 </div>
               </li>
             </ul>
-            <div id="asset-uploader" data-dir="assets">
+            <div id="asset-uploader" data-dir="">
               <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
-            </div>
-            <div class="clearfix"><div/>
-		    <div class="form-group">
-              <div class=" col-lg-4"></div>
-              <div class="col-lg-8">
-                <button class="btn btn-primary ladda-button action-btn" data-style="slide-down">
-                  <span class="ladda-label">
-                    <span class="pub-dlg-new">Create</span>
-                    <span class="pub-dlg-update">Update</span>
-                  </span>
-                </button>
-              </div>
             </div>
           </form>
         </div><!-- pub-body-form -->
