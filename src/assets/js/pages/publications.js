@@ -54,7 +54,8 @@ $(function() {
     function setPLUploadInfoForPub(pub)
     {
         var d = new Date(new Date().getTime() + (60 * 60 * 1000)),
-        dir = appDir + '/' + pub + '/' + $("#asset-uploader").data('dir') + '/',
+        asset_dir = $("#asset-uploader").data('dir'),
+        dir = appDir + '/' + pub + '/' + (asset_dir ? asset_dir + '/' : ''),
         policy = {
             "expiration": d.toISOString(),
             "conditions": [ 
@@ -106,6 +107,10 @@ $(function() {
                  {
                      return awsExpireReverse(config.awsExpireReverseInHours);
                  },
+                 onUploadSuccess: function()
+                 {
+                     pubDlgUpdated = true;
+                 },
                  onerror: handleAWSS3Error,
                  loadnow: false
              });
@@ -137,16 +142,46 @@ $(function() {
                         .remove();
                 });
          });
+    var illegalPubs = [ "AAD", "APP__", "APP_", "APP_", "APW_" ];
     $pubDlg.find('.set-title-btn').click(function()
          {
+             var $this = $(this);
+             if($this.data('isLoading'))
+                 return false;
              var $title_inp = $pubDlg.find('input[name=FolderName]'),
              title_val = $title_inp.val();
              if(!title_val)
                  return false;
-             $(this).parent().hide();
+             if(illegalPubs.indexOf(title_val) >= 0)                
+             {
+                 notifyUserError('Invalid publication name!');
+                 return false;
+             }
+             $this.ladda({}).ladda('start').data('isLoading', true);
              $title_inp.prop('disabled', true);
-             $pubDlg.find('.pub-body-form').show();
-             setPLUploadInfoForPub(title_val);
+             s3ObjectExists(awsS3, {
+                 Bucket: config.s3Bucket,
+                 Prefix: appDir + '/' + title_val + '/'
+             }, function(err, exists)
+                {
+                    $this.ladda('stop').data('isLoading', false);
+                    if(err)
+                    {
+                        handleAWSS3Error(err);
+                        return;
+                    }
+                    if(!exists)
+                    {
+                        $(this).parent().hide();
+                        $pubDlg.find('.pub-body-form').show();
+                        setPLUploadInfoForPub(title_val);
+                    }
+                    else
+                    {
+                        $title_inp.prop('disabled', false);
+                        notifyUserError('Folder exists!');
+                    }
+                });
              return false;
          });
     $pubDlg.on('show.bs.modal', function()
@@ -164,7 +199,8 @@ $(function() {
                         if(this._s3Upload)
                             this._s3Upload.reload();
                     });
-                 setPLUploadInfoForPub(pub.FolderName);
+                 setPLUploadInfoForPub(pub.FileName);
+                 
              }
              else
              {
@@ -181,11 +217,12 @@ $(function() {
                  });
              pubDlgUpdateType();
          });
+/*
     $pubDlg.find('.action-btn').click(function()
          {
              var pub = $pubDlg.data('pubObj'),
              $this = $(this);
-             if($this.data('isLoading'))
+             if($this.data('isLoading') || (pub && pub.status == 'inactive'))
                  return false;
              $this.ladda({}).ladda('start').data('isLoading', true);
              
@@ -215,6 +252,15 @@ $(function() {
                         }
                     }
                     var pub_info = getObjectOfForm($pubDlg[0]);
+                    // remove Type prop from list
+                    delete pub_info.Type;
+                    for(var i = 0, l = list.length; i < l; ++i)
+                        if(list[i])
+                        {
+                            list[i].FileName = list[i].FileName ||list[i].FolderName;
+                            delete list[i].FolderName;
+                            delete list[i].Type;
+                        }
                     if(!insertPubInList(pub_info, list) && !pub)
                     {
                         $this.ladda('stop').data('isLoading', false);
@@ -241,31 +287,9 @@ $(function() {
                                alert('Publication is created successfully!');
                        });
                 });
-
-             
-             /*
-             
-             ad = ad || {
-                 Title: $adDlg.find('input[name=FolderName]').val()
-             };
-             saveAdPlist(appName, ad, function(err)
-                 {
-                     $this.ladda('stop').data('isLoading', false);
-                     if(err)
-                     {
-                         handleAWSS3Error(err);
-                         return;
-                     }
-                     alert('Ad has saved successfully!');
-                     
-                     if(!$adDlg.data('adObj'))
-                     {
-                         location.reload();
-                     }
-                 });
-             */
              return false;
          });
+*/
     $pubDlg.find('input[name=Type]').on('change', pubDlgUpdateType);
     function pubDlgUpdateType()
     {
@@ -323,6 +347,7 @@ $(function() {
                         //---------------------------------------------------
 
                         temp[count] = {
+                            FileName: isolateFolderName(appsList[i].Prefix),
                             FolderName: isolateFolderName(appsList[i].Prefix),
                             Title: "",
                             Subtitle: "",
@@ -350,8 +375,8 @@ $(function() {
                             // and status
                             //---------------------------------------------------
 
-                            if (isolateFolderName2(activeList[j].FolderName) == temp[count].FolderName ||
-                                isolateFolderName3(activeList[j].FolderName) == temp[count].FolderName) {
+                            if (isolateFolderName2(activeList[j].FileName) == temp[count].FileName ||
+                                isolateFolderName3(activeList[j].FileName) == temp[count].FileName) {
                                 temp[count].Title = activeList[j].Title;
                                 temp[count].Subtitle = activeList[j].Subtitle;
                                 temp[count].status = "active";
@@ -364,15 +389,6 @@ $(function() {
 
                         rowsList.push(temp[count]);
                         count++;
-                    }
-                    for(var i = 0, l = activeList.length; i < l; ++i)
-                    {
-                        var temp = $.extend(true, {}, activeList[i]);
-                        temp.status = temp.Status ? "active" : "inactive";
-                        temp.statusBtn =  temp.Status ? "<a data-filename='" + temp.FolderName + "' data-id='" + i + "' class='btn  btn-success btn-xs text-center btnInactive' href='#'>Active</a>" : "<a data-filename='" + temp.FolderName + "' class='btn  btn-danger btn-xs text-center btnActive' href='#'>Inactive</a>";
-                        temp.id = i;
-                        
-                        insertPubInList(temp, rowsList);
                     }
                     function getPubByRowId(id)
                     {
@@ -427,27 +443,6 @@ $(function() {
                 });
             });
     }
-    function insertPubInList(pub, list)
-    {
-        var pubfn = pub.FolderName,
-        replaced;
-        // replace publications or add it
-        for(var i = 0, l = list.length; i < l; ++i)
-        {
-            var item = list[i];
-            if(item && item.FolderName == pubfn)
-            {
-                list[i] = pub;
-                replaced = true;
-                break;
-            }
-        }
-        if(!replaced)
-        {
-            list.push(pub);
-            return true;
-        }
-    }
 });
 
 function formDisplay() {
@@ -462,12 +457,14 @@ function activeInactiveEvents(publicationsTable) {
         e.preventDefault();
         var obj = $(this);
         activePublication(obj, publicationsTable);
+        return false;
     });
 
     $("a.btnInactive").bind("click", function(e) {
         e.preventDefault();
         var obj = $(this);
         inactivePublication(obj, publicationsTable);
+        return false;
     });
 }
 
@@ -540,20 +537,28 @@ function activeServerRequest(obj, publicationsTable) {
     }, function(err, activated) {
 
         //var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
-        var activeList = $.plist($.parseXML(activated.Body.toString()));
-        var activeListLength = $.map(activeList, function(n, i) { return i; }).length;
-
-        activeList[activeListLength] = {
-            FolderName: obj.data("filename") + "/" + obj.data("filename") + "_.pdf",
+        var activeList;
+        try {
+            activeList = $.plist($.parseXML(activated.Body.toString()));
+        }catch(e) {
+            activeList = [];
+        }
+        
+        var pub = {
+            FileName: obj.data("filename") + "/" + obj.data("filename") + "_.pdf",
             Title: pTitle,
             Subtitle: pSubtitle
         };
+        insertPubInList(pub, activeList);
+        
+        var body = $.plist('toString', activeList);
+        
 
         var params = {
             Bucket: window.config.s3Bucket, // required
             Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist',
             //Body: PlistParser.toPlist(activeList)
-            Body: cleanKeys($.plist('toString', activeList))
+            Body: body
         };
         window.awsS3.putObject(params, function(err, data) {
             if (err) {
@@ -577,15 +582,23 @@ function inactiveServerRequest(obj, publicationsTable) {
         Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist'
     }, function(err, activated) {
 
-        //var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
-        var activeList = $.plist($.parseXML(activated.Body.toString()));
-
-        var id = obj.data("id");
-
-        delete activeList[id];
-
-        activeList = deleteFromObject(activeList, undefined);
-
+        var tmp = obj.data('filename'),
+        filename = tmp + '/' + tmp + '_.pdf',
+        activeList;
+        try {
+            activeList = $.plist($.parseXML(activated.Body.toString()));
+        }catch(e) {
+            activeList = [];
+        }
+        
+        for(var i = 0; i < activeList.length; )
+            if(activeList[i].FileName == filename)
+                activeList.splice(i, 1);
+            else
+                i++;
+        
+        var body = $.plist('toString', activeList);
+        
         //var rowIndex = publicationsTable.fnGetPosition( obj.closest('tr')[0] );
         //publicationsTable.fnDeleteRow(rowIndex);
 
@@ -612,7 +625,7 @@ function inactiveServerRequest(obj, publicationsTable) {
 function addRowToTable(index, data, publicationsTable) {
     publicationsTable.fnAddData( {
         'DT_RowId': 'row_' + index,
-        '0': data.FolderName,
+        '0': data.FileName,
         '1': "<span class='ttitle'>" + data.Title + "</span>",
         '2': "<span class='tsubtitle'>" + data.Subtitle + "</span>",
         '3': data.statusBtn
@@ -656,4 +669,26 @@ function ArrayToObject(arr) {
 function cleanKeys(obj) {
     //return obj.replace("\<key\>\d+\<\/key\>\n\<dict\>", "<dict>");
     return obj.replace(/\n\<key\>\d+\<\/key\>\n\<dict\>/g, "\n<dict>");
+}
+
+function insertPubInList(pub, list)
+{
+    var pubfn = pub.FileName,
+    replaced;
+    // replace publications or add it
+    for(var i = 0, l = list.length; i < l; ++i)
+    {
+        var item = list[i];
+        if(item && item.FileName == pubfn)
+        {
+            list[i] = pub;
+            replaced = true;
+            break;
+        }
+    }
+    if(!replaced)
+    {
+        list.push(pub);
+        return true;
+    }
 }
