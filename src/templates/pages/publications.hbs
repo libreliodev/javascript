@@ -14,10 +14,11 @@ stylesheets:
 - lib/jasny/css/jasny-bootstrap.min.css
 - lib/datatables/css/demo_page.css
 - lib/datatables/css/DT_bootstrap.css
-- lib/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css
+- lib/plupload/jquery.plupload.queue/css/jquery.plupload.queue.css
 - lib/gritter/css/jquery.gritter.css
 - lib/uniform/themes/default/css/uniform.default.min.css
 - css/bootstrap-fileupload.min.css
+- css/pages/publications.min.css
 cdnjs:
 - //ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js
 javascripts:
@@ -37,16 +38,19 @@ javascripts:
 - lib/jasny/js/jasny-bootstrap.min.js
 - lib/tablesorter/js/jquery.tablesorter.min.js
 - lib/touch-punch/jquery.ui.touch-punch.min.js
-- lib/plupload/js/plupload.full.min.js
-- lib/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js
+- lib/plupload/plupload.full.min.js
+- lib/plupload/jquery.plupload.queue/jquery.plupload.queue.min.js
 - lib/gritter/js/jquery.gritter.min.js
 - lib/form/jquery.form.js
 - lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
 - lib/jquery-validation-1.11.1/localization/messages_ja.js
 - lib/datatables/jquery.dataTables.js
 - lib/datatables/DT_bootstrap.js
-- lib/plist_parser.js
-- js/pages/publications.min.js
+- lib/jquery.plist.js
+- lib/crypto/core-min.js
+- lib/crypto/hmac-sha1.min.js
+- lib/crypto/enc-base64-min.js
+- js/pages/publications.js
 
 scripts:
 - $(function() { formGeneral(); });
@@ -60,15 +64,14 @@ scripts:
                 <h5>Publications </h5>
             </header>
             <div id="collapse4" class="body">
-            	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn  btn-primary" href="#uploadModal">New publication</a></p>
+            	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn  btn-primary" href="#pubModal">New publication</a></p>
                 <table id="dataTable" class="table table-bordered table-condensed table-hover table-striped publicationDataTable">
 					<thead>
 					<tr>
 						<th>Folder name</th>
 						<th>Title</th>
 						<th>Subtitle</th>
-						<th class="text-center" style="width: 20px;">Edit</th>
-						<th class="text-center" style="width: 20px;">Status</th>
+						<th class="text-center" style="width: 60px;">Status</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -79,89 +82,133 @@ scripts:
     </div>
 </div>
 <!-- modal-->
-    <div id="uploadModal" class="modal fade">
-      <div class="modal-dialog">
-        <div class="modal-content">
-          <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Upload new publication</h4>
+<div id="pubModal" class="modal fade new-pub-dlg">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h4 class="modal-title">
+          <span class="pub-dlg-new">New publication</span>
+          <span class="pub-dlg-update">Update publication</span>
+        </h4>
+      </div>
+      <div class="modal-body">
+        <form><!-- Pub Title -->
+          <div class="form-group">
+            <label class="control-label col-lg-4">FolderName</label>
+            <div class="col-lg-3">
+              <input type="text" name="FolderName" placeholder="Folder name" class="form-control">
+            </div>
+		  </div>
+          <div class="form-group">
+            <button class="btn btn-primary set-title-btn">
+              <span>Set</span>
+            </button>
           </div>
-          <div class="modal-body">
-              <form class="form-horizontal">
-                  <div class="form-group">
-                      <label class="control-label col-lg-4">Folder name</label>
-                      <div class="col-lg-8">
-                          <input type="text" />
-                      </div>
+        </form>
+        <div class="pub-body-form body">
+          <form class="form-horizontal">
+            <div class="form-group">
+              <label class="control-label col-lg-4">Title</label>
+              <div class="col-lg-3">
+                <input type="text" name="Title" placeholder="Title" class="form-control">
+              </div>
+		    </div>
+            <div class="form-group">
+              <label class="control-label col-lg-4">Subtitle</label>
+              <div class="col-lg-3">
+                <input type="text" name="Subtitle" placeholder="Subtitle" class="form-control">
+              </div>
+		    </div>
+            <div class="form-group">
+              <input type="radio" name="Type" value="Free">
+              <label class="control-label col-lg-4">Free</label>
+              <input type="radio" name="Type" value="Paid">
+              <label class="control-label col-lg-4">Paid</label>
+            </div>
+            <!-- list of upload items -->
+            <ul class="upload-list list-group">
+              <li class="list-group-item">
+                <div class="form-group">
+                  <label class="control-label col-lg-4">Free version</label>
+                  <div class="col-lg-8">
+                    <div class="fileinput fileinput-new" 
+                         data-provides="fileinput">
+				      <div>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" name="*FolderName*.Extension"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				      </div>
+			        </div>
                   </div>
-
-                  <div class="form-group">
-                      <input type="radio">
-                      <label class="control-label col-lg-4">Free</label>
-                      <input type="radio">
-                      <label class="control-label col-lg-4">Paid</label>
+                </div>
+              </li>
+              <li class="list-group-item paid-upload-item">
+                <div class="form-group">
+                  <label class="control-label col-lg-4">Paid version</label>
+                  <div class="col-lg-8">
+                    <div class="fileinput fileinput-new" 
+                         data-provides="fileinput">
+				      <div>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" name="*FolderName*_.Extension"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				      </div>
+			        </div>
                   </div>
-                      <div class="form-group">
-                        <label class="control-label col-lg-4">Bootstrap Style</label>
-                        <div class="col-lg-8">
-                            <div class="fileinput fileinput-new" data-provides="fileinput">
-			      <div class="input-group">
-				<div class="form-control uneditable-input span3" data-trigger="fileinput"><i class="glyphicon glyphicon-file fileinput-exists"></i> <span class="fileinput-filename"></span></div>
-				<span class="input-group-addon btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
-				<a href="#" class="input-group-addon btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-			      </div>
-			    </div>
-
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-lg-4">No Input</label>
-                        <div class="col-lg-8">
-                            <div class="fileinput fileinput-new" data-provides="fileinput">
-			      <span class="btn btn-default btn-file">
-				<span class="fileinput-new">Select file</span>
-				<span class="fileinput-exists">Change</span>
-				<input type="file" name="...">
-			      </span>
-			      <span class="fileinput-filename"></span>
-			      <a href="#" class="close fileinput-exists" data-dismiss="fileinput" style="float: none">&times;</a>
-			    </div>
-
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-4">Image Upload</label>
-                        <div class="col-lg-8">
-                            <div class="fileinput fileinput-new" data-provides="fileinput">
-				<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
-				<div>
-				  <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
-				  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-				</div>
-			      </div>
-
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="control-label col-lg-4">Pre Defined Image</label>
-                        <div class="col-lg-8">
-                            <div class="fileinput fileinput-new" data-provides="fileinput">
-				<div class="fileinput-new thumbnail" style="width: 200px; height: 150px;">
-				  <img data-src="holder.js/100%x100%" alt="...">
-				</div>
-				<div class="fileinput-preview fileinput-exists thumbnail" style="max-width: 200px; max-height: 150px;"></div>
-				<div>
-				  <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists">Change</span><input type="file" name="..."></span>
-				  <a href="#" class="btn btn-default fileinput-exists" data-dismiss="fileinput">Remove</a>
-				</div>
-			      </div>
-
-                        </div>
-                    </div>
-                    <div id="uploader"></div>
-                 </form>
-          </div>
-        </div><!-- /.modal-content -->
-      </div><!-- /.modal-dialog -->
-    </div><!-- /.modal --><!-- /#helpModal -->
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="form-group">
+                  <label class="control-label col-lg-4">Medium res cover</label>
+                  <div class="col-lg-8">
+                    <div class="fileinput fileinput-new" 
+                         data-provides="fileinput">
+				      <div class="fileinput-preview thumbnail" 
+                           data-trigger="fileinput" 
+                           style="width: 200px; height: 150px;"></div>
+				      <div>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*_newsstand.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				      </div>
+			        </div>
+                  </div>
+                </div>
+              </li>
+              <li class="list-group-item">
+                <div class="form-group">
+                  <label class="control-label col-lg-4">Low res cover</label>
+                  <div class="col-lg-8">
+                    <div class="fileinput fileinput-new" 
+                         data-provides="fileinput">
+				      <div class="fileinput-preview thumbnail" 
+                           data-trigger="fileinput" 
+                           style="width: 200px; height: 150px;"></div>
+				      <div>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				      </div>
+			        </div>
+                  </div>
+                </div>
+              </li>
+            </ul>
+            <div id="asset-uploader" data-dir="assets">
+              <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
+            </div>
+            <div class="clearfix"><div/>
+		    <div class="form-group">
+              <div class=" col-lg-4"></div>
+              <div class="col-lg-8">
+                <button class="btn btn-primary ladda-button action-btn" data-style="slide-down">
+                  <span class="ladda-label">
+                    <span class="pub-dlg-new">Create</span>
+                    <span class="pub-dlg-update">Update</span>
+                  </span>
+                </button>
+              </div>
+            </div>
+          </form>
+        </div><!-- pub-body-form -->
+      </div><!-- modal-body -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal --><!-- /#helpModal -->
