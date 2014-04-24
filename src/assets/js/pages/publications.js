@@ -145,6 +145,9 @@ $(function() {
     var illegalPubs = [ "AAD", "APP__", "APP_", "APP_", "APW_" ];
     $pubDlg.find('.set-title-btn').click(function()
          {
+             var $this = $(this);
+             if($this.data('isLoading'))
+                 return false;
              var $title_inp = $pubDlg.find('input[name=FolderName]'),
              title_val = $title_inp.val();
              if(!title_val)
@@ -152,12 +155,33 @@ $(function() {
              if(illegalPubs.indexOf(title_val) >= 0)                
              {
                  notifyUserError('Invalid publication name!');
-                 return;
+                 return false;
              }
-             $(this).parent().hide();
+             $this.ladda({}).ladda('start').data('isLoading', true);
              $title_inp.prop('disabled', true);
-             $pubDlg.find('.pub-body-form').show();
-             setPLUploadInfoForPub(title_val);
+             s3ObjectExists(awsS3, {
+                 Bucket: config.s3Bucket,
+                 Prefix: appDir + '/' + title_val + '/'
+             }, function(err, exists)
+                {
+                    $this.ladda('stop').data('isLoading', false);
+                    if(err)
+                    {
+                        handleAWSS3Error(err);
+                        return;
+                    }
+                    if(!exists)
+                    {
+                        $(this).parent().hide();
+                        $pubDlg.find('.pub-body-form').show();
+                        setPLUploadInfoForPub(title_val);
+                    }
+                    else
+                    {
+                        $title_inp.prop('disabled', false);
+                        notifyUserError('Folder exists!');
+                    }
+                });
              return false;
          });
     $pubDlg.on('show.bs.modal', function()

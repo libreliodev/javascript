@@ -262,15 +262,32 @@ root.getObjectOfForm = function(el)
 root.s3ObjectExists = function(s3, opts, cb)
 {
     opts = $.extend(true, {}, opts);
-    opts.Prefix = opts.Key;
+    var isKey = opts.Key && !opts.Prefix;
+    opts.Prefix = opts.Key || opts.Prefix;
     delete opts.Key;
-    opts.MaxKeys = 1;
+    if(!isKey)
+        opts.MaxKeys = 1;
     s3.listObjects(opts, function(err, data)
         {
             if(err)
                 return cb && cb(err);
-            cb && cb(undefined, data && data.Contents &&
-                     data.Contents.length > 0);
+            var exists;
+            if(isKey)
+            {
+                var Contents = data.Contents;
+                for(var i = 0, l = Contents.length; i < l; ++i)
+                {
+                    if(Contents[i].Key == opts.Prefix)
+                    {
+                        exists = true;
+                        break;
+                    }
+                }
+            }
+            else
+                exists = data && data.Contents &&
+                               data.Contents.length > 0;
+            cb && cb(undefined, exists);
         });
 }
 
