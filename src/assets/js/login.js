@@ -1,6 +1,11 @@
 $(function(){
-    $('.form-signin').bind('submit', function()
+    $('.form-signin').bind('submit', function(e)
         {
+            e.preventDefault();
+
+            var $submitBtn = $('button', this).ladda();
+            $submitBtn.ladda( 'start' );
+
             var form = this,
             accessKeyId = $('input[name=access-key-id]', form).val(),
             secretAccessKey = $('input[name=secret-access-key]', form).val(),
@@ -9,6 +14,7 @@ $(function(){
             if(!rootDirectory || rds_idx === 0)
             {
                 alert('Root directory should not be empty');
+                $submitBtn.ladda( 'stop' );
                 return false;
             }
             if(rds_idx >= 0)
@@ -64,8 +70,11 @@ $(function(){
                            document.location = "index.html";
                        }
                    }
+
+                   $submitBtn.ladda( 'stop' );
                    $('button', form).prop('disabled', false);
                });
+            $submitBtn.ladda( 'stop' );
             return false;
         });
 });
