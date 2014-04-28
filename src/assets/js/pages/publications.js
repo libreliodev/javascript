@@ -84,37 +84,38 @@ $(function() {
         asset_uploader.setOption('multipart_params', post);
         asset_uploader.splice(0, asset_uploader.files.length);
     }
-    $pubDlg.find('.fileinput').each(function()
-         {
-             var $this = $(this);
-             this._s3Upload = s3UploadInit($this, {
-                 s3: awsS3,
-                 type: $this.find('input[type=file]').data('type') || 'file',
-                 Bucket: config.s3Bucket,
-                 Key: function()
-                 {
-                     var title = $pubDlg.find('input[name=FolderName]').val(),
-                     vars = getObjectOfForm($pubDlg),
-                     file = $(this).attr('name');
-                     
-                     for(var i in vars)
-                         file = file.replace('*'+i+'*', vars[i]);
-                     file.replace('\\*', '*');
-                     return s3AuthObj.rootDirectory + '/' + 
-                         appName + '/' + title + '/' + file;
-                 },
-                 signExpires: function()
-                 {
-                     return awsExpireReverse(config.awsExpireReverseInHours);
-                 },
-                 onUploadSuccess: function()
-                 {
-                     pubDlgUpdated = true;
-                 },
-                 onerror: handleAWSS3Error,
-                 loadnow: false
-             });
-         });
+    $pubDlg.find('.fileinput').each(initUploadEl);
+    function initUploadEl()
+    {
+        var $this = $(this);
+        this._s3Upload = s3UploadInit($this, {
+            s3: awsS3,
+            type: $this.find('input[type=file]').data('type') || 'file',
+            Bucket: config.s3Bucket,
+            Key: function()
+            {
+                var title = $pubDlg.find('input[name=FolderName]').val(),
+                vars = getObjectOfForm($pubDlg),
+                file = $(this).attr('name');
+                
+                for(var i in vars)
+                    file = file.replace('*'+i+'*', vars[i]);
+                file.replace('\\*', '*');
+                return s3AuthObj.rootDirectory + '/' + 
+                    appName + '/' + title + '/' + file;
+            },
+            signExpires: function()
+            {
+                return awsExpireReverse(config.awsExpireReverseInHours);
+            },
+            onUploadSuccess: function()
+            {
+                pubDlgUpdated = true;
+            },
+            onerror: handleAWSS3Error,
+            loadnow: false
+        });
+    }
     var pubDlgUpdated;
     $pubDlg.on('hidden.bs.modal', function()
          {
@@ -189,8 +190,10 @@ $(function() {
              pubDlgUpdated = false;
              var pub = $pubDlg.data('pubObj'),
              type = 'Free';
+             $pubDlg.find('.uufile').remove();
              if(pub)
              {
+                 var pub_name = pub.FileName;
                  $pubDlg.find('.set-title-btn').parent().hide();
                  $pubDlg.find('input[name=FolderName]').prop('disabled', true);
                  $pubDlg.find('.pub-body-form').show();
@@ -199,8 +202,35 @@ $(function() {
                         if(this._s3Upload)
                             this._s3Upload.reload();
                     });
-                 setPLUploadInfoForPub(pub.FileName);
-                 
+                 setPLUploadInfoForPub(pub_name);
+
+                 // list uploaded elements and add them to list
+                 var pubDir = appDir + '/' + pub_name + '/',
+                 excluded_files = [
+                     pub_name + '.pdf',
+                     pub_name + '_.pdf',
+                     pub_name + '.png',
+                     pub_name + '_newsstand.png'
+                 ];
+                 s3ListAllObjects(awsS3, {
+                     Bucket: config.s3Bucket,
+                     Prefix: pubDir
+                 }, function(err, res)
+                    {
+                        if(err)
+                        {
+                            handleAWSS3Error(err);
+                            return;
+                        }
+                        var contents = res.Contents;
+                        for(var i = 0, l = contents.length; i < l; ++i)
+                        {
+                            var key = contents[i].Key,
+                            fn = key.substr(pubDir.length);
+                            if(fn && excluded_files.indexOf(fn) == -1)
+                                insertUploadItem(fn, { class_name: 'uufile' });
+                        }
+                    });
              }
              else
              {
@@ -299,6 +329,36 @@ $(function() {
             paid_item.show();
         else
             paid_item.hide();
+    }
+    var img_check_pttrn = /\.(jpe?g|png|gif)$/i;
+    function insertUploadItem(key, opts)
+    {
+        opts = opts || {};
+        console.log(key, opts);
+        var class_name = opts.class_name ? ' ' + opts.class_name : '',
+        isImg = img_check_pttrn.test(key),
+        uploadLI = $('<li class="list-group-item'+class_name+'">\
+                <div class="form-group">\
+                  <label class="control-label col-lg-2">' + key + '</label>\
+                  <div class="clearfix"></div>\
+                  <div class="col-lg-8">\
+                    <div class="fileinput fileinput-new" \
+                         data-provides="fileinput">' + 
+            (isImg ? '<div class="fileinput-preview thumbnail" \
+                           data-trigger="fileinput" \
+                           style="width: 200px; height: 150px;"></div>' : '') +
+				      '<div>\
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input '+(isImg ? 'data-type="Image" ' : '')+'type="file" name="'+ key + '"></span>\
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>\
+				      </div>\
+			        </div>\
+                  </div>\
+                </div>\
+              </li>').appendTo($pubDlg.find('.upload-list'));
+        var el = uploadLI.find('.fileinput')[0];
+        initUploadEl.call(el);
+        if(el._s3Upload)
+            el._s3Upload.reload();
     }
 
     if (s3AuthObj && awsS3) {
