@@ -21,7 +21,6 @@ javascripts:
 - lib/datepicker/js/bootstrap-datepicker.js
 - lib/jquery.dualListbox-1.3/jquery.dualListBox-1.3.min.js
 - lib/jasny/js/jasny-bootstrap.min.js
-- lib/tablesorter/js/jquery.tablesorter.min.js
 - lib/plupload/plupload.full.min.js
 - lib/plupload/jquery.plupload.queue/jquery.plupload.queue.min.js
 - lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
@@ -75,10 +74,10 @@ scripts:
         </h4>
       </div>
       <div class="modal-body">
-        <form><!-- Pub Title -->
+        <form class=".form-horizontal"><!-- Pub Title -->
           <div class="form-group">
-            <label class="control-label col-lg-4">FolderName</label>
-            <div class="col-lg-3">
+            <label class="control-label col-lg-2">FolderName</label>
+            <div class="col-lg-8">
               <input type="text" name="FolderName" placeholder="Folder name" class="form-control">
             </div>
 		  </div>
@@ -91,16 +90,24 @@ scripts:
         <div class="pub-body-form body">
           <form class="form-horizontal">
             <div class="form-group">
-              <input type="radio" name="Type" value="Free">
-              <label class="control-label col-lg-4">Free</label>
-              <input type="radio" name="Type" value="Paid">
-              <label class="control-label col-lg-4">Paid</label>
+              <div class="col-sm-offset-1 radio">
+                <label class="control-label col-lg-1">
+                  <input type="radio" name="Type" value="Free">
+                  Free
+                </label>
+              </div>
+              <div class="col-sm-offset-1 radio">
+                <label class="control-label col-lg-1">
+                  <input type="radio" name="Type" value="Paid">
+                  Paid
+                </label>
+              </div>
             </div>
             <!-- list of upload items -->
             <ul class="upload-list list-group">
               <li class="list-group-item">
                 <div class="form-group">
-                  <label class="control-label col-lg-4">Free version</label>
+                  <label class="control-label col-lg-2">Free version</label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
@@ -114,7 +121,7 @@ scripts:
               </li>
               <li class="list-group-item paid-upload-item">
                 <div class="form-group">
-                  <label class="control-label col-lg-4">Paid version</label>
+                  <label class="control-label col-lg-2">Paid version</label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
@@ -128,7 +135,7 @@ scripts:
               </li>
               <li class="list-group-item">
                 <div class="form-group">
-                  <label class="control-label col-lg-4">Medium res cover</label>
+                  <label class="control-label col-lg-2">Medium res cover</label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
@@ -145,7 +152,7 @@ scripts:
               </li>
               <li class="list-group-item">
                 <div class="form-group">
-                  <label class="control-label col-lg-4">Low res cover</label>
+                  <label class="control-label col-lg-2">Low res cover</label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
