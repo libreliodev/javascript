@@ -5,7 +5,9 @@ $(function() {
     var appName = storage.getItem(config.storageAppNameKey),
     appDir = s3AuthObj.rootDirectory + '/' + appName,
     $pubTable = $(".publicationDataTable"),
-    publicationsTable = $pubTable.dataTable(),
+    publicationsTable = $pubTable.dataTable({
+        "aaSorting": [[ 0, "desc" ]]
+    }),
     $pubDlg = $('#pubModal');
     if(!appName)
         return;
