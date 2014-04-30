@@ -112,6 +112,20 @@ $(function() {
             {
                 pubDlgUpdated = true;
             },
+            onFileExistCheck: function(exists)
+            {
+                if($(this).attr('name') == '*FolderName*_.pdf')
+                {
+                    $pubDlg.find('input[name=Type]').each(function()
+                         {
+                             if(exists)
+                                 this.checked = (this.value == 'Paid');
+                             else
+                                 this.checked = (this.value != 'Paid');
+                         });
+                    pubDlgUpdateType();
+                }
+            },
             onerror: handleAWSS3Error,
             loadnow: false
         });
@@ -120,7 +134,7 @@ $(function() {
     $pubDlg.on('hidden.bs.modal', function()
          {
              var pub = $pubDlg.data('pubObj');
-             if(pubDlgUpdated)
+             if(!pub && pubDlgUpdated)
              {
                  location.reload();
                  return;
@@ -193,6 +207,7 @@ $(function() {
              $pubDlg.find('.uufile').remove();
              if(pub)
              {
+                 type = '';
                  var pub_name = pub.FileName;
                  $pubDlg.find('.set-title-btn').parent().hide();
                  $pubDlg.find('input[name=FolderName]').prop('disabled', true);
@@ -232,7 +247,7 @@ $(function() {
                         }
                     });
              }
-             else
+            else
              {
                  $pubDlg.find('input[name=FolderName]').prop('disabled', false);
                  $pubDlg.find('.set-title-btn').parent().show();
@@ -334,7 +349,6 @@ $(function() {
     function insertUploadItem(key, opts)
     {
         opts = opts || {};
-        console.log(key, opts);
         var class_name = opts.class_name ? ' ' + opts.class_name : '',
         isImg = img_check_pttrn.test(key),
         uploadLI = $('<li class="list-group-item'+class_name+'">\

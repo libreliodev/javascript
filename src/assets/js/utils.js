@@ -72,7 +72,7 @@ function _eval_opts_prop_maker(call_this, call_args)
 function S3LoadUpload($upload, opts)
 {
     var input = $upload.find('input[type=file]')[0],
-    eval_opts_prop = _eval_opts_prop_maker(input, [$upload, opts])
+    eval_opts_prop = _eval_opts_prop_maker(input, [$upload, opts]),
     $inp = $upload.find('input[type=file]');
     switch(opts.type)
     {
@@ -92,6 +92,13 @@ function S3LoadUpload($upload, opts)
                   $upload.toggleClass('fileinput-new', true)
                       .removeClass('fileinput-exists');
                   $img.remove();
+                  typeof opts.onFileExistCheck == 'function'  && 
+                      opts.onFileExistCheck.call($inp[0], false);
+              })
+            .bind('load', function()
+              {
+                  typeof opts.onFileExistCheck == 'function'  && 
+                      opts.onFileExistCheck.call($inp[0], true);
               });
         $upload.find('.fileinput-preview').empty().append($img);
         break;
@@ -105,6 +112,8 @@ function S3LoadUpload($upload, opts)
                file_exists = !!file_exists;
                $upload.toggleClass('fileinput-new', !file_exists)
                    .toggleClass('fileinput-exists', file_exists);
+               typeof opts.onFileExistCheck == 'function'  && 
+                   opts.onFileExistCheck.call($inp[0], file_exists);
            });
         break;
     }
@@ -113,10 +122,11 @@ root.s3UploadInit = function($upload, opts)
 {
     var input = $upload.find('input[type=file]')[0],
     eval_opts_prop = _eval_opts_prop_maker(input, [$upload, opts]),
-    isUploading;
+    isUploading,
+    $inp = $upload.find('input[type=file]');
     if(typeof opts.loadnow === 'undefined' || opts.loadnow)
         S3LoadUpload($upload, opts);
-    $upload.find('input[type=file]').bind('change', function()
+    $inp.bind('change', function()
       {
           function setPBar(percent)
           {
@@ -166,11 +176,12 @@ root.s3UploadInit = function($upload, opts)
                      operationEnd();
                      if(err)
                      {
-                         typeof opts.onerror == 'function' && opts.onerror(err);
+                         typeof opts.onerror == 'function' && 
+                             opts.onerror.call($inp[0], err);
                          return;
                      }
                      if(typeof opts.onUploadSuccess == 'function')
-                         opts.onUploadSuccess();
+                         opts.onUploadSuccess.call($inp[0]);
                          
                  });
               $upload.find('.fileinput-remove').bind('click', 
@@ -195,7 +206,7 @@ root.s3UploadInit = function($upload, opts)
           var $this = $(this);
           if(isUploading || $this.data('inProgress'))
               return;
-          $upload.find('input[type=file]').prop('disabled', true);
+          $inp.prop('disabled', true);
           var $new_btn = $upload.find('.fileinput-new'),
           $preview = $upload.find('.fileinput-preview'),
           new_v = $new_btn.html(),
@@ -208,14 +219,15 @@ root.s3UploadInit = function($upload, opts)
                   eval_opts_prop(opts.Prefix) + image_name
           }, function(err)
              {
-                 $upload.find('input[type=file]').prop('disabled', false);
+                 $inp.prop('disabled', false);
                  $new_btn.html(new_v);
                  if(err)
                  {
                      $preview.html(preview_v);
                      $upload.toggleClass('fileinput-new', false)
                          .toggleClass('fileinput-exists', true);
-                     typeof opts.onerror == 'function' && opts.onerror(err);
+                     typeof opts.onerror == 'function' && 
+                         opts.onerror.call($inp[0], err);
                      return;
                  }
                  
