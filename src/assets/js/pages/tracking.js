@@ -2,7 +2,9 @@ $(function(){
 
     var app_name = storage.getItem(config.storageAppNameKey),
     $pubdl_table = $('#publication-downloads-table'),
-    pubdl_tableData = $pubdl_table.dataTable();
+    pubdl_tableData = $pubdl_table.dataTable({
+        "aaSorting": [[ 0, "desc" ]]
+    });
     
     if(!app_name)
         return;
@@ -36,7 +38,8 @@ $(function(){
                    return $('<td/>').text(val || '').html();
                }
                pubdl_tableData.fnClearTable();
-               var columns = [ 'Title', 'Sample Downloads', 'Paid downloads' ];
+               var columns = [ 'Title', 'Paid Downloads', 'Free Downloads' ];
+               console.log("Will populate");
                for(var i = 0, l = tsv.length; i < l; ++i)
                {
                    var row = tsv[i],
