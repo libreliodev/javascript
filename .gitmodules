@@ -64,3 +64,6 @@
 [submodule "src/assets/submodule/validVal"]
 	path = src/assets/submodule/validVal
 	url = https://github.com/BeSite/jQuery.validVal.git
+[submodule "src/assets/submodule/epub.js"]
+	path = src/assets/submodule/epub.js
+	url = https://github.com/futurepress/epub.js.git
