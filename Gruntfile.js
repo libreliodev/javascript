@@ -168,7 +168,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'src/assets/submodule',
-                        src: ['./*/*.*','./*/css/*.*','./*/build/css/bootstrap3/*.*','./*/js/*.*','./*/src/js/*.*','./*/build/js/*.*','./*/themes/**'],
+                        src: ['./*/*.*','./*/css/*.*','./*/build/css/bootstrap3/*.*','./*/js/*.*','./*/src/js/*.*','./*/build/js/*.*','./*/reader/**/*.*','./*/themes/**'],
                         filter: 'isFile',
                         dest: 'dist/assets/lib'
                     },
