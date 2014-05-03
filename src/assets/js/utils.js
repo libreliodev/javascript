@@ -207,7 +207,8 @@ root.s3UploadInit = function($upload, opts)
           if(isUploading || $this.data('inProgress'))
               return;
           $inp.prop('disabled', true);
-          var $new_btn = $upload.find('.fileinput-new'),
+          var inp_name = $inp.attr('name'),
+          $new_btn = $upload.find('.fileinput-new'),
           $preview = $upload.find('.fileinput-preview'),
           new_v = $new_btn.html(),
           preview_v = $preview.html();
@@ -230,6 +231,7 @@ root.s3UploadInit = function($upload, opts)
                          opts.onerror.call($inp[0], err);
                      return;
                  }
+                 $inp.attr('name', inp_name);
                  
              });
       });
