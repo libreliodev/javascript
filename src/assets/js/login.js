@@ -67,7 +67,9 @@ $(function(){
                                storage.setItem(config.storageAppNameKey, '');
                            }
                            storage.setItem(config.storageAuthKey, JSON.stringify(auth_obj));
-                           document.location = "index.html";
+                           var dq = path.urlParseQuery(document.location);
+                           document.location = dq.redirect ? 
+                               dq.redirect : 'index.html';
                        }
                    }
 

@@ -304,5 +304,56 @@ root.s3ObjectExists = function(s3, opts, cb)
             cb && cb(undefined, exists);
         });
 }
+var filename_pttrn = /[^\/]*$/,
+urlfilename_pttrn = /([^\/]*\?.*|[^\/]*)$/;
+root.path = {
+    filename: function(s)
+    {
+        var match = filename_pttrn.exec((s+'').replace("\\", "/"));
+        return match ? match[0] : '';
+    },
+    urlFilename: function(s)
+    {
+        var match = urlfilename_pttrn.exec(s+'');
+        return match ? match[1] : '';
+    },
+    urlParseQuery: function(s, sep, eq)
+    {
+        s = s+'';
+        var idx = s.indexOf('?'),
+        query = idx >= 0 && idx < s.length ? s.substr(idx+1) : '';
+        return this.parseQuery(query, sep, eq);
+    },
+    parseQuery: function(s, sep, eq)
+    {
+        sep = sep || '&';
+        eq = eq || '=';
+        list = s.split(sep),
+        res = {};
+        function addElm(k, v)
+        {
+            if(typeof res[k] == 'string')
+            {
+                var tmp = res[k];
+                res[k] = [ tmp, v ];
+            }
+            else if($.isArray(res[k]))
+                res[k].push(v);
+            else
+                res[k] = v;
+        }
+        for(var i = 0, l = list.length; i < l; ++i)
+        {
+            var p = list[i].split(eq);
+            if(p[0] === '')
+                continue;
+            if(p.length == 1)
+                addElm(p[0], '');
+            else // more than one elm in p
+                addElm(p[0], decodeURIComponent(p.slice(1).join(eq)));
+        }
+        return res;
+    }
+};
 
 })(window);

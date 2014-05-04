@@ -14,7 +14,11 @@ else
     if(!s3AuthObj)
     {
         $('body > *').hide();
-        document.location = "login.html";
+        var query,
+        path_fn = path.urlFilename(document.location);
+        if(path_fn != 'index.html' && path_fn != '')
+            query = '?redirect=' + encodeURIComponent(path_fn);
+        document.location = "login.html" + (query || '');
     }
     else
     {
