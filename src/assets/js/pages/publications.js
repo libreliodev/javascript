@@ -11,6 +11,20 @@ $(function() {
     $pubDlg = $('#pubModal');
     if(!appName)
         return;
+    $pubDlg.find('.svg-files button').bind('click', function()
+          {
+              var pub = $pubDlg.find('input[name=FolderName]').val(),
+              filename = pubDlgEvalAttr($(this).data('filename'));
+              if(filename)
+              {
+                  window.open('svgedit.html?' + path.stringifyQuery({
+                      app: appName,
+                      filename: pub + '/' + filename
+                  }), '_blank');
+                  return false;
+              }
+          });
+
     $("#asset-uploader").pluploadQueue({
         // General settings
         runtimes: 'html5,flash,silverlight,html4',
@@ -97,12 +111,9 @@ $(function() {
             Key: function()
             {
                 var title = $pubDlg.find('input[name=FolderName]').val(),
-                vars = getObjectOfForm($pubDlg),
-                file = $(this).attr('name');
+                file = pubDlgEvalAttr($(this).attr('name'));
                 
-                for(var i in vars)
-                    file = file.replace('*'+i+'*', vars[i]);
-                file.replace('\\*', '*');
+
                 return s3AuthObj.rootDirectory + '/' + 
                     appName + '/' + title + '/' + file;
             },
@@ -337,15 +348,23 @@ $(function() {
              return false;
          });
 */
+    function pubDlgEvalAttr(s)
+    {
+        s = s+'';
+        var vars = getObjectOfForm($pubDlg);
+        for(var i in vars)
+            s = s.replace('*'+i+'*', vars[i]);
+        return s.replace('\\*', '*');
+    }
     $pubDlg.find('input[name=Type]').on('change', pubDlgUpdateType);
     function pubDlgUpdateType()
     {
-        var paid_item = $pubDlg.find('.paid-upload-item'),
+        var paid_elem = $pubDlg.find('.paid-elem'),
         paid_radio = $pubDlg.find('input[name=Type]').filter('[value=Paid]');
         if(paid_radio.prop('checked'))
-            paid_item.show();
+            paid_elem.show();
         else
-            paid_item.hide();
+            paid_elem.hide();
     }
     var img_check_pttrn = /\.(jpe?g|png|gif)$/i;
     function insertUploadItem(key, opts)

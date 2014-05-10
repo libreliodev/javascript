@@ -65,7 +65,7 @@ module.exports = function (grunt) {
                 stripBanners: false
             },
             main: {
-                src: ['src/assets/js/app/*.js'],
+                src: ['src/assets/js/app/*.js', 'src/assets/js/initS3Auth.js'],
                 dest: 'dist/assets/js/main.js'
             }
         },
@@ -119,6 +119,11 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {expand: true, cwd: 'src/templates/login', src: ['login.hbs'], dest: 'dist/'}
+                ]
+            },
+            svg_editor: {
+                files: [
+                    {expand: true, cwd: 'src/templates/svgedit', src: ['svgedit.hbs'], dest: 'dist/'}
                 ]
             },
             errors: {

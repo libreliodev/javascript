@@ -1,5 +1,21 @@
 (function(root){
 
+var illegalPubs = [ "AAD", "APP__", "APP_", "APP_", "APW_" ];
+root.listPublications = function(s3, opts, cb)
+{
+    s3ListDirectories(s3, opts, function(err, pubs)
+       {
+           if(err)
+               return cb && cb(err);
+           for(var i = 0; i < pubs.length;)
+               if(illegalPubs.indexOf(pubs[i]) >= 0)
+                   pubs.splice(i, 1);
+               else
+                   i++;
+           cb && cb(err, pubs);
+       });
+}
+
 // lists directories within another directory
 root.s3ListDirectories = function(awsS3, opts, cb)
 {
@@ -332,6 +348,8 @@ root.path = {
         res = {};
         function addElm(k, v)
         {
+            k = decodeURIComponent(k);
+            v = decodeURIComponent(v);
             if(typeof res[k] == 'string')
             {
                 var tmp = res[k];
@@ -350,9 +368,19 @@ root.path = {
             if(p.length == 1)
                 addElm(p[0], '');
             else // more than one elm in p
-                addElm(p[0], decodeURIComponent(p.slice(1).join(eq)));
+                addElm(p[0], p.slice(1).join(eq));
         }
         return res;
+    },
+    stringifyQuery: function(obj, sep, eq)
+    {
+        sep = sep || '&';
+        eq = eq || '=';
+        var ret = [];
+        for(var i in obj)
+            ret.push(encodeURIComponent(i) + eq + 
+                     encodeURIComponent(obj[i]));
+        return ret.join(sep);
     }
 };
 

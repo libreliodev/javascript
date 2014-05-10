@@ -16,7 +16,7 @@ else
         $('body > *').hide();
         var query,
         path_fn = path.urlFilename(document.location);
-        if(path_fn != 'index.html' && path_fn != '')
+        if(path_fn != 'index.html' && path_fn !== '')
             query = '?redirect=' + encodeURIComponent(path_fn);
         document.location = "login.html" + (query || '');
     }
