@@ -67,9 +67,25 @@ $(function(){
                                storage.setItem(config.storageAppNameKey, '');
                            }
                            storage.setItem(config.storageAuthKey, JSON.stringify(auth_obj));
-                           var dq = path.urlParseQuery(document.location);
-                           document.location = dq.redirect ? 
-                               dq.redirect : 'index.html';
+                           
+                           /* select default app before redirect! */
+                           s3ListDirectories(s3, {
+                               Bucket: config.s3Bucket,
+                               Prefix: auth_obj.rootDirectory + '/'
+                           }, function(err, apps)
+                              {
+                                  if(err)
+                                  {
+                                      alert(err);
+                                      return;
+                                  }
+                                  if(apps.length > 0)
+                                      storage.setItem(config.storageAppNameKey,
+                                                      apps[0]);
+                                  var dq = path.urlParseQuery(document.location);
+                                  document.location = dq.redirect ? 
+                                      dq.redirect : 'index.html';
+                              })
                        }
                    }
 
