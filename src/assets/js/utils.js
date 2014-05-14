@@ -80,9 +80,10 @@ root.encodeStringToClassName = function(s)
 // this method makes eval_opts_prop
 function _eval_opts_prop_maker(call_this, call_args)
 {
-    return function(p)
+    return function(p, ea)
     {
-        return typeof p == 'function' ? p.apply(call_this, call_args) : p;
+        return typeof p == 'function' ? p.apply(call_this, 
+                                                (ea||[]).concat(call_args)) : p;
     }
 }
 function S3LoadUpload($upload, opts)
@@ -95,16 +96,18 @@ function S3LoadUpload($upload, opts)
     case 'Image':
         var url = opts.s3.getSignedUrl('getObject', {
             Bucket: opts.Bucket,
-            Key: opts.Key ? eval_opts_prop(opts.Key) : 
-                eval_opts_prop(opts.Prefix) + $inp.attr('name'),
+            Key: opts.Key ? eval_opts_prop(opts.Key,['checkexists']) : 
+                eval_opts_prop(opts.Prefix,['checkexists']) + $inp.attr('name'),
             Expires: opts.signExpires ? eval_opts_prop(opts.signExpires) : 900
         });
         var $img = $('<img/>');
         $upload.removeClass('fileinput-new')
             .toggleClass('fileinput-exists', true);
+        $inp.data('exists', true);
         $img.prop('src', url)
             .bind('error', function()
               {
+                  $inp.data('exists', false);
                   $upload.toggleClass('fileinput-new', true)
                       .removeClass('fileinput-exists');
                   $img.remove();
@@ -121,13 +124,14 @@ function S3LoadUpload($upload, opts)
     default:
         s3ObjectExists(opts.s3, {
             Bucket: opts.Bucket,
-            Key: opts.Key ? eval_opts_prop(opts.Key) : 
-                eval_opts_prop(opts.Prefix) + $inp.attr('name')
+            Key: opts.Key ? eval_opts_prop(opts.Key,['checkexists']) : 
+                eval_opts_prop(opts.Prefix,['checkexists']) + $inp.attr('name')
         }, function(err, file_exists)
            {
                file_exists = !!file_exists;
                $upload.toggleClass('fileinput-new', !file_exists)
                    .toggleClass('fileinput-exists', file_exists);
+               $inp.data('exists', file_exists);
                typeof opts.onFileExistCheck == 'function'  && 
                    opts.onFileExistCheck.call($inp[0], file_exists);
            });
@@ -142,6 +146,45 @@ root.s3UploadInit = function($upload, opts)
     $inp = $upload.find('input[type=file]');
     if(typeof opts.loadnow === 'undefined' || opts.loadnow)
         S3LoadUpload($upload, opts);
+    function removeFile(cb)
+    {
+        var inp_name = $inp.attr('name'),
+        $new_btn = $upload.find('.fileinput-new'),
+        $remove_btn = $upload.find('.fileinput-remove'),
+        $preview = $upload.find('.fileinput-preview'),
+        new_v = $new_btn.html(),
+        remove_v = $remove_btn.html(),
+        preview_v = $preview.html();
+        
+        $new_btn.text('Removing...');
+        $remove_btn.text('Removing...');
+        
+        opts.s3.deleteObject({
+            Bucket: opts.Bucket,
+            Key: opts.Key ? eval_opts_prop(opts.Key,['delete']) : 
+                eval_opts_prop(opts.Prefix,['delete']) + image_name
+        }, function(err)
+           {
+               $new_btn.html(new_v);
+               $remove_btn.html(remove_v);
+               if(err)
+               {
+                   $preview.html(preview_v);
+                   $upload.toggleClass('fileinput-new', false)
+                       .toggleClass('fileinput-exists', true);
+                   typeof opts.onerror == 'function' && 
+                       opts.onerror.call($inp[0], err);
+               }
+               else
+               {
+                   $inp.attr('name', inp_name);
+                   $inp.data('exists', false);
+                   typeof opts.onRemoveSuccess == 'function' && 
+                       opts.onRemoveSuccess.call($inp[0]);
+               }
+               cb && cb(err);
+           });
+    }
     $inp.bind('change', function()
       {
           function setPBar(percent)
@@ -162,10 +205,22 @@ root.s3UploadInit = function($upload, opts)
               if(rmHandler)
                   $upload.find('.fileinput-remove').unbind('click', rmHandler);
           }
+          
           var $this = $(this),
           file = this.files ? this.files[0] : null;
           if(file)
           {
+              if($inp.data('exists') && opts.removeBeforeChange)
+              {
+                  var thismethod = arguments.callee,
+                  self = this;
+                  removeFile(function(err)
+                      {
+                          if(!err)
+                              thismethod.call(self);
+                      });
+                  return;
+              }
               $this.prop('disabled', true);
               var $new_btn = $upload.find('.fileinput-new'),
               $change_btn = $upload.find('.fileinput-change'),
@@ -175,7 +230,6 @@ root.s3UploadInit = function($upload, opts)
               pbar_wrp = $('<div/>').appendTo($upload)
                   .css('marginTop', 16),
               rmHandler;
-              
               isUploading = true;
               $new_btn.text('Uploading...');
               $change_btn.text('Uploading...');
@@ -183,8 +237,8 @@ root.s3UploadInit = function($upload, opts)
               
               var request = opts.s3.putObject({
                   Bucket: opts.Bucket,
-                  Key: opts.Key ? eval_opts_prop(opts.Key) : 
-                      eval_opts_prop(opts.Prefix) + image_name,
+                  Key: opts.Key ? eval_opts_prop(opts.Key,['upload']) : 
+                      eval_opts_prop(opts.Prefix,['upload']) + image_name,
                   Body: file,
                   ContentType: file.type
               }, function(err, res)
@@ -196,6 +250,7 @@ root.s3UploadInit = function($upload, opts)
                              opts.onerror.call($inp[0], err);
                          return;
                      }
+                     $inp.data('exists', !err);
                      if(typeof opts.onUploadSuccess == 'function')
                          opts.onUploadSuccess.call($inp[0]);
                          
@@ -217,38 +272,18 @@ root.s3UploadInit = function($upload, opts)
                       });
           }
       });
-    $upload.find('.fileinput-remove').click('click', function()
+    $upload.find('.fileinput-remove').bind('click', function()
       {
           var $this = $(this);
           if(isUploading || $this.data('inProgress'))
               return;
+          $this.data('inProgress', true);
           $inp.prop('disabled', true);
-          var inp_name = $inp.attr('name'),
-          $new_btn = $upload.find('.fileinput-new'),
-          $preview = $upload.find('.fileinput-preview'),
-          new_v = $new_btn.html(),
-          preview_v = $preview.html();
-          
-          $new_btn.text('Removing...');
-          opts.s3.deleteObject({
-              Bucket: opts.Bucket,
-              Key: opts.Key ? eval_opts_prop(opts.Key) : 
-                  eval_opts_prop(opts.Prefix) + image_name
-          }, function(err)
+          removeFile(function()
              {
+                 $this.data('inProgress', false);
                  $inp.prop('disabled', false);
-                 $new_btn.html(new_v);
-                 if(err)
-                 {
-                     $preview.html(preview_v);
-                     $upload.toggleClass('fileinput-new', false)
-                         .toggleClass('fileinput-exists', true);
-                     typeof opts.onerror == 'function' && 
-                         opts.onerror.call($inp[0], err);
-                     return;
-                 }
-                 $inp.attr('name', inp_name);
-                 
+                 $inp.val('');
              });
       });
     return {
@@ -381,7 +416,32 @@ root.path = {
             ret.push(encodeURIComponent(i) + eq + 
                      encodeURIComponent(obj[i]));
         return ret.join(sep);
+    },
+    fileExtension: function(fn)
+    {
+        var idx = fn.lastIndexOf('.'),
+        r;
+        if(idx >= 0)
+            r = fn.substr(idx);
+        else
+            r = '';
+        return r;
     }
 };
+
+root.startsWith = function(a, s, fn)
+{
+    if(typeof fn != 'function')
+        fn = function(e) { return e; }
+    var r = [];
+    for(var i = 0, l = a.length; i < l; ++i)
+    {
+        var str = fn(a[i]),
+        idx = str.indexOf(s);
+        if(idx === 0)
+            r.push(a[i]);
+    }
+    return r;
+}
 
 })(window);

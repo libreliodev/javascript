@@ -11,7 +11,7 @@ $(function() {
     $pubDlg = $('#pubModal');
     if(!appName)
         return;
-    $pubDlg.find('.svg-files button').bind('click', function()
+    $pubDlg.find('.svgedit-btn').bind('click', function()
           {
               var pub = $pubDlg.find('input[name=FolderName]').val(),
               filename = pubDlgEvalAttr($(this).data('filename'));
@@ -101,19 +101,59 @@ $(function() {
         asset_uploader.splice(0, asset_uploader.files.length);
     }
     $pubDlg.find('.fileinput').each(initUploadEl);
+    function uploadElEvalFilename(el, action)
+    {
+        var pub = $pubDlg.data('pubObj'),
+        $this = $(el),
+        ext = el.files && el.files.length > 0 ?
+            path.fileExtension(el.files[0].name) : '';
+        if(pub)
+        {
+            // use existing extension
+            // if it's there
+            if($this.hasClass('paidfileupload'))
+                ext = (action == 'delete') ? pub.paid_ext || ext :
+                ext || pub.paid_ext;
+            else if($this.hasClass('freefileupload'))
+                ext = (action == 'delete') ? pub.free_ext || ext :
+                ext || pub.free_ext;
+        }
+        return pubDlgEvalAttr($this.attr('name'), { fileext: ext });
+    }
+    function uploadFileUpdate($upload)
+    {
+        $upload.find('input[type=file]').each(function()
+            {
+                var file = uploadElEvalFilename(this),
+                is_svg = (path.fileExtension(file) == '.svg');
+                $upload.toggleClass('fileinput-svg', is_svg);
+            });
+    }
+    function uploadFileUpdateExtension(inp)
+    {
+        var pub = $pubDlg.data('pubObj') || {},
+        $inp = $(inp),
+        ext = inp.files && inp.files.length > 0 ?
+            path.fileExtension(inp.files[0].name) : '';
+        if($inp.hasClass('paidfileupload'))
+            pub.paid_ext = ext;
+        else if($inp.hasClass('freefileupload'))
+            pub.free_ext = ext;
+        $pubDlg.data('pubObj', pub);
+    }
     function initUploadEl()
     {
-        var $this = $(this);
-        this._s3Upload = s3UploadInit($this, {
+        var $upload = $(this),
+        $file = $upload.find('input[type=file]');
+        this._s3Upload = s3UploadInit($upload, {
             s3: awsS3,
-            type: $this.find('input[type=file]').data('type') || 'file',
+            type: $file.data('type') || 'file',
             Bucket: config.s3Bucket,
-            Key: function()
+            removeBeforeChange: pubDlgAttrHasVar($file.attr('name'), 'fileext'),
+            Key: function(action)
             {
                 var title = $pubDlg.find('input[name=FolderName]').val(),
-                file = pubDlgEvalAttr($(this).attr('name'));
-                
-
+                file = uploadElEvalFilename(this, action);
                 return s3AuthObj.rootDirectory + '/' + 
                     appName + '/' + title + '/' + file;
             },
@@ -124,10 +164,20 @@ $(function() {
             onUploadSuccess: function()
             {
                 pubDlgUpdated = true;
+                uploadFileUpdateExtension(this);
+                // this method should update file ui
+                uploadFileUpdate($upload)
+            },
+            onRemoveSuccess: function()
+            {
+                pubDlgUpdated = true;
+                uploadFileUpdateExtension(this);
+                // this method should update file ui
+                uploadFileUpdate($upload)
             },
             onFileExistCheck: function(exists)
             {
-                if($(this).attr('name') == '*FolderName*_.pdf')
+                if($(this).hasClass('paidfileupload'))
                 {
                     $pubDlg.find('input[name=Type]').each(function()
                          {
@@ -218,6 +268,11 @@ $(function() {
              var pub = $pubDlg.data('pubObj'),
              type = 'Free';
              $pubDlg.find('.uufile').remove();
+             $pubDlg.find('input[type=file]').prop('disabled', false);
+             $pubDlg.find('.fileinput').each(function()
+                   {
+                       uploadFileUpdate($(this))
+                   });
              if(pub)
              {
                  type = '';
@@ -235,8 +290,8 @@ $(function() {
                  // list uploaded elements and add them to list
                  var pubDir = appDir + '/' + pub_name + '/',
                  excluded_files = [
-                     pub_name + '.pdf',
-                     pub_name + '_.pdf',
+                     pub_name + (pub.free_ext || ''),
+                     pub_name + '_' + (pub.paid_ext || ''),
                      pub_name + '.png',
                      pub_name + '_newsstand.png'
                  ];
@@ -254,7 +309,7 @@ $(function() {
                         for(var i = 0, l = contents.length; i < l; ++i)
                         {
                             var key = contents[i].Key,
-                            fn = key.substr(pubDir.length);
+                            fn = key.substr(pubDir.length).replace('*', '\\*');
                             if(fn && excluded_files.indexOf(fn) == -1)
                                 insertUploadItem(fn, { class_name: 'uufile' });
                         }
@@ -348,13 +403,27 @@ $(function() {
              return false;
          });
 */
-    function pubDlgEvalAttr(s)
+    function pubDlgEvalAttr(s, vars)
     {
         s = s+'';
-        var vars = getObjectOfForm($pubDlg);
+        vars = $.extend(false, getObjectOfForm($pubDlg), vars);
         for(var i in vars)
-            s = s.replace('*'+i+'*', vars[i]);
+        {
+            var name = '*'+i+'*',
+            val = vars[i];
+            for(var n = 0, idx; (idx = s.indexOf(name, n)) >= 0; 
+                n = idx + name.length)
+            {
+                if(idx == 0 || s[idx-1] != '\\')
+                    s = s.substr(0, idx) + val + s.substr(idx + name.length);
+            }
+        }
         return s.replace('\\*', '*');
+    }
+    function pubDlgAttrHasVar(s, vr)
+    {
+        var idx = s.indexOf('*'+vr+'*');
+        return idx == 0 || (idx > 0 && s[idx-1] != '\\');
     }
     $pubDlg.find('input[name=Type]').on('change', pubDlgUpdateType);
     function pubDlgUpdateType()
@@ -502,22 +571,48 @@ $(function() {
                         item = getPubByRowId(this.id);
                         if(!item)
                             return;
-                        $pubDlg.find('input[type=text]')
-                           .each(function()
-                              {
-                                  var $this = $(this),
-                                  name = $this.attr('name');
-                                  for(var key in item)
-                                      if(name == key)
-                                  {
-                                      $this.val(item[key]);
-                                      break;
-                                  }
-                              });
-                        $pubDlg.data('pubObj', item)
-                            .removeClass('new-pub-dlg')
-                            .toggleClass('update-pub-dlg', true)
-                            .modal('show');
+                        awsS3.listObjects({
+                            Bucket: config.s3Bucket,
+                            Prefix: appDir + '/' + item.FolderName + '/' +
+                                item.FolderName
+                        }, function(err, res)
+                           {
+                               if(err)
+                               {
+                                   handleAWSS3Error(err);
+                                   return;
+                               }
+                               function getKeySub(item)
+                               {
+                                   return item.Key.substr(prefLen);
+                               }
+                               var prefLen = res.Prefix.length,
+                               free = startsWith(res.Contents, '.', getKeySub),
+                               paid = startsWith(res.Contents, '_.', getKeySub);
+                               item = $.extend(false, {}, item);
+                               
+                               item.free_ext = free.length > 0 ? 
+                                   free[0].Key.substr(prefLen) : null;
+                               item.paid_ext = paid.length > 0 ? 
+                                   paid[0].Key.substr(prefLen + 1) : null;
+                               
+                               $pubDlg.find('input[type=text]')
+                                   .each(function()
+                                    {
+                                        var $this = $(this),
+                                        name = $this.attr('name');
+                                        for(var key in item)
+                                            if(name == key)
+                                        {
+                                            $this.val(item[key]);
+                                            break;
+                                        }
+                                    });
+                               $pubDlg.data('pubObj', item)
+                                   .removeClass('new-pub-dlg')
+                                   .toggleClass('update-pub-dlg', true)
+                                   .modal('show');
+                           });
                         return false;
                     }
                     //---------------------------------------------------

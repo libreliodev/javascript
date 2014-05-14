@@ -104,12 +104,6 @@ scripts:
                 </label>
               </div>
             </div>
-            <div class="svg-files form-group btn-group pub-dlg-update">
-              <button type="button" class="btn btn-default"
-                      data-filename="*FolderName*.svg">Edit Free SVG</button>
-              <button type="button" class="btn btn-default paid-elem"
-                      data-filename="*FolderName*_.svg">Edit Paid SVG</button>
-            </div>
             <!-- list of upload items -->
             <ul class="upload-list list-group">
               <li class="list-group-item">
@@ -119,8 +113,10 @@ scripts:
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" accept="application/pdf" name="*FolderName*.pdf"></span>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input class="freefileupload" type="file" name="*FolderName**fileext*"></span>
 				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+                        <button type="button" class="btn btn-default svgedit-btn fileinput-is-svg"
+                                data-filename="*FolderName*.svg">Edit SVG</button>
 				      </div>
 			        </div>
                   </div>
@@ -133,8 +129,10 @@ scripts:
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" accept="application/pdf" name="*FolderName*_.pdf"></span>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input class="paidfileupload" type="file" name="*FolderName*_*fileext*"></span>
 				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+                        <button type="button" class="btn btn-default svgedit-btn fileinput-is-svg"
+                                data-filename="*FolderName*_.svg">Edit SVG</button>
 				      </div>
 			        </div>
                   </div>
