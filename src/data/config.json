@@ -3,5 +3,6 @@
     "s3Bucket": "librelio-europe",
     "s3BucketRegion": "eu-west-1",
     "storageAppNameKey": "librelio-app",
+    "singleAppModeKey": "librelio-sappmode",
     "awsExpireReverseInHours": 72
 }

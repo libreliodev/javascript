@@ -16,7 +16,6 @@
 	<!-- Metis core stylesheet -->
         <link rel="stylesheet" href="{{assets}}/css/main.min.css">
         <link rel="stylesheet" href="{{assets}}/css/theme.css">
-
         {{#if stylesheets}}
         {{css stylesheets}}
         {{/if}}
@@ -46,13 +45,7 @@
         <script src="{{assets}}/lib/bootbox.min.js"></script>
 
         <script>
-          var config = {
-              "storageAuthKey": "{{ config.storageAuthKey }}",
-              "s3Bucket": "{{ config.s3Bucket }}",
-              "s3BucketRegion": "{{ config.s3BucketRegion }}",
-              "storageAppNameKey": "{{ config.storageAppNameKey }}",
-              "awsExpireReverseInHours": {{ config.awsExpireReverseInHours }}
-          };
+          var config = {{ jsonStringify config }};
         </script>
         <script src="{{assets}}/js/main.min.js"></script>
 

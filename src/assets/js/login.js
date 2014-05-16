@@ -9,7 +9,8 @@ $(function(){
             var form = this,
             accessKeyId = $('input[name=access-key-id]', form).val(),
             secretAccessKey = $('input[name=secret-access-key]', form).val(),
-            rootDirectory = $('input[name=root-directory]', form).val();
+            rootDirectory = $('input[name=root-directory]', form).val(),
+            selectedApp;
             var rds_idx = rootDirectory.indexOf("/");
             if(!rootDirectory || rds_idx === 0)
             {
@@ -18,8 +19,10 @@ $(function(){
                 return false;
             }
             if(rds_idx >= 0)
+            {
+                selectedApp = rootDirectory.substr(rds_idx + 1);
                 rootDirectory = rootDirectory.substring(0, rds_idx);
-            
+            }
             AWS.config.update({
                 accessKeyId: accessKeyId,
                 secretAccessKey: secretAccessKey
@@ -34,6 +37,15 @@ $(function(){
                 MaxKeys: 1
             }, function(err, data)
                {
+                   function continue_job()
+                   {
+                       if(selectedApp)
+                           storage.setItem(config.storageAppNameKey,
+                                           selectedApp);
+                       var dq = path.urlParseQuery(document.location);
+                       document.location = dq.redirect ? 
+                           dq.redirect : 'index.html';
+                   }
                    if(err)
                    {
                        alert("Couldn't connect to aws s3: " + err);
@@ -65,27 +77,32 @@ $(function(){
                            {
                                // clear user info
                                storage.setItem(config.storageAppNameKey, '');
+                               storage.setItem(config.singleAppModeKey, '');
                            }
                            storage.setItem(config.storageAuthKey, JSON.stringify(auth_obj));
-                           
-                           /* select default app before redirect! */
-                           s3ListDirectories(s3, {
-                               Bucket: config.s3Bucket,
-                               Prefix: auth_obj.rootDirectory + '/'
-                           }, function(err, apps)
-                              {
+                           if(selectedApp)
+                           {
+                               storage.setItem(config.singleAppModeKey, "1");
+                               continue_job();
+                           }
+                           else
+                           {
+                               /* select default app before redirect! */
+                               s3ListDirectories(s3, {
+                                   Bucket: config.s3Bucket,
+                                   Prefix: auth_obj.rootDirectory + '/'
+                               }, function(err, apps)
+                                  {
                                   if(err)
                                   {
                                       alert(err);
                                       return;
                                   }
                                   if(apps.length > 0)
-                                      storage.setItem(config.storageAppNameKey,
-                                                      apps[0]);
-                                  var dq = path.urlParseQuery(document.location);
-                                  document.location = dq.redirect ? 
-                                      dq.redirect : 'index.html';
+                                      selectedApp = apps[0];
+                                  continue_job();
                               })
+                           }
                        }
                    }
 
