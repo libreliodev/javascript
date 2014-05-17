@@ -1,7 +1,12 @@
 /* jshint node: true */
 module.exports = function (grunt) {
     "use strict";
-
+    var dist_dir = 'dist',
+    admin_dist_dir = dist_dir + '/admin',
+    admin_assets_dist_dir = admin_dist_dir + '/assets',
+    site_dist_dir = dist_dir + '/www',
+    site_assets_dist_dir = site_dist_dir + '/assets';
+    
     // Project configuration.
     grunt.initConfig({
         // Metadata
@@ -18,7 +23,7 @@ module.exports = function (grunt) {
 		banner: '<%= banner %>',
                 metadata: 'src/*.{json,yml}',
 // 		sourceMap: true,
-//              sourceMapFilename: "dist/assets/css/style.css.map",
+//              sourceMapFilename: "dist/admin/assets/css/style.css.map",
 //              sourceMapURL: 'style.css.map',
                 paths: 'bower_components/bootstrap/less',
                 imports: {
@@ -29,13 +34,13 @@ module.exports = function (grunt) {
                 files: [
                     {
                         src: ['src/assets/less/style.less'],
-                        dest: 'dist/assets/css/main.css'
+                        dest: admin_assets_dist_dir + '/css/main.css'
                     },
                     {
                         expand: true,
                         cwd: 'src/assets/less/pages',
                         src: ['*.less'],
-                        dest: 'dist/assets/css/pages/',
+                        dest: admin_assets_dist_dir + '/css/pages/',
                         ext: '.css'
                     }
                 ]
@@ -47,13 +52,13 @@ module.exports = function (grunt) {
                 files: [
                     {
                         src: ['src/assets/less/style.less'],
-                        dest: 'dist/assets/css/main.min.css'
+                        dest: admin_assets_dist_dir + '/css/main.min.css'
                     },
                     {
                         expand: true,
                         cwd: 'src/assets/less/pages',
                         src: ['*.less'],
-                        dest: 'dist/assets/css/pages/',
+                        dest: admin_assets_dist_dir + '/css/pages/',
                         ext: '.min.css'
                     }
                 ]
@@ -66,7 +71,7 @@ module.exports = function (grunt) {
             },
             main: {
                 src: ['src/assets/js/app/*.js', 'src/assets/js/initS3Auth.js'],
-                dest: 'dist/assets/js/main.js'
+                dest: admin_assets_dist_dir + '/js/main.js'
             }
         },
         uglify: {
@@ -75,11 +80,11 @@ module.exports = function (grunt) {
             },
             main: {
                 src: ['<%= concat.main.dest %>'],
-                dest: 'dist/assets/js/main.min.js'
+                dest: admin_assets_dist_dir + '/js/main.min.js'
             },
             setupPage: {
                 src: 'src/assets/js/pages/*.js',
-                dest: 'dist/assets/js/pages/',
+                dest: admin_assets_dist_dir + '/js/pages/',
                 expand: true,    // allow dynamic building
                 flatten: true,   // remove all unnecessary nesting
                 ext: '.min.js'   // replace .js to .min.js
@@ -90,7 +95,8 @@ module.exports = function (grunt) {
                 jshintrc: 'src/assets/js/.jshintrc'
             },
             main: {
-                src: ['src/assets/js/*.js']
+                src: ['src/assets/js/*.js', 'src/assets/app/*.js', 
+                      'src/assets/pages/*.js']
             }
         },
         assemble: {
@@ -98,11 +104,22 @@ module.exports = function (grunt) {
             options: {
                 flatten: true,
                 postprocess: require('pretty'),
-                assets: 'dist/assets',
+                assets: admin_assets_dist_dir,
                 data: 'src/data/*.{json,yml}',
                 partials: ['src/templates/partials/**/*.hbs'],
                 helpers: 'src/helper/**/*.js',
                 layoutdir: 'src/templates/layouts'
+            },
+            // site librelio.com
+            site: {
+                // Target-level options
+                options: {
+                    layout: 'site_default.hbs',
+                    assets: site_assets_dist_dir
+                },
+                files: [
+                    {expand: true, cwd: 'src/templates/site', src: ['*.hbs'], dest: site_dist_dir}
+                ]
             },
             pages: {
                 // Target-level options
@@ -110,7 +127,7 @@ module.exports = function (grunt) {
                     layout: 'default.hbs'
                 },
                 files: [
-                    {expand: true, cwd: 'src/templates/pages', src: ['*.hbs'], dest: 'dist/'}
+                    {expand: true, cwd: 'src/templates/pages', src: ['*.hbs'], dest: admin_dist_dir}
                 ]
             },
             login: {
@@ -118,12 +135,12 @@ module.exports = function (grunt) {
                     layout: 'login.hbs'
                 },
                 files: [
-                    {expand: true, cwd: 'src/templates/login', src: ['login.hbs'], dest: 'dist/'}
+                    {expand: true, cwd: 'src/templates/login', src: ['login.hbs'], dest: admin_dist_dir}
                 ]
             },
             svg_editor: {
                 files: [
-                    {expand: true, cwd: 'src/templates/svgedit', src: ['svgedit.hbs'], dest: 'dist/'}
+                    {expand: true, cwd: 'src/templates/svgedit', src: ['svgedit.hbs'], dest: admin_dist_dir}
                 ]
             },
             errors: {
@@ -131,7 +148,7 @@ module.exports = function (grunt) {
                     layout: 'errors.hbs'
                 },
                 files: [
-                    {expand: true, cwd: 'src/templates/errors', src: ['*.hbs'], dest: 'dist/'}
+                    {expand: true, cwd: 'src/templates/errors', src: ['*.hbs'], dest: admin_dist_dir}
                 ]
             },
             countdown: {
@@ -139,7 +156,7 @@ module.exports = function (grunt) {
                     layout: 'countdown.hbs'
                 },
                 files: [
-                    {expand: true, cwd: 'src/templates/countdown', src: ['*.hbs'], dest: 'dist/'}
+                    {expand: true, cwd: 'src/templates/countdown', src: ['*.hbs'], dest: admin_dist_dir}
                 ]
             }
         },
@@ -150,99 +167,160 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: 'src/assets/css',
                         src: ['./**/*.*'],
-                        dest: 'dist/assets/css'
+                        dest: admin_assets_dist_dir + '/css'
                     },
                     {
                         expand: true,
                         cwd: 'src/assets/js',
                         src: ['./*.js', './pages/*.js'],
-                        dest: 'dist/assets/js'
+                        dest: admin_assets_dist_dir + '/js'
                     },
                     {
                         expand: true,
                         cwd: 'src/assets/lib',
                         src: ['./**/*', './*.*','./*/*.*','./*/css/*.*','./*/img/*.*','./*/js/**/*.*','./datatables/**/*.*',],
-                        dest: 'dist/assets/lib'
+                        dest: admin_assets_dist_dir + '/lib'
                     },
                     {
                         expand: true,
                         cwd: 'src/assets/img',
                         src: ['./**/*.*'],
-                        dest: 'dist/assets/img'
+                        dest: admin_assets_dist_dir + '/img'
                     },
                     {
                         expand: true,
                         cwd: 'src/assets/submodule',
                         src: ['./*/*.*','./*/css/*.*','./*/build/css/bootstrap3/*.*','./*/js/*.*','./*/src/js/*.*','./*/build/js/*.*','./*/reader/**/*.*','./*/themes/**'],
                         filter: 'isFile',
-                        dest: 'dist/assets/lib'
+                        dest: admin_assets_dist_dir + '/lib'
                     },
                     {
                         expand: true,
                         cwd: 'src/ember',
                         src: ['*.html'],
-                        dest: 'dist'
+                        dest: admin_dist_dir
                     },
                     {
                         expand: true,
                         cwd: 'node_modules/assemble-less/node_modules/less/dist/',
                         src: ['less-1.6.3.min.js'],
-                        dest: 'dist/assets/lib'
+                        dest: admin_assets_dist_dir + '/lib'
                     },
                     {
                         expand: true,
                         cwd: 'bower_components/jquery/dist',
                         src: ['./**/jquery*.min.*'],
-                        dest: 'dist/assets/lib'
+                        dest: admin_assets_dist_dir + '/lib'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/d3',
+                        src: ['d3.min.js'],
+                        dest: admin_assets_dist_dir + '/lib'
                     },
                     {
                         expand: true,
                         cwd: 'bower_components/bootstrap/dist/',
                         src: ['./**/*.*'],
-                        dest: 'dist/assets/lib/bootstrap'
+                        dest: admin_assets_dist_dir + '/lib/bootstrap'
                     },
                     {
                         expand: true,
                         cwd: 'bower_components/font-awesome/',
                         src: ['./css/*.*', './fonts/*.*'],
-                        dest: 'dist/assets/lib/Font-Awesome'
+                        dest: admin_assets_dist_dir + '/lib/Font-Awesome'
                     },
                     {
                         expand: true,
                         cwd: 'bower_components/gmaps/',
                         src: ['./**/gmaps.js'],
-                        dest: 'dist/assets/lib/gmaps'
+                        dest: admin_assets_dist_dir + '/lib/gmaps'
                     },
                     {
                         expand: true,
                         cwd: 'bower_components/html5shiv/dist',
                         src: ['./html5shiv.js'],
-                        dest: 'dist/assets/lib/html5shiv'
+                        dest: admin_assets_dist_dir + '/lib/html5shiv',
                     },
                     {
                         expand: true,
                         cwd: 'bower_components/respond/dest',
                         src: ['./respond.min.js'],
-                        dest: 'dist/assets/lib/respond'
+                        dest: admin_assets_dist_dir + '/lib/respond'
                     },
-		     {
+		            {
                         expand: true,
                         cwd: 'src/assets/less',
                         src: ['./**/theme.less'],
-                        dest: 'dist/assets/less'
+                        dest: admin_assets_dist_dir + '/less'
                     },
-		     {
-		       expand: true,
-		     cwd: 'node_modules/epiceditor/epiceditor',
-		     src: ['./**/*.*'],
-		     dest: 'dist/assets/lib/epiceditor'
-		    },
-                     {
+		            {
+		                expand: true,
+		                cwd: 'node_modules/epiceditor/epiceditor',
+		                src: ['./**/*.*'],
+		                dest: admin_assets_dist_dir + '/lib/epiceditor'
+		            },
+                    {
                        expand: true,
                      cwd: 'node_modules/screenfull/dist/',
                      src: ['./**/*.*'],
-                     dest: 'dist/assets/lib/screenfull/'
-                    }
+                     dest: admin_assets_dist_dir + '/lib/screenfull/'
+                    },
+                    /* copy site assets */
+                    {
+                        expand: true,
+                        cwd: 'bower_components/html5shiv/dist',
+                        src: ['./html5shiv.js'],
+                        dest: site_assets_dist_dir + '/lib/html5shiv'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/respond/dest',
+                        src: ['./respond.min.js'],
+                        dest: site_assets_dist_dir + '/lib/respond'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/font-awesome/fonts/',
+                        src: ['*'],
+                        dest: site_assets_dist_dir + '/fonts'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/site_assets/css',
+                        src: ['*.css'],
+                        dest: site_assets_dist_dir + '/css'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/jquery/dist',
+                        src: ['./**/jquery*.min.*'],
+                        dest: site_assets_dist_dir + '/lib'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/bootstrap/dist/',
+                        src: ['./**/*.*'],
+                        dest: site_assets_dist_dir + '/lib/bootstrap'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/site_assets/lib',
+                        src: ['./**/*'],
+                        dest: site_assets_dist_dir + '/lib'
+                    },
+                    {
+                        expand:  true,
+                        cwd: 'src/site_assets/js',
+                        src: ['*.js'],
+                        dest: site_assets_dist_dir + '/js'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/site_assets/img',
+                        src: ['./**/*.*'],
+                        dest: site_assets_dist_dir + '/img'
+                    }   
                 ]
             }
         },

@@ -1,0 +1,22 @@
+/*
+ Theme Name:   Librelio
+ Theme URI:    http://www.librelio.com
+ Description:  Librelio Website Theme
+ Author:       Librelio
+ Author URI:   http://www.librelio.com
+ Version:      1.0.0
+ Tags:         light, dark, two-columns, right-sidebar, responsive-layout, accessibility-ready
+ Text Domain:  libreliositetheme
+*/
+
+
+.newsletter .gform_wrapper .top_label .gfield_label {
+	display:none;
+}
+
+.newsletter  .gform_wrapper input{
+	font-size:inherit;
+	padding:inherit;
+	
+}
+
