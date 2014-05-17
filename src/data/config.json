@@ -4,5 +4,7 @@
     "s3BucketRegion": "eu-west-1",
     "storageAppNameKey": "librelio-app",
     "singleAppModeKey": "librelio-sappmode",
-    "awsExpireReverseInHours": 72
+    "awsExpireReverseInHours": 72,
+    "idFedFBAppId": "201544626555225",
+    "idFedFBUsersRoleArn": "arn:aws:iam::105216790221:role/RoleForFacebook"
 }
