@@ -16,8 +16,14 @@
 </a>
 </div>
 <div class="col-md-8 text-right copyright">
-	&copy; 2014 Librelio | Created in France | <a href="/mentions-legales">Legal</a> | 
-	<a href="#top" title="Got to top" class="scroll">
+	&copy; 2014 Librelio | Created in France
+{{#foreach_hbs_in 'src/templates/site/'}}
+{{#unless home_page}}
+| <a href="{{replace filename '.hbs' '.html'}}">{{label}}</a>
+{{/unless}}
+{{/foreach_hbs_in}}
+
+	| <a href="#top" title="Got to top" class="scroll">
 		To top 
 	<i class="fa fa-caret-up">
 	</i>
