@@ -22,8 +22,42 @@ title: Login Page
                 <button class="btn btn-primary btn-lg btn-block ladda-button" data-style="slide-down">
                     Log in
                 </button>
+                <br />
+                <div class="oauth2-wrp">
+<!--                   <div class="fb-login-button" data-max-rows="1" data-size="small" data-show-faces="false" data-auto-logout-link="false" onlogin="loggedInFacebook"></div> -->
+                  <a href="#" class="fb-signin-btn"><img alt="Sign in with facebook" src="{{assets}}/img/fb-signin-en.png" /></a>
+                  <a href="#" class="gp-signin-btn"><img alt="Sign in with google plus" src="{{assets}}/img/gp-signin-en.png" /></a>
+<!-- 
+                  <span
+                     id="gp-login-btn"
+                     class="g-signin"
+                     data-clientid="{{ config.idFedGPAppId }}"
+                     data-height="short"
+                     data-callback="loggedInGooglePlus"
+                     data-cookiepolicy="single_host_origin"
+                     data-requestvisibleactions="http://schemas.google.com/AddActivity"
+                     data-scope="https://www.googleapis.com/auth/plus.login">
+ -->
+                  </span>
+                </div>
             </form>
         </div>
  
 
 </div> <!-- /container -->
+
+<div id="fb-root"></div>
+<script>(function(d, s, id) {
+  var js, fjs = d.getElementsByTagName(s)[0];
+  if (d.getElementById(id)) return;
+  js = d.createElement(s); js.id = id;
+  js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId={{ config.idFedFBAppId }}&version=v2.0";
+  fjs.parentNode.insertBefore(js, fjs);
+}(document, 'script', 'facebook-jssdk'));</script>
+<script type="text/javascript">
+  (function() {
+    var po = document.createElement('script'); po.type = 'text/javascript'; po.async = true;
+    po.src = 'https://apis.google.com/js/client:plusone.js';
+    var s = document.getElementsByTagName('script')[0]; s.parentNode.insertBefore(po, s);
+  })();
+</script>

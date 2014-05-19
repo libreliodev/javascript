@@ -6,7 +6,12 @@ $(function(){
     
     // app-list dropdown impl
     /* load app's list and remove loading sign */
-    if(s3AuthObj && awsS3)
+    var singleAppMode = parseInt(storage.getItem(config.singleAppModeKey));
+    if(singleAppMode)
+    {
+        $('#app-list-dropdown').parent().hide();
+    }
+    else if(s3AuthObj && awsS3)
     {
         s3ListDirectories(awsS3, {
             Bucket: config.s3Bucket,

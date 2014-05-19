@@ -447,7 +447,9 @@ div.palette_item:first-child {
 	float: left;
 	padding-right: 5px;
 }
-
+#main_menu li a {
+    display: block;
+}
 #main_menu p {
 	margin-top: 5px;
 }

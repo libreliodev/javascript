@@ -73,13 +73,7 @@ by creating the following file and adding by calls to svgEditor.setConfig -->
 <script src="{{assets}}/js/utils.js"></script>
 <script src="{{assets}}/js/storage.js"></script>
 <script>
-  var config = {
-  "storageAuthKey": "{{ config.storageAuthKey }}",
-  "s3Bucket": "{{ config.s3Bucket }}",
-  "s3BucketRegion": "{{ config.s3BucketRegion }}",
-  "storageAppNameKey": "{{ config.storageAppNameKey }}",
-  "awsExpireReverseInHours": {{ config.awsExpireReverseInHours }}
-  };
+  var config = {{ jsonStringify config }};
 </script>
 <script src="{{assets}}/js/initS3Auth.js"></script>
 <script src="{{assets}}/js/svgedit.js"></script>
@@ -181,14 +175,13 @@ by creating the following file and adding by calls to svgEditor.setConfig -->
 				<div></div>
 				Document Properties (D)
 			</li>
+            <li>
+			  <div></div>
+			  <a href="publications.html" style="text-decoration:none;color:black;">
+				Close
+			  </a>
+            </li>
 		</ul>
-
-		<p>
-			<a href="http://svg-edit.googlecode.com/" target="_blank">
-				SVG-edit Home Page
-			</a>
-		</p>
-
 		<button id="tool_prefs_option">
 			Editor Options
 		</button>

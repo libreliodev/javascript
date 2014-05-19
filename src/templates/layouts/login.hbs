@@ -18,12 +18,7 @@
       <script src="{{assets}}/lib/formLoading/ladda.jquery.js"></script>
       <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc13.min.js"></script>
       <script>
-        var config = {
-            "storageAuthKey": "{{ config.storageAuthKey }}",
-            "s3Bucket": "{{ config.s3Bucket }}",
-            "s3BucketRegion": "{{ config.s3BucketRegion }}",
-            "storageAppNameKey": "{{ config.storageAppNameKey }}"
-        };
+        var config = {{ jsonStringify config }};
       </script>
 	  <script src="{{assets}}/js/login.js"></script>
     <script>

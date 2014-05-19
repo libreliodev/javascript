@@ -28,6 +28,7 @@
                if(err)
                    return cb && cb(err);
                svgEditor.loadFromString(res.Body.toString());
+               svgEditor.canvas.undoMgr.resetUndoStack();
                cb && cb();
            });
     }
@@ -148,11 +149,16 @@
                   if(err)
                       alert(err);
                   $.main_dialog_hide();
+                  svgEditor.curConfig.no_save_warning = true;
               });
         }
     });
     svgEditor.addExtension("openSVGFromApp", function(methods) {
         return {
+            elementChanged: function()
+            {
+                svgEditor.curConfig.no_save_warning = false;
+            },
             addlangData: function()
             {
                 return {
