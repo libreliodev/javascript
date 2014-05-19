@@ -133,17 +133,6 @@ $(function(){
              return false;
          });
 });
-function google_api_script_loaded()
-{
-    console.log('google_api_script_loaded');
-    gapi.signin.render('gp-signin-btn', {
-      'callback': 'loggedInGooglePlus',
-      'clientid': config.idFedGPAppId,
-      'cookiepolicy': 'single_host_origin',
-      'requestvisibleactions': 'http://schemas.google.com/AddActivity',
-      'scope': 'https://www.googleapis.com/auth/plus.login'
-    });
-}
 function idFedLogin(opts, cb)
 {
     /* opts_ex = {
@@ -159,11 +148,16 @@ function idFedLogin(opts, cb)
         // requests for users directory
         // at end of this method life it will call `cb(err)' and if there is
         var testfile = userDir + '/tf';
+        console.log('s3PutObject: ', {
+            Bucket: config.s3Bucket,
+            Key: testfile
+        });
         s3.putObject({
             Bucket: config.s3Bucket,
             Key: testfile
-        }, function()
-           {
+        }, function(err)
+          { 
+              console.log('s3PutObject Response: ', err ? err : 'ok');
                if(err)
                    return cb && cb(err);
                s3.deleteObject({
@@ -175,8 +169,7 @@ function idFedLogin(opts, cb)
                   });
            });
     }
-    console.log('login check');
-    console.log(opts.cred);
+    console.log('Web Identity cred: ', opts.cred);
     AWS.config.credentials = new AWS.WebIdentityCredentials(opts.cred);
 
     AWS.config.region = config.s3BucketRegion;
@@ -184,12 +177,14 @@ function idFedLogin(opts, cb)
     app_name = config.idFedAppName,
     rootDir = config.idFedS3RootDirectory,
     userDir = rootDir + '/' + app_name + '/' + opts.userDirname;
+    console.log('s3ListObjects: ', { Bucket: config.s3Bucket, Prefix: userDir });
     s3.listObjects({
         Bucket: config.s3Bucket,
         Prefix: userDir,
         MaxKeys: 1
     }, function(err, data)
        {
+           console.log('s3ListObjects Response: ', err, data);
            if(err)
            {
                cb && cb(err);
