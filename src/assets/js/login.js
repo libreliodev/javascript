@@ -115,23 +115,26 @@ $(function(){
              if($this.data('inProcess'))
                  return false;
              $this.data('inProcess', true);
-             if($this.hasClass('fb-signin-btn'))
-             {
-                 FB.login(function(response)
-                   {
-                       $this.data('inProcess', false);
-                       loggedInFacebook(response);
-                   })
-             }
-             else if($this.hasClass('gp-signin-btn'))
-             {
-                 gapi.auth.signIn({
-                     clientid: config.idFedGPAppId,
-                     cookiepolicy : 'single_host_origin',
-                     scope: 'https://www.googleapis.com/auth/plus.login',
-                     approvalprompt: 'force',
-                     callback: 'loggedInGooglePlus'
-                 });
+             try {
+                 if($this.hasClass('fb-signin-btn'))
+                 {
+                     FB.login(function(response)
+                              {
+                                  $this.data('inProcess', false);
+                                  loggedInFacebook(response);
+                              })
+                 }
+                 else if($this.hasClass('gp-signin-btn'))
+                 {
+                     gapi.auth.signIn({
+                         clientid: config.idFedGPAppId,
+                         cookiepolicy : 'single_host_origin',
+                         scope: 'https://www.googleapis.com/auth/plus.login',
+                         approvalprompt: 'force',
+                         callback: 'loggedInGooglePlus'
+                     });
+                 }
+             }catch(e) {
              }
              return false;
          });

@@ -43,9 +43,9 @@ $(function() {
 
     $("#asset-uploader").pluploadQueue({
         // General settings
-        runtimes: 'html5,html4',
+        runtimes: 'html5',
         url: 'https://' + config.s3Bucket + '.s3.amazonaws.com',
-        multipart: true,
+        //multipart: true,
         
         // Resize images on clientside if we can
         resize : {
@@ -70,23 +70,82 @@ $(function() {
             thumbs: true, // Show thumbs
             active: 'thumbs'
         },
- 
-        // Flash settings
-        flash_swf_url : 'assets/lib/plupload/Moxie.swf',
-     
-        // Silverlight settings
-        silverlight_xap_url : 'assets/lib/plupload/Moxie.xap'
+
+        multiple_queues: true
     });
     var asset_uploader = $("#asset-uploader").pluploadQueue();
-    asset_uploader.bind("BeforeUpload", function(up,file) {
-        var params = asset_uploader.settings.multipart_params;
-        params.key = $("#asset-uploader").data('current_dir') + file.name;
-        params.Filename = file.name;
-    });
+
+    if(s3AuthObj.type == 'idFed')
+    {
+        asset_uploader.unbind('UploadFile');
+	    asset_uploader.bind('UploadFile', function(up, file)
+          {
+              var filename = file.target_name || file.name;
+              function onCancelUpload()
+              {
+                  if(xhr)
+                      xhr.abort();
+              }
+              function unbindEvents()
+              {
+                  up.unbind('CancelUpload', onCancelUpload)
+              }
+		      up.bind('CancelUpload', onCancelUpload);
+              var  pub = $pubDlg.find('input[name=FolderName]').val(),
+              asset_dir = $("#asset-uploader").data('dir'),
+              dir = appDir + '/' + pub + (asset_dir ? '/' + asset_dir : ''),
+              xhr,
+              request = awsS3.putObject({
+                  Bucket: config.s3Bucket,
+                  Key: dir + '/' + filename,
+                  Body: file.getNative()
+              }, function(err, res)
+                 {
+                     unbindEvents();
+                     if(err)
+                     {
+                         console.error(err);
+                         up.trigger('Error', {
+					         code : plupload.HTTP_ERROR,
+					         message : plupload.translate('HTTP Error.'),
+					         file : file,
+					         response: err+'',
+					         status: xhr ? xhr.status : 'unknown',
+					         responseHeaders: 
+                             xhr ? xhr.getAllResponseHeaders() : {}
+				         });
+                         return;
+                     }
+                     file.loaded = file.size;
+                     up.trigger('UploadProgress', file);
+                     
+	                 file.status = plupload.DONE;
+				     up.trigger('FileUploaded', file, {
+					     response: 'success',
+					     status: 200,
+					     responseHeaders: {}
+				     });
+                 });
+              xhr = request.httpRequest.stream;
+              if(xhr && xhr.upload)
+                  $(xhr.upload).on('progress', function(ev)
+                     {
+                         ev = ev.originalEvent;
+					     file.loaded = ev.loaded;
+					     up.trigger('UploadProgress', file);
+				     });
+          });
+    }
+    else
+    {
+        asset_uploader.bind("BeforeUpload", function(up, file) {
+            var params = asset_uploader.settings.multipart_params;
+            params.key = $("#asset-uploader").data('current_dir') + file.name;
+            params.Filename = file.name;
+        });
+    }
     function setPLUploadInfoForPub(pub)
     {
-        if(s3AuthObj.type == 'idFed')
-            return;
         var d = new Date(new Date().getTime() + (60 * 60 * 1000)),
         asset_dir = $("#asset-uploader").data('dir'),
         dir = appDir + '/' + pub + '/' + (asset_dir ? asset_dir + '/' : ''),
@@ -235,6 +294,8 @@ $(function() {
                     $this.find('.fileinput-preview img').prop('src', '')
                         .remove();
                 });
+             
+             asset_uploader.stop();
          });
     var illegalPubs = [ "AAD", "APP__", "APP_", "APP_", "APW_" ];
     $pubDlg.find('.set-title-btn').click(function()
@@ -268,7 +329,8 @@ $(function() {
                     {
                         $(this).parent().hide();
                         $pubDlg.find('.pub-body-form').show();
-                        setPLUploadInfoForPub(title_val);
+                        if(s3AuthObj.type != 'idFed')
+                            setPLUploadInfoForPub(title_val);
                     }
                     else
                     {
@@ -301,7 +363,8 @@ $(function() {
                         if(this._s3Upload)
                             this._s3Upload.reload();
                     });
-                 setPLUploadInfoForPub(pub_name);
+                 if(s3AuthObj.type != 'idFed')
+                     setPLUploadInfoForPub(pub_name);
 
                  // list uploaded elements and add them to list
                  var pubDir = appDir + '/' + pub_name + '/',
