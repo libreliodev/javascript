@@ -177,10 +177,10 @@ function idFedLogin(opts, cb)
     app_name = config.idFedAppName,
     rootDir = config.idFedS3RootDirectory,
     userDir = rootDir + '/' + app_name + '/' + opts.userDirname;
-    console.log('s3ListObjects: ', { Bucket: config.s3Bucket, Prefix: userDir });
+    console.log('s3ListObjects: ', { Bucket: config.s3Bucket, Prefix: userDir + '/' });
     s3.listObjects({
         Bucket: config.s3Bucket,
-        Prefix: userDir,
+        Prefix: userDir + '/',
         MaxKeys: 1
     }, function(err, data)
        {
