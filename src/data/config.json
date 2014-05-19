@@ -5,6 +5,12 @@
     "storageAppNameKey": "librelio-app",
     "singleAppModeKey": "librelio-sappmode",
     "awsExpireReverseInHours": 72,
+    "idFedS3RootDirectory": "librelio",
+    "idFedAppName": "reader",
+    "idFedFBUserDirnamePrefix": "fb_",
+    "idFedGPUserDirnamePrefix": "gp_",
     "idFedFBAppId": "201544626555225",
-    "idFedFBUsersRoleArn": "arn:aws:iam::105216790221:role/RoleForFacebook"
+    "idFedFBUsersRoleArn": "arn:aws:iam::105216790221:role/RoleForFacebook",
+    "idFedGPAppId": "1012641315687.apps.googleusercontent.com",
+    "idFedGPUsersRoleArn": "arn:aws:iam::105216790221:role/RoleForGoogle"
 }
