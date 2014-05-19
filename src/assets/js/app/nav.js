@@ -7,11 +7,7 @@ $(function(){
     // app-list dropdown impl
     /* load app's list and remove loading sign */
     var singleAppMode = parseInt(storage.getItem(config.singleAppModeKey));
-    if(singleAppMode)
-    {
-        $('#app-list-dropdown').parent().hide();
-    }
-    else if(s3AuthObj && awsS3)
+    function listApps()
     {
         s3ListDirectories(awsS3, {
             Bucket: config.s3Bucket,
@@ -49,5 +45,16 @@ $(function(){
                }
                $('#app-list-dropdown-toggle .loading').hide();
            });
+    }
+    if(singleAppMode)
+    {
+        $('#app-list-dropdown').parent().hide();
+    }
+    else if(s3AuthObj.type != 'idFed')
+    {
+        if(awsS3)
+            listApps();
+        else
+            $(document).bind('awsS3Initialized', listApps);
     }
 });

@@ -94,32 +94,41 @@ function S3LoadUpload($upload, opts)
     switch(opts.type)
     {
     case 'Image':
-        var url = opts.s3.getSignedUrl('getObject', {
+        opts.s3.getSignedUrl('getObject', {
             Bucket: opts.Bucket,
             Key: opts.Key ? eval_opts_prop(opts.Key,['checkexists']) : 
                 eval_opts_prop(opts.Prefix,['checkexists']) + $inp.attr('name'),
             Expires: opts.signExpires ? eval_opts_prop(opts.signExpires) : 900
-        });
-        var $img = $('<img/>');
-        $upload.removeClass('fileinput-new')
-            .toggleClass('fileinput-exists', true);
-        $inp.data('exists', true);
-        $img.prop('src', url)
-            .bind('error', function()
-              {
-                  $inp.data('exists', false);
-                  $upload.toggleClass('fileinput-new', true)
-                      .removeClass('fileinput-exists');
-                  $img.remove();
-                  typeof opts.onFileExistCheck == 'function'  && 
-                      opts.onFileExistCheck.call($inp[0], false);
-              })
-            .bind('load', function()
-              {
-                  typeof opts.onFileExistCheck == 'function'  && 
-                      opts.onFileExistCheck.call($inp[0], true);
-              });
-        $upload.find('.fileinput-preview').empty().append($img);
+        }, function(err, url)
+           {
+               if(err)
+               {
+                   $inp.data('exists', false);
+                   typeof opts.onFileExistCheck == 'function'  && 
+                       opts.onFileExistCheck.call($inp[0], true);
+                   return;
+               }
+               var $img = $('<img/>');
+               $upload.removeClass('fileinput-new')
+                   .toggleClass('fileinput-exists', true);
+               $inp.data('exists', true);
+               $img.prop('src', url)
+                   .bind('error', function()
+                   {
+                       $inp.data('exists', false);
+                       $upload.toggleClass('fileinput-new', true)
+                           .removeClass('fileinput-exists');
+                       $img.remove();
+                       typeof opts.onFileExistCheck == 'function'  && 
+                           opts.onFileExistCheck.call($inp[0], false);
+                   })
+                   .bind('load', function()
+                   {
+                       typeof opts.onFileExistCheck == 'function'  && 
+                           opts.onFileExistCheck.call($inp[0], true);
+                   });
+               $upload.find('.fileinput-preview').empty().append($img);
+           });
         break;
     default:
         s3ObjectExists(opts.s3, {
@@ -442,6 +451,15 @@ root.startsWith = function(a, s, fn)
             r.push(a[i]);
     }
     return r;
+}
+
+root.redirectToLogin = function()
+{
+    var query,
+    path_fn = path.urlFilename(document.location);
+    if(path_fn != 'index.html' && path_fn !== '')
+        query = '?redirect=' + encodeURIComponent(path_fn);
+    document.location = "login.html" + (query || '');
 }
 
 })(window);

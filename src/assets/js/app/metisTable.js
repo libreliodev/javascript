@@ -1,6 +1,6 @@
 function metisTable() {
     "use strict";
-
+    try {
     /*----------- BEGIN TABLESORTER CODE -------------------------*/
     /* required jquery.tablesorter.min.js*/
     $(".sortableTable").tablesorter();
@@ -40,5 +40,7 @@ function metisTable() {
 
     });
     /*----------- END action table CODE -------------------------*/
+    }catch(e) {
 
+    }
 }

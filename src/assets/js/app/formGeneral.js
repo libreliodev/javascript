@@ -1,6 +1,6 @@
 function formGeneral() {
     "use strict";
-
+    try {
     $('.with-tooltip').tooltip({
         selector: ".input-tooltip"
     });
@@ -146,4 +146,8 @@ $('#dimension-switch').bootstrapSwitch('setSizeClass', 'switch-large');
     /*----------- BEGIN dualListBox CODE -------------------------*/
     $.configureBoxes();
     /*----------- END dualListBox CODE -------------------------*/
+    }catch(e) { 
+
+    }
+
 }

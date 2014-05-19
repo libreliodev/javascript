@@ -1,33 +1,43 @@
 $(function(){
 
     var app_name = storage.getItem(config.storageAppNameKey),
+    app_dir = s3AuthObj.rootDirectory + '/' + app_name + 
+        (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : ''),
     $adsTable = $('#adsDataTable'),
     ads_tableData = $adsTable.dataTable(),
     $adDlg = $('#adModal');
     if(!app_name)
         return;
-    updateAdsTable(app_name, $adsTable, ads_tableData);
+
+    if(awsS3)
+        workOnAwsS3();
+    else
+        $(document).bind('awsS3Initialized', workOnAwsS3);
+
+    function workOnAwsS3()
+    {
+        updateAdsTable(app_dir, $adsTable, ads_tableData);
+        $adDlg.find('.fileinput').each(function()
+           {
+               this._s3Upload = s3UploadInit($(this), {
+                   s3: awsS3,
+                   type: 'Image',
+                   Bucket: config.s3Bucket,
+                   Prefix: function()
+                   {
+                       var title = $adDlg.find('input[name=Title]').val();
+                       return app_dir + '/AAD/' + (title ? title + '/' : '');
+                   },
+                   signExpires: function()
+                   {
+                       return awsExpireReverse(config.awsExpireReverseInHours);
+                   },
+                   onerror: handleAWSS3Error,
+                   loadnow: false
+               });
+           });
+    }
     
-    $adDlg.find('.fileinput').each(function()
-         {
-             this._s3Upload = s3UploadInit($(this), {
-                 s3: awsS3,
-                 type: 'Image',
-                 Bucket: config.s3Bucket,
-                 Prefix: function()
-                 {
-                     var title = $adDlg.find('input[name=Title]').val();
-                     return s3AuthObj.rootDirectory + '/' + 
-                         app_name + '/AAD/' + (title ? title + '/' : '');
-                 },
-                 signExpires: function()
-                 {
-                     return awsExpireReverse(config.awsExpireReverseInHours);
-                 },
-                 onerror: handleAWSS3Error,
-                 loadnow: false
-             });
-         });
 
     $adDlg.on('hidden.bs.modal', function()
          {
@@ -94,14 +104,14 @@ $(function(){
          {
              var ad = $adDlg.data('adObj'),
              $this = $(this);
-             if($this.data('isLoading'))
+             if($this.data('isLoading') || !awsS3)
                  return false;
              $this.ladda({}).ladda('start').data('isLoading', true);
              
              ad = ad || {
                  Title: $adDlg.find('input[name=Title]').val()
              };
-             saveAdPlist(app_name, ad, function(err)
+             saveAdPlist(app_dir, ad, function(err)
                  {
                      $this.ladda('stop').data('isLoading', false);
                      if(err)
@@ -118,10 +128,10 @@ $(function(){
                  });
              return false;
          });
-    function saveAdPlist(app_name, ad, cb)
+    function saveAdPlist(app_dir, ad, cb)
     {
         var qlen = 0, qdone = 0, exit_proc,
-        aad_dir =  s3AuthObj.rootDirectory + '/' + app_name + '/AAD',
+        aad_dir = app_dir + '/AAD',
         obj = getObjectOfForm($adDlg),
         body = $.plist('toString', obj);
             
@@ -146,7 +156,7 @@ $(function(){
                           $this.val() || '';
                   });
             return ret;
-        }1
+        }
         function savePlist(key)
         {
             qlen++;
@@ -167,9 +177,9 @@ $(function(){
                });
         }
     }
-    function updateAdsTable(app_name, $table, tableData)
+    function updateAdsTable(app_dir, $table, tableData)
     {
-        getAdsTableData(app_name, function(err, ads)
+        getAdsTableData(app_dir, function(err, ads)
           {
               if(err)
               {
@@ -187,7 +197,7 @@ $(function(){
                           return ads[index];
                   }
               }
-              function updateAdsStatus()
+              function Status()
               {
                   var col = adTableColumns[2],
                   col_class = adTableColumns_class[2];
@@ -212,7 +222,7 @@ $(function(){
                   // start request
                   $this.toggleClass('disabled', true);
                   statusInProcess = true;
-                  toggleAdStatus(app_name, item, function(err)
+                  toggleAdStatus(app_dir, item, function(err)
                       {
                           $this.removeClass('disabled');
                           statusInProcess = false;
@@ -288,7 +298,7 @@ $(function(){
                   return false;
               }
 
-              var aad_dir =  s3AuthObj.rootDirectory + '/' + app_name + '/AAD',
+              var aad_dir =  app_dir + '/AAD',
               columns = adTableColumns,
               columns_class = adTableColumns_class;
               tableData.fnClearTable();
@@ -339,7 +349,7 @@ $(function(){
                 '</span>';
         }
     }
-    function getAdsTableData(app_name, cb)
+    function getAdsTableData(app_dir, cb)
     {
         function requestComplete()
         {
@@ -351,13 +361,7 @@ $(function(){
                 {
                     var ad = ads[i],
                     item = {
-                        Image: awsS3.getSignedUrl('getObject', {
-                            Bucket: config.s3Bucket,
-                            Key:  aad_dir + '/' + ad + '/Ad-Landscape~ipad.png',
-                            Expires: 
-                               awsExpireReverse(config.awsExpireReverseInHours)
-                            // helps to cache images for limited time
-                        }),
+                        Image: ads_img[i],
                         Title: ad,
                         Status: active_ad_name == ad
                     };
@@ -394,12 +398,12 @@ $(function(){
                 cb2.call(this, err, res);
             }
         }
-        var aad_dir =  s3AuthObj.rootDirectory + '/' + app_name + '/AAD',
+        var aad_dir = app_dir + '/AAD',
         exit_proc,
         qlen = 2,
         qdone = 0,
         active_ad,
-        ads;
+        ads, ads_img = [];
         
         awsS3.getObject({
             Bucket: config.s3Bucket,
@@ -418,11 +422,28 @@ $(function(){
             Prefix: aad_dir
         }, handleRequestWrapper(function(err, files)
            {
+               function loadAd(i, ad)
+               {
+                   qlen++;
+                   awsS3.getSignedUrl('getObject', {
+                       Bucket: config.s3Bucket,
+                       Key:  aad_dir + '/' + ad + '/Ad-Landscape~ipad.png',
+                       Expires: 
+                       awsExpireReverse(config.awsExpireReverseInHours)
+                       // helps to cache images for limited time
+                   }, function(err, url)
+                      {
+                          ads_img[i] = url || '';
+                          requestComplete();
+                      });
+               }
                ads = files;
+               for(var i = 0, l = ads.length; i < l; ++i)
+                   loadAd(i, ads[i])
                requestComplete();
            }));
     }
-    function toggleAdStatus(app_name, item, cb)
+    function toggleAdStatus(app_dir, item, cb)
     {
         function continue_job()
         {
@@ -432,7 +453,7 @@ $(function(){
                 cb && cb();
             }
         }
-        var aad_dir =  s3AuthObj.rootDirectory + '/' + app_name + '/AAD',
+        var aad_dir = app_dir + '/AAD',
         qlen = 0, qdone = 0, exit_proc,
         files = [
             'Ad.plist',

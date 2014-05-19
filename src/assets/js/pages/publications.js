@@ -1,9 +1,14 @@
 $(function() {
-
-    formDisplay();
+    function workOnAwsS3()
+    {
+        formDisplay();
+        $pubDlg.find('.fileinput').each(initUploadEl);
+        updatePubTable();
+    }
 
     var appName = storage.getItem(config.storageAppNameKey),
-    appDir = s3AuthObj.rootDirectory + '/' + appName,
+    appDir = s3AuthObj.rootDirectory + '/' + appName + 
+        (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : ''),
     $pubTable = $(".publicationDataTable"),
     publicationsTable = $pubTable.dataTable({
         "aaSorting": [[ 0, "desc" ]]
@@ -11,6 +16,17 @@ $(function() {
     $pubDlg = $('#pubModal');
     if(!appName)
         return;
+    
+    if(awsS3)
+        workOnAwsS3()
+    else
+        $(document).bind('awsS3Initialized', workOnAwsS3);
+        
+    $('.new-pub-btn').click(function()
+        {
+            if(!awsS3)
+                return false;
+        });
     $pubDlg.find('.svgedit-btn').bind('click', function()
           {
               var pub = $pubDlg.find('input[name=FolderName]').val(),
@@ -27,7 +43,7 @@ $(function() {
 
     $("#asset-uploader").pluploadQueue({
         // General settings
-        runtimes: 'html5,flash,silverlight,html4',
+        runtimes: 'html5,html4',
         url: 'https://' + config.s3Bucket + '.s3.amazonaws.com',
         multipart: true,
         
@@ -69,6 +85,8 @@ $(function() {
     });
     function setPLUploadInfoForPub(pub)
     {
+        if(s3AuthObj.type == 'idFed')
+            return;
         var d = new Date(new Date().getTime() + (60 * 60 * 1000)),
         asset_dir = $("#asset-uploader").data('dir'),
         dir = appDir + '/' + pub + '/' + (asset_dir ? asset_dir + '/' : ''),
@@ -100,7 +118,6 @@ $(function() {
         asset_uploader.setOption('multipart_params', post);
         asset_uploader.splice(0, asset_uploader.files.length);
     }
-    $pubDlg.find('.fileinput').each(initUploadEl);
     function uploadElEvalFilename(el, action)
     {
         var pub = $pubDlg.data('pubObj'),
@@ -154,8 +171,7 @@ $(function() {
             {
                 var title = $pubDlg.find('input[name=FolderName]').val(),
                 file = uploadElEvalFilename(this, action);
-                return s3AuthObj.rootDirectory + '/' + 
-                    appName + '/' + title + '/' + file;
+                return appDir + '/' + title + '/' + file;
             },
             signExpires: function()
             {
@@ -224,7 +240,7 @@ $(function() {
     $pubDlg.find('.set-title-btn').click(function()
          {
              var $this = $(this);
-             if($this.data('isLoading'))
+             if($this.data('isLoading') || !awsS3)
                  return false;
              var $title_inp = $pubDlg.find('input[name=FolderName]'),
              title_val = $title_inp.val();
@@ -330,79 +346,6 @@ $(function() {
                  });
              pubDlgUpdateType();
          });
-/*
-    $pubDlg.find('.action-btn').click(function()
-         {
-             var pub = $pubDlg.data('pubObj'),
-             $this = $(this);
-             if($this.data('isLoading') || (pub && pub.status == 'inactive'))
-                 return false;
-             $this.ladda({}).ladda('start').data('isLoading', true);
-             
-             var magazines_key = s3AuthObj.rootDirectory + '/' +
-                 appName + '/Magazines.plist';
-             awsS3.getObject({
-                 Bucket: config.s3Bucket,
-                 Key: magazines_key
-             }, function(err, res)
-                {
-                    var list;
-                    if(err && err.code != 'NoSuchKey')
-                    {
-                        $this.ladda('stop').data('isLoading', false);
-                        handleAWSS3Error(err);
-                        return;
-                    }
-                    else if(err)
-                        list = [];
-                    else
-                    {
-                        try {
-                            var xml = $.parseXML(res.Body.toString());
-                            list = xml ? $.plist(xml) : [];
-                        }catch(e) {
-                            list = [];
-                        }
-                    }
-                    var pub_info = getObjectOfForm($pubDlg[0]);
-                    // remove Type prop from list
-                    delete pub_info.Type;
-                    for(var i = 0, l = list.length; i < l; ++i)
-                        if(list[i])
-                        {
-                            list[i].FileName = list[i].FileName ||list[i].FolderName;
-                            delete list[i].FolderName;
-                            delete list[i].Type;
-                        }
-                    if(!insertPubInList(pub_info, list) && !pub)
-                    {
-                        $this.ladda('stop').data('isLoading', false);
-                        notifyUserError('Folder is already exists!');
-                        return;
-                    }
-                    
-
-                    var body = $.plist('toString', list);
-                    
-                    awsS3.putObject({
-                        Bucket: config.s3Bucket,
-                        Key: magazines_key,
-                        Body: body
-                    }, function(err)
-                       {
-                           $this.ladda('stop').data('isLoading', false);
-                           if(err)
-                               return handleAWSS3Error(err);
-                           pubDlgUpdated = true;
-                           if(pub)
-                               alert('Publication is updated successfully!');
-                           else
-                               alert('Publication is created successfully!');
-                       });
-                });
-             return false;
-         });
-*/
     function pubDlgEvalAttr(s, vars)
     {
         s = s+'';
@@ -465,18 +408,19 @@ $(function() {
             el._s3Upload.reload();
     }
 
-    if (s3AuthObj && awsS3) {
-
+    
+    function updatePubTable()
+    {
         s3ListAllObjects(awsS3, {
                 Bucket: config.s3Bucket,
-                Prefix: s3AuthObj.rootDirectory + '/'+appName+'/',
+                Prefix: appDir + '/',
                 Delimiter: '/'
             },
             function(error, apps) {
 
                 awsS3.getObject({
                     Bucket: config.s3Bucket,
-                    Key: s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist'
+                    Key: appDir+'/Magazines.plist'
                 }, function(err, activated) {
                     var appsList = apps.CommonPrefixes,
                     activeList;
@@ -633,6 +577,18 @@ $(function() {
                 });
             });
     }
+    function isolateFolderName(name) {
+        return name.replace(appDir + '/', "").replace("/", "");
+    }
+
+    function isolateFolderName2(name) {
+        return name.substring(	name.indexOf("/")+1, name.length-5);
+    }
+
+    function isolateFolderName3(name) {
+        return name.substring(	name.indexOf("/")+1, name.length-4);
+    }
+
 });
 
 function formDisplay() {
@@ -716,14 +672,13 @@ function inactivePublication(obj, publicationsTable) {
 }
 
 function activeServerRequest(obj, publicationsTable) {
-    var appName = storage.getItem(config.storageAppNameKey);
 
     var pTitle = $("input[name='pubTitleInput']").val();
     var pSubtitle = $("input[name='pubSubtitleInput']").val();
 
     awsS3.getObject({
         Bucket: window.config.s3Bucket,
-        Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist'
+        Key: appDir+'/Magazines.plist'
     }, function(err, activated) {
 
         //var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
@@ -746,7 +701,7 @@ function activeServerRequest(obj, publicationsTable) {
 
         var params = {
             Bucket: window.config.s3Bucket, // required
-            Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist',
+            Key: appDir+'/Magazines.plist',
             //Body: PlistParser.toPlist(activeList)
             Body: body
         };
@@ -765,11 +720,10 @@ function activeServerRequest(obj, publicationsTable) {
 }
 
 function inactiveServerRequest(obj, publicationsTable) {
-    var appName = storage.getItem(config.storageAppNameKey);
 
     awsS3.getObject({
         Bucket: window.config.s3Bucket,
-        Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist'
+        Key: appDir+'/Magazines.plist'
     }, function(err, activated) {
 
         var tmp = obj.data('filename'),
@@ -794,7 +748,7 @@ function inactiveServerRequest(obj, publicationsTable) {
 
         var params = {
             Bucket: window.config.s3Bucket, // required
-            Key: window.s3AuthObj.rootDirectory + '/'+appName+'/Magazines.plist',
+            Key: appDir+'/Magazines.plist',
             //Body: PlistParser.toPlist(activeList)
             Body: cleanKeys($.plist('toString', activeList))
         };
@@ -822,17 +776,6 @@ function addRowToTable(index, data, publicationsTable) {
     });
 }
 
-function isolateFolderName(name) {
-    return name.replace(s3AuthObj.rootDirectory + '/' + storage.getItem(config.storageAppNameKey) + '/', "").replace("/", "");
-}
-
-function isolateFolderName2(name) {
-    return name.substring(	name.indexOf("/")+1, name.length-5);
-}
-
-function isolateFolderName3(name) {
-    return name.substring(	name.indexOf("/")+1, name.length-4);
-}
 
 function deleteFromObject(obj, deleteValue) {
     var objToArray = $.map(obj, function(value, index) {

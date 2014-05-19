@@ -33,7 +33,8 @@ $(function(){
             $('button', form).prop('disabled', true);
             s3.listObjects({
                 Bucket: bucket,
-                Prefix: rootDirectory + "/",
+                Prefix: rootDirectory + "/" + 
+                    (selectedApp ? selectedApp + '/' : ''),
                 MaxKeys: 1
             }, function(err, data)
                {
@@ -42,15 +43,18 @@ $(function(){
                        if(selectedApp)
                            storage.setItem(config.storageAppNameKey,
                                            selectedApp);
+                       $submitBtn.ladda( 'stop' );
                        redirectLoggedInUser();
                    }
                    if(err)
                    {
+                       $submitBtn.ladda( 'stop' );
                        alert("Couldn't connect to aws s3: " + err);
                    }
                    else if(!data || !data.Contents || 
                            data.Contents.length <= 0)
                    {
+                       $submitBtn.ladda( 'stop' );
                        alert("Invalid directory!");
                    }
                    else
@@ -101,7 +105,6 @@ $(function(){
                        }
                    }
 
-                   $submitBtn.ladda( 'stop' );
                    $('button', form).prop('disabled', false);
                });
             return false;
@@ -139,6 +142,7 @@ function idFedLogin(opts, cb)
          cred: {
            RoleArn: roleArn, WebIdentityToken: token, ProviderId: providerId
          },
+         host: host,
          userDirname: userDirname
        }
      */
@@ -148,16 +152,11 @@ function idFedLogin(opts, cb)
         // requests for users directory
         // at end of this method life it will call `cb(err)' and if there is
         var testfile = userDir + '/tf';
-        console.log('s3PutObject: ', {
-            Bucket: config.s3Bucket,
-            Key: testfile
-        });
         s3.putObject({
             Bucket: config.s3Bucket,
             Key: testfile
         }, function(err)
           { 
-              console.log('s3PutObject Response: ', err ? err : 'ok');
                if(err)
                    return cb && cb(err);
                s3.deleteObject({
@@ -169,7 +168,6 @@ function idFedLogin(opts, cb)
                   });
            });
     }
-    console.log('Web Identity cred: ', opts.cred);
     AWS.config.credentials = new AWS.WebIdentityCredentials(opts.cred);
 
     AWS.config.region = config.s3BucketRegion;
@@ -177,14 +175,12 @@ function idFedLogin(opts, cb)
     app_name = config.idFedAppName,
     rootDir = config.idFedS3RootDirectory,
     userDir = rootDir + '/' + app_name + '/' + opts.userDirname;
-    console.log('s3ListObjects: ', { Bucket: config.s3Bucket, Prefix: userDir + '/' });
     s3.listObjects({
         Bucket: config.s3Bucket,
         Prefix: userDir + '/',
         MaxKeys: 1
     }, function(err, data)
        {
-           console.log('s3ListObjects Response: ', err, data);
            if(err)
            {
                cb && cb(err);
@@ -206,11 +202,12 @@ function idFedLogin(opts, cb)
         var auth_obj = {
             type: 'idFed',
             cred: opts.cred,
+            host: opts.host,
             userDirname: opts.userDirname,
             rootDirectory: rootDir
         };
         storage.type = 'local';
-        storage.setItem('storage-type', storage_t);
+        storage.setItem('storage-type', 'local');
         
         var prevObj = storage.getItem(config.storageAuthKey);
         if(!prevObj || prevObj.userDirname != auth_obj.userDirname)
@@ -234,6 +231,7 @@ function loggedInFacebook(response)
         var authResp = response.authResponse;
         idFedLogin({
             userDirname: config.idFedFBUserDirnamePrefix + authResp.userID,
+            host: 'facebook.com',
             cred: {
                 RoleArn: config.idFedFBUsersRoleArn,
                 WebIdentityToken: authResp.accessToken,
@@ -244,7 +242,7 @@ function loggedInFacebook(response)
 }
 function loggedInGooglePlus(response)
 {
-    if(!response.error)
+    if(!response.error && response.status.signed_in)
     {
         gapi.client.load('plus', 'v1', function()
            {
@@ -259,6 +257,7 @@ function loggedInGooglePlus(response)
                       idFedLogin({
                           userDirname: 
                                 config.idFedGPUserDirnamePrefix + resp.id,
+                          host: 'plus.google.com',
                           cred: {
                               RoleArn: config.idFedGPUsersRoleArn,
                               WebIdentityToken: response.id_token

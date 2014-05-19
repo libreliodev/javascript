@@ -2,7 +2,8 @@
 
     var doc_query = path.urlParseQuery(document.location),
     app_name = doc_query.app || storage.getItem(config.storageAppNameKey),
-    app_dir = s3AuthObj.rootDirectory + '/' + app_name;
+    app_dir = s3AuthObj.rootDirectory + '/' + app_name +
+        (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : '');
     $(function()
        {
            // load requested svg if exists

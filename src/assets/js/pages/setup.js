@@ -1,25 +1,33 @@
 $(function(){
     var app_name = storage.getItem(config.storageAppNameKey),
+    app_dir = app_name + 
+        (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : ''),
     $page = $('#setup-wrapper');
     if(!app_name)
         return;
-    loadSetupPage(app_name, $page);
-    $page.find('.fileinput').each(function()
-        {
-            s3UploadInit($(this), {
-                s3: awsS3,
-                type: 'Image',
-                Bucket: config.s3Bucket,
-                Prefix: s3AuthObj.rootDirectory + '/' + app_name + 
-                    '/APP_/Uploads/',
-                signExpires: function()
-                {
-                    return awsExpireReverse(config.awsExpireReverseInHours);
-                },
-                onerror: handleAWSS3Error
-            });
-        });
-    
+    if(awsS3)
+        workOnAwsS3();
+    else
+        $(document).bind('awsS3Initialized', workOnAwsS3);
+    function workOnAwsS3()
+    {
+        loadSetupPage(app_dir, $page);
+        $page.find('.fileinput').each(function()
+           {
+               s3UploadInit($(this), {
+                   s3: awsS3,
+                   type: 'Image',
+                   Bucket: config.s3Bucket,
+                   Prefix: s3AuthObj.rootDirectory + '/' + app_dir + 
+                       '/APP_/Uploads/',
+                   signExpires: function()
+                   {
+                       return awsExpireReverse(config.awsExpireReverseInHours);
+                   },
+                   onerror: handleAWSS3Error
+               });
+           });
+    }
     var isSaving = false;
     $page.find('input[type=text], textarea')
         .bind('focus', function()
@@ -31,6 +39,8 @@ $(function(){
                var $this = $(this),
                prev_val = $this.data('prev_value'),
                val = $this.val();
+               if(!awsS3)
+                   return;
                if(prev_val != val)
                {
                    $this.prop('disabled', true);
@@ -46,7 +56,7 @@ $(function(){
                                   $page.unbind('setupPlistSaved', 
                                                arguments.callee);
                                   isSaving = true;
-                                  saveSetupPlist(app_name, $page, save_handler);
+                                  saveSetupPlist(app_dir, $page, save_handler);
                               }
                               else if(dataSaved)
                               {
@@ -63,7 +73,7 @@ $(function(){
                        return;
                    }
                    isSaving = true;
-                   saveSetupPlist(app_name, $page, save_handler);
+                   saveSetupPlist(app_dir, $page, save_handler);
                    function save_handler(res)
                    {
                        $this.prop('disabled', false);
@@ -75,13 +85,13 @@ $(function(){
                    }
                }
            });
-    function loadSetupPage(app_name, $page, cb)
+    function loadSetupPage(app_dir, $page, cb)
     {
         $page.find('input[type=text], textarea').prop('disabled', true);
         // load setup plist file and set its content in the form
         awsS3.getObject({
             Bucket: config.s3Bucket,
-            Key: s3AuthObj.rootDirectory + '/' + app_name + 
+            Key: s3AuthObj.rootDirectory + '/' + app_dir + 
                 '/APP_/Uploads/setup_.plist',
             ResponseContentEncoding: 'utf8'
         }, function(err, res)
@@ -92,7 +102,7 @@ $(function(){
                    handleAWSS3Error(err)
                    return;
                }
-               var obj = $.plist($.parseXML(res.Body.toString())),
+               var obj = res ? $.plist($.parseXML(res.Body.toString())) : {},
                $inps = $page.find('input[type=text], textarea');
                for(var key in obj)
                {
@@ -105,7 +115,7 @@ $(function(){
                }
            });
     }
-    function saveSetupPlist(app_name, $page, cb)
+    function saveSetupPlist(app_dir, $page, cb)
     {
         function getObjectOfSetupPage($el)
         {
@@ -125,7 +135,7 @@ $(function(){
         // save setup plist file for input app
         awsS3.putObject({
             Bucket: config.s3Bucket,
-            Key: s3AuthObj.rootDirectory + '/' + app_name + 
+            Key: s3AuthObj.rootDirectory + '/' + app_dir + 
                 '/APP_/Uploads/setup_.plist',
             Body: body
         }, function(err, res)
