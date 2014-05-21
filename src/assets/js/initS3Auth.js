@@ -34,17 +34,17 @@ else
                     var gbtn_id = '_googleplus_btn',
                     gbtn_el = $('<div/>')
                         .prop('id', gbtn_id)
-                        .css('display', 'none')
-                        .appendTo('body');
+                        .appendTo($('<div/>').appendTo('body')
+                                  .css('display', 'none'))
+                        .append($('<div/>').html('Login'));
                     
-                    gapi.sigin.render(gbtn_id, {
+                    gapi.signin.render(gbtn_id, {
                         clientid: config.idFedGPAppId,
                         cookiepolicy : 'single_host_origin',
                         scope: 'https://www.googleapis.com/auth/plus.login',
-                        approvalprompt: 'force',
                         callback: '_google_plus_login_status'
                     });
-                    window._google_plus_login_status = function(respose)
+                    window._google_plus_login_status = function(response)
                     {
                         if(!response.error &&
                            response.status.signed_in)

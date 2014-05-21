@@ -135,6 +135,7 @@ $(function(){
                      });
                  }
              }catch(e) {
+                 $this.data('inProcess', false);
              }
              return false;
          });
@@ -171,7 +172,6 @@ function idFedLogin(opts, cb)
                   });
            });
     }
-    console.log('WebCred:', opts.cred);
     AWS.config.credentials = new AWS.WebIdentityCredentials(opts.cred);
 
     AWS.config.region = config.s3BucketRegion;
@@ -179,18 +179,12 @@ function idFedLogin(opts, cb)
     app_name = config.idFedAppName,
     rootDir = config.idFedS3RootDirectory,
     userDir = rootDir + '/' + app_name + '/' + opts.userDirname;
-    console.log('s3ListObjectsRequest: ', {
-        Bucket: config.s3Bucket,
-        Prefix: userDir + '/',
-        MaxKeys: 1
-    });
     s3.listObjects({
         Bucket: config.s3Bucket,
         Prefix: userDir + '/',
         MaxKeys: 1
     }, function(err, data)
        {
-           console.log('s3ListObjectsResponse: ', err, data);
            if(err)
            {
                cb && cb(err);
@@ -254,7 +248,6 @@ function loggedInGooglePlus(response)
 {
     if(!response.error && response.status.signed_in)
     {
-        console.log('loggedInViaGoogle', 'id_token: ' + response.id_token);
         gapi.client.load('plus', 'v1', function()
            {
                gapi.client.plus.people.get({ 'userId': 'me' })
@@ -265,7 +258,6 @@ function loggedInGooglePlus(response)
                           alert("Couldn't get users info!")
                           return;
                       }
-                      console.log('userInfo: ', resp, 'userId:', resp.id);
                       idFedLogin({
                           userDirname: 
                                 config.idFedGPUserDirnamePrefix + resp.id,
