@@ -1,0 +1,13 @@
+@readerWidth: 538px;
+@readerHeadlineHeight: 30px;
+@magazineColumnLength: 3;
+
+@magazineHorizontalOffset: 32px;
+@magazineVerticalOffset: 43px;
+@magazineImageRatio: 115.0/150;
+@magazineHeightConst: 80px;
+@magazineFontSize: 12px;
+
+@magazineWidth: @readerWidth / @magazineColumnLength - 
+                @magazineHorizontalOffset * 2;
+@magazineHeight: (@magazineWidth / @magazineImageRatio) + @magazineHeightConst;

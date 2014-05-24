@@ -1,0 +1,27 @@
+.reader-container {
+  position: relative;
+  width: @readerWidth;
+  margin: 0px auto;
+  padding-top: @readerHeadlineHeight;
+}
+.headline {
+  top: 0px;
+  position: fixed;
+  width: @readerWidth;
+  line-height: @readerHeadlineHeight;
+  margin-top: 0px;
+  z-index: 2;
+}
+.reader-background {
+  top: 0px;
+  position: fixed;
+  width: @readerWidth;
+  height: 100%;
+  background-repeat: no-repeat;
+  background-position: center center;
+  z-index: 0;
+}
+.reader-content {
+  position: relative;
+  z-index: 1;
+}

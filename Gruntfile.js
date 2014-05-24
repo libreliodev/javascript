@@ -11,6 +11,7 @@ module.exports = function (grunt) {
     
     var src_dir = 'src',
     shared_assets = src_dir + '/assets',
+    reader_assets_src_dir = src_dir + '/reader_assets',
     admin_assets_src_dir = src_dir + '/admin_assets';
   
     // Project configuration.
@@ -48,6 +49,10 @@ module.exports = function (grunt) {
                         src: ['*.less'],
                         dest: admin_assets_dist_dir + '/css/pages/',
                         ext: '.css'
+                    },
+                    {
+                        src: [reader_assets_src_dir + '/less/main.less'],
+                        dest: reader_assets_dist_dir + '/css/main.css'
                     }
                 ]
             },
@@ -66,6 +71,10 @@ module.exports = function (grunt) {
                         src: ['*.less'],
                         dest: admin_assets_dist_dir + '/css/pages/',
                         ext: '.min.css'
+                    },
+                    {
+                        src: [reader_assets_src_dir + '/less/main.less'],
+                        dest: reader_assets_dist_dir + '/css/main.min.css'
                     }
                 ]
             }
@@ -94,6 +103,13 @@ module.exports = function (grunt) {
                 expand: true,    // allow dynamic building
                 flatten: true,   // remove all unnecessary nesting
                 ext: '.min.js'   // replace .js to .min.js
+            },
+            readerJSDir: {
+                src: reader_assets_src_dir + '/js/*.js',
+                dest: reader_assets_dist_dir + '/js/',
+                expand: true,    // allow dynamic building
+                flatten: true,   // remove all unnecessary nesting
+                ext: '.min.js'   // replace .js to .min.js
             }
         },
         jshint: {
@@ -103,6 +119,9 @@ module.exports = function (grunt) {
             main: {
                 src: [admin_assets_src_dir + '/js/*.js', admin_assets_src_dir + '/app/*.js', 
                       admin_assets_src_dir + '/pages/*.js']
+            },
+            reader: {
+                src: [reader_assets_src_dir + '/js/*.js']
             }
         },
         assemble: {
@@ -183,17 +202,17 @@ module.exports = function (grunt) {
                   /* copy shared assets to all apps */
                     {
                         expand: true,
-                        cwd: shared_assets, src: '**',
+                        cwd: shared_assets, src: ['lib/**','img/**','js/**'],
                         dest: admin_assets_dist_dir + '/'
                     },
                     {
                         expand: true,
-                        cwd: shared_assets, src: '**',
+                        cwd: shared_assets, src: ['lib/**','img/**','js/**'],
                         dest: site_assets_dist_dir + '/'
                     },
                     {
                         expand: true,
-                        cwd: shared_assets, src: '**',
+                        cwd: shared_assets, src: ['lib/**','img/**','js/**'],
                         dest: reader_assets_dist_dir + '/'
                     },
                     {
@@ -393,9 +412,33 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/async/lib',
+                        src: 'async.js',
+                        dest: reader_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/path/',
+                        src: 'path*.js',
+                        dest: reader_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/querystring/',
+                        src: 'querystring*.js',
+                        dest: reader_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
                         cwd: 'src/templates/reader',
                         src: './application_.json',
                         dest: reader_dist_dir + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: reader_assets_src_dir + '/js',
+                        src: ['*.js'],
+                        dest: reader_assets_dist_dir + '/js/'
                     },
                   
                 ]

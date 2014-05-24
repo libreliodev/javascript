@@ -1,0 +1,56 @@
+.magazines {
+  list-style: none;
+  padding: 0px;
+  margin: 0px;
+}
+.mag-item {
+  .elmHeightFromConst(@r) {
+    @height: (@magazineHeight - (@magazineWidth / @magazineImageRatio)) * 
+         (@r / @magazineHeightConst);
+  }
+  display: inline-block;
+  vertical-align: top;
+  overflow: hidden;
+  width: @magazineWidth;
+  height: @magazineHeight;
+  font-size: @magazineFontSize;
+  margin: @magazineVerticalOffset @magazineHorizontalOffset;
+  .mag-title,
+  .mag-subtitle {
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    .elmHeightFromConst(14);
+    @offset: .142;
+    line-height: round(@height - @height * @offset);
+    margin-bottom: round(@height * @offset);
+  }
+  .label {
+    display: block;
+    font-weight: bold;
+    .elmHeightFromConst(18);
+    line-height: round(@height);
+    padding: 0px;
+    font-size: @magazineFontSize;
+    cursor: pointer;
+  }
+  .mag-read-btn {
+    .elmHeightFromConst(6);
+    margin-bottom: round(@height);
+  }
+  .mag-thumbnail {
+    width: @magazineWidth;
+    height: @magazineWidth/@magazineImageRatio;
+    display: block;
+    .elmHeightFromConst(100);
+    margin-bottom: round(@height * 0.07);
+    margin-top: round(@height * 0.04);
+  }
+  .mag-free-type, .mag-paid-type {
+    display: none;
+  }
+}
+.mag-type-free .mag-free-type,
+.mag-type-paid .mag-paid-type {
+  display: block;
+}
