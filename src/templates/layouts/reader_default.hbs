@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!--IE Compatibility modes-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{assets}}/lib/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{assets}}/lib/Font-Awesome/css/font-awesome.min.css">
+    {{#if stylesheets}}
+    {{css stylesheets}}
+    {{/if}}
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="{{assets}}/lib/html5shiv/html5shiv.js"></script>
+        <script src="{{assets}}/lib/respond/respond.min.js"></script>
+        <![endif]-->
+    <!--Modernizr 3.0-->
+    <script src="{{assets}}/lib/modernizr-build.min.js"></script>
+
+    <script src="{{assets}}/lib/jquery.min.js"></script>
+    <script src="{{assets}}/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{assets}}/lib/bootbox.min.js"></script>
+
+    <script>
+      var config = {{ jsonStringify config }};
+    </script>
+    {{#if javascripts}}
+    {{js javascripts}}
+    {{/if}}
+
+    {{#if scripts}}
+    <script>
+      {{scripts}}
+    </script>
+    {{/if}}
+
+  </head>
+  <body>
+<!-- main-content -->
+{{> body }}
+<!-- #main-content -->
+  </body>
+</html>

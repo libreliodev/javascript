@@ -5,8 +5,14 @@ module.exports = function (grunt) {
     admin_dist_dir = dist_dir + '/admin',
     admin_assets_dist_dir = admin_dist_dir + '/assets',
     site_dist_dir = dist_dir + '/www',
-    site_assets_dist_dir = site_dist_dir + '/assets';
+    site_assets_dist_dir = site_dist_dir + '/assets',
+    reader_dist_dir = dist_dir + '/reader',
+    reader_assets_dist_dir = reader_dist_dir + '/assets';
     
+    var src_dir = 'src',
+    shared_assets = src_dir + '/assets',
+    admin_assets_src_dir = src_dir + '/admin_assets';
+  
     // Project configuration.
     grunt.initConfig({
         // Metadata
@@ -33,12 +39,12 @@ module.exports = function (grunt) {
             development: {
                 files: [
                     {
-                        src: ['src/assets/less/style.less'],
+                        src: [admin_assets_src_dir + '/less/style.less'],
                         dest: admin_assets_dist_dir + '/css/main.css'
                     },
                     {
                         expand: true,
-                        cwd: 'src/assets/less/pages',
+                        cwd: admin_assets_src_dir + '/less/pages',
                         src: ['*.less'],
                         dest: admin_assets_dist_dir + '/css/pages/',
                         ext: '.css'
@@ -51,12 +57,12 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {
-                        src: ['src/assets/less/style.less'],
+                        src: [admin_assets_src_dir + '/less/style.less'],
                         dest: admin_assets_dist_dir + '/css/main.min.css'
                     },
                     {
                         expand: true,
-                        cwd: 'src/assets/less/pages',
+                        cwd: admin_assets_src_dir + '/less/pages',
                         src: ['*.less'],
                         dest: admin_assets_dist_dir + '/css/pages/',
                         ext: '.min.css'
@@ -70,7 +76,7 @@ module.exports = function (grunt) {
                 stripBanners: false
             },
             main: {
-                src: ['src/assets/js/app/*.js', 'src/assets/js/initS3Auth.js'],
+                src: [admin_assets_src_dir + '/js/app/*.js', admin_assets_src_dir + '/js/initS3Auth.js'],
                 dest: admin_assets_dist_dir + '/js/main.js'
             }
         },
@@ -83,7 +89,7 @@ module.exports = function (grunt) {
                 dest: admin_assets_dist_dir + '/js/main.min.js'
             },
             setupPage: {
-                src: 'src/assets/js/pages/*.js',
+                src: admin_assets_src_dir + '/js/pages/*.js',
                 dest: admin_assets_dist_dir + '/js/pages/',
                 expand: true,    // allow dynamic building
                 flatten: true,   // remove all unnecessary nesting
@@ -92,11 +98,11 @@ module.exports = function (grunt) {
         },
         jshint: {
             options: {
-                jshintrc: 'src/assets/js/.jshintrc'
+                jshintrc: admin_assets_src_dir + '/js/.jshintrc'
             },
             main: {
-                src: ['src/assets/js/*.js', 'src/assets/app/*.js', 
-                      'src/assets/pages/*.js']
+                src: [admin_assets_src_dir + '/js/*.js', admin_assets_src_dir + '/app/*.js', 
+                      admin_assets_src_dir + '/pages/*.js']
             }
         },
         assemble: {
@@ -109,6 +115,17 @@ module.exports = function (grunt) {
                 partials: ['src/templates/partials/**/*.hbs'],
                 helpers: 'src/helper/**/*.js',
                 layoutdir: 'src/templates/layouts'
+            },
+            // Reader
+            reader: {
+                // Target-level options
+                options: {
+                    layout: 'reader_default.hbs',
+                    assets: reader_assets_dist_dir
+                },
+                files: [
+                    {expand: true, cwd: 'src/templates/reader', src: ['*.hbs'], dest: reader_dist_dir}
+                ]
             },
             // site librelio.com
             site: {
@@ -163,33 +180,49 @@ module.exports = function (grunt) {
         copy: {
             main: {
                 files: [
+                  /* copy shared assets to all apps */
                     {
                         expand: true,
-                        cwd: 'src/assets/css',
+                        cwd: shared_assets, src: '**',
+                        dest: admin_assets_dist_dir + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: shared_assets, src: '**',
+                        dest: site_assets_dist_dir + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: shared_assets, src: '**',
+                        dest: reader_assets_dist_dir + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: admin_assets_src_dir + '/css',
                         src: ['./**/*.*'],
                         dest: admin_assets_dist_dir + '/css'
                     },
                     {
                         expand: true,
-                        cwd: 'src/assets/js',
+                        cwd: admin_assets_src_dir + '/js',
                         src: ['./*.js', './pages/*.js'],
                         dest: admin_assets_dist_dir + '/js'
                     },
                     {
                         expand: true,
-                        cwd: 'src/assets/lib',
+                        cwd: admin_assets_src_dir + '/lib',
                         src: ['./**/*', './*.*','./*/*.*','./*/css/*.*','./*/img/*.*','./*/js/**/*.*','./datatables/**/*.*',],
                         dest: admin_assets_dist_dir + '/lib'
                     },
                     {
                         expand: true,
-                        cwd: 'src/assets/img',
+                        cwd: admin_assets_src_dir + '/img',
                         src: ['./**/*.*'],
                         dest: admin_assets_dist_dir + '/img'
                     },
                     {
                         expand: true,
-                        cwd: 'src/assets/submodule',
+                        cwd: admin_assets_src_dir + '/submodule',
                         src: ['./*/*.*','./*/css/*.*','./*/build/css/bootstrap3/*.*','./*/js/*.*','./*/src/js/*.*','./*/build/js/*.*','./*/reader/**/*.*','./*/themes/**'],
                         filter: 'isFile',
                         dest: admin_assets_dist_dir + '/lib'
@@ -250,7 +283,7 @@ module.exports = function (grunt) {
                     },
 		            {
                         expand: true,
-                        cwd: 'src/assets/less',
+                        cwd: admin_assets_src_dir + '/less',
                         src: ['./**/theme.less'],
                         dest: admin_assets_dist_dir + '/less'
                     },
@@ -320,7 +353,51 @@ module.exports = function (grunt) {
                         cwd: 'src/site_assets/img',
                         src: ['./**/*.*'],
                         dest: site_assets_dist_dir + '/img'
-                    }   
+                    },
+                  /* copy reader assets */
+                    {
+                        expand: true,
+                        cwd: 'bower_components/html5shiv/dist',
+                        src: ['./html5shiv.js'],
+                        dest: reader_assets_dist_dir + '/lib/html5shiv'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/respond/dest',
+                        src: ['./respond.min.js'],
+                        dest: reader_assets_dist_dir + '/lib/respond'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/jquery/dist',
+                        src: ['./**/jquery*.min.*'],
+                        dest: reader_assets_dist_dir + '/lib'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/reader_assets/lib',
+                        src: ['./**/*'],
+                        dest: reader_assets_dist_dir + '/lib'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/bootstrap/dist/',
+                        src: ['./**/*.*'],
+                        dest: reader_assets_dist_dir + '/lib/bootstrap'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/font-awesome/',
+                        src: ['./css/*.*', './fonts/*.*'],
+                        dest: reader_assets_dist_dir + '/lib/Font-Awesome'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/templates/reader',
+                        src: './application_.json',
+                        dest: reader_dist_dir + '/'
+                    },
+                  
                 ]
             }
         },
