@@ -64,7 +64,9 @@ required [node.js](http://nodejs.org/) & [bower](http://bower.io/) & [grunt](htt
  * [bootstrap-wysihtml5](http://jhollingworth.github.io/bootstrap-wysihtml5/)
  * [Suitcss Flex-Embed](https://github.com/suitcss/flex-embed)
  * [screenfull.js](https://github.com/sindresorhus/screenfull.js)
+ * [node2web_path](https://github.com/anodynos/node2web_path)
+ * [async.js](https://github.com/caolan/async)
 
 ### Licensing
 
-Librelio Admin is open-sourced software licensed under the [MIT License](LICENSE.md).
+This project is open-sourced software licensed under the [MIT License](LICENSE.md).
