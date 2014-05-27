@@ -400,6 +400,12 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'src/reader_assets/img',
+                        src: ['./**/*'],
+                        dest: reader_assets_dist_dir + '/img'
+                    },
+                    {
+                        expand: true,
                         cwd: 'bower_components/bootstrap/dist/',
                         src: ['./**/*.*'],
                         dest: reader_assets_dist_dir + '/lib/bootstrap'

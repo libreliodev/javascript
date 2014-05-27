@@ -8,13 +8,13 @@
     @height: (@magazineHeight - (@magazineWidth / @magazineImageRatio)) * 
          (@r / @magazineHeightConst);
   }
-  display: inline-block;
+  display: block;
   vertical-align: top;
   overflow: hidden;
   width: @magazineWidth;
   height: @magazineHeight;
   font-size: @magazineFontSize;
-  margin: @magazineVerticalOffset @magazineHorizontalOffset;
+  margin: @magazineVerticalOffset auto;
   .mag-title,
   .mag-subtitle {
     text-align: center;

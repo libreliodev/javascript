@@ -44,21 +44,7 @@ $(function(){
   }
   function magazines_init(list)
   {
-    // initialize list-items by data-id
-    var lis = {},
-    first_li;
-    list.find(' > li').each(function()
-      {
-        var $this = $(this),
-        id = $this.data('id') || 'default';
-        if(!first_li)
-          first_li = id;
-        lis[id] = $this;
-        $this.remove();
-      })
-    list.data('list-items', lis);
-    if(!list.data('default-list-item'))
-      list.attr('data-default-list-item', first_li);
+    list.dhtml('list_init');
     function catchLIElement(el)
     {
       var li = $(el).parent();
@@ -96,45 +82,8 @@ $(function(){
         sample_btn: 'Sample'
       }
     };
-    function getProp(item, prop)
-    {
-      function subrout(v)
-      {
-        for(var i = 0, l = a.length; i < l && v; ++i)
-          v = v[a[i]];
-        return v;
-      }
-      var a = prop.split('.');
-      if(a.length < 0)
-        return null;
-      var v = subrout(item);
-      if(!v)
-        v = subrout(defined_objects)
-      return v;
-    }
-    var lis = list.data('list-items'),
-    default_li = list.data('default-list-item');
-    if(!lis[default_li])
-      throw new Error("Default list item is unknown!");
-    var li = lis[default_li].clone(); 
+    var li = list.dhtml('list_new_item', null, [ item, defined_objects ]);
     li.addClass('mag-type-' + (item.type == MAG_TYPE_PAID ? 'paid' : 'free'));
-    li.find('*').each(function()
-      {
-        var $el = $(this),
-        key = $el.data('key');
-        if(key)
-          $el.text(getProp(item, key) || '');
-        var akeys = ($el.data('attr-keys') || '').split(',');
-        $.each(akeys, function(i, k)
-          {
-            var idx = k.indexOf('='),
-            attr = idx == -1 ? k : k.substr(0, idx),
-            key = idx == -1 ? k : k.substr(idx + 1),
-            val = getProp(item, key);
-            if(val)
-              $el.attr(attr, val);
-          });
-      });
     return li;
   }
   function magazines_load(data, list, cb)
@@ -154,7 +103,6 @@ $(function(){
              item.type = magazine_type(fn);
              item.ThumbnailUrl = 
                magazine_file_url(data, magazine_get_thumbnail_by_filename(fn))
-             console.log(item);
              list.append(magazines_create_item(item, data, list)
                          .data('item', item));
            }
@@ -185,12 +133,5 @@ $(function(){
     var bn = path.basename(fn, path.extname(fn));
     return bn.length > 0 && bn[bn.length - 1] == '_' ? 
       MAG_TYPE_PAID : MAG_TYPE_FREE;
-  }
-  function get_url_query(url)
-  {
-    var idx = url.indexOf('?'),
-    idx2 = url.indexOf('#');
-    return idx == -1 ? '' : 
-      (idx2 == -1 ? url.substr(idx + 1) : url.substring(idx + 1, idx2));
   }
 });

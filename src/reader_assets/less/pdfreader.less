@@ -1,0 +1,63 @@
+@pdfviewer-page-item-width: 75px;
+@pdfviewer-page-item-height: 100px;
+
+.pdfviewer {
+  overflow: auto;
+  .pdfviewer-canvas {
+    position: relative;
+  }
+  .page-selector {
+    background: white;
+    position: fixed;
+    width: 100%;
+    bottom: 0px;
+    left: 0px;
+  }
+  .pages-preview {
+    list-style: none;
+    overflow: hidden;
+    overflow-x: auto;
+    white-space: nowrap;
+    margin: 0px;
+    padding: 0px;
+    .active {
+      background-color: lightgoldenrodyellow;
+      transition: background-color ease-in .5s;
+    }
+  }
+  .page-item {
+    display: inline-block;
+    cursor: pointer;
+    width: @pdfviewer-page-item-width;
+    height: @pdfviewer-page-item-height;
+    margin:0px 5px;
+    transition: background-color ease-out .5s;
+    .page-num {
+      display: block;
+      text-align: center;
+    }
+    .page-thumbnail {
+      width: @pdfviewer-page-item-width;
+      height: @pdfviewer-page-item-height - 20;
+    }
+  }
+  .controls {
+    height: 20px;
+  }
+  .previous-btn {
+    position: absolute;
+    left: 0px;
+  }
+  .next-btn {
+    position: absolute;
+    right: 0px;
+  }
+}
+
+.extra-controls {
+  width: 400px;
+  margin: 0px auto;
+  a {
+    padding: 10px;
+  }
+}

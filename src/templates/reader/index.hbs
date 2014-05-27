@@ -4,19 +4,23 @@ javascripts:
 - lib/querystring.min.js
 - lib/path.min.js
 - lib/jquery.plist.js
+- js/dhtml.js
 - js/magazine.js
+theme: dark-bkg
 ---
-<div class="reader-container dark-bkg">
-  <img class="reader-background" />
+<div class="reader-container">
+  <div class="reader-background"></div>
   <h4 class="headline text-center">{{title}}</h4>
-  <div class="reader-content">
+  <div class="reader-content container">
     <ul class="magazines">
-      <li class="mag-item" data-id="default">
-        <div class="mag-title" data-key="Title"></div>
-        <div class="mag-subtitle" data-key="Subtitle"></div>
-        <img class="mag-thumbnail" data-attr-keys="src=ThumbnailUrl" />
-        <a href="#" class="label label-default mag-read-btn" data-key="magazines.read_btn"></a>
-        <a href="#" class="label label-default mag-sample-btn mag-paid-type" data-key="magazines.sample_btn"></a>
+      <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2" data-id="default">
+        <div class="mag-item">
+          <div class="mag-title" data-key="Title"></div>
+          <div class="mag-subtitle" data-key="Subtitle"></div>
+          <img class="mag-thumbnail" data-attr-keys="src=ThumbnailUrl" />
+          <a href="#" class="label label-default mag-read-btn" data-key="magazines.read_btn"></a>
+          <a href="#" class="label label-default mag-sample-btn mag-paid-type" data-key="magazines.sample_btn"></a>
+        </div>
       </li>
     </ul>
   </div>
