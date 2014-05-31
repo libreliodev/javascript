@@ -69,8 +69,16 @@ $(function(){
         var li = catchLIElement(this)
         if(!li)
           return;
-        var item = li.data('item');
-        window.open(magazine_file_url(app_data, item.FileName), '_blank');
+        var item = li.data('item'),
+        fn = paid2free(item.FileName),
+        ext = path.extname(fn), url;
+        if(ext == '.pdf')
+          url = 'pdfreader.html?waurl=' + 
+             encodeURIComponent(magazine_file_key(app_data, fn));
+        else
+          url = magazine_file_url(app_data, fn);
+        
+        window.open(url, '_blank');
         return false;
       });
   }
@@ -115,8 +123,12 @@ $(function(){
   }
   function magazine_file_url(data, file)
   {
-    return '//' + config.s3Bucket + '.s3.amazonaws.com/' + data.client_name +
-      '/' + data.magazine_name + '/' + file;
+    return '//' + config.s3Bucket + '.s3.amazonaws.com/' + 
+      magazine_file_key(data, file);
+  }
+  function magazine_file_key(data, file)
+  {
+    return data.client_name + '/' + data.magazine_name + '/' + file;
   }
   function magazines_url(data)
   {
@@ -124,14 +136,19 @@ $(function(){
   }
   function magazine_get_thumbnail_by_filename(fn)
   {
-    var bn = path.join(path.dirname(fn), path.basename(fn, path.extname(fn)));
-    return (bn.length > 0 && bn[bn.length - 1] == '_' ? 
-      bn.substr(0, bn.length - 1) : bn) + '.png';
+    return paid2free(fn, true) + '.png';
   }
   function magazine_type(fn)
   {
     var bn = path.basename(fn, path.extname(fn));
     return bn.length > 0 && bn[bn.length - 1] == '_' ? 
       MAG_TYPE_PAID : MAG_TYPE_FREE;
+  }
+  function paid2free(fn, noext)
+  {
+    var ext = path.extname(fn),
+    bn = path.join(path.dirname(fn), path.basename(fn, ext));
+    return (bn.length > 0 && bn[bn.length - 1] == '_' ? 
+            bn.substr(0, bn.length - 1) : bn) + (noext ? '' : ext);
   }
 });

@@ -6,28 +6,23 @@ javascripts:
 - lib/pdf.js/pdf.js
 - lib/async.js
 - js/dhtml.js
+- lib/gl-matrix-min.js
+- js/bookify.js
 - js/pdfviewer.js
 - js/pdfviewer-main.js
 ---
+<div class="controls">
+  <a class="previous-btn" href="#"><i class="glyphicon glyphicon-step-backward"></i></a>
+  <a class="next-btn" href="#"><i class="glyphicon glyphicon-step-forward"></i></a>
+</div>
 <div class="pdfviewer"
      data-resize="mod_style('width',screen_width(),'height',screen_height())">
+  <div class="links-div">
+  </div>
   <canvas class="pdfviewer-canvas">
     Could not initiate PDF Viewer. You should update your browser to see this page.
   </canvas>
   <div class="page-selector">
-    <div class="controls">
-      <a class="previous-btn" href="#" 
-         data-key="replace('Previous',pdfviewer.previous)"><!-- 
-         --><i class="glyphicon glyphicon-step-backward"></i>Previous</a>
-      <a class="next-btn" href="#" data-key="replace('Next',pdfviewer.next)"><!--
-         -->Next<i class="glyphicon glyphicon-step-forward"></i></a>
-      <div class="extra-controls">
-        <a class="portrait-mode-btn" href="#"><!--
-           -->Portrait Mode</a>
-        <a class="book-mode-btn" href="#"><!--
-           -->Book Mode</a>
-      </div>
-    </div>
     <ul class="pages-preview">
       <li class="page-item" data-id="default">
         <span class="page-num" data-key="page_number"></span>

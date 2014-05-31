@@ -158,14 +158,91 @@
     o = self.data(pvobj_key),
     $el = self.find('.page-selector'),
     pages;
-    if(o._curPages)
-      pages = $.map(o._curPages, function(page) { return page.index });
+    if(o.curPages)
+      pages = $.map(o.curPages, function(page) { return page.index });
     $el.find('.page-item').each(function()
       {
         var $this = $(this),
         idx = parseInt($this.data('page-num'));
         $this.toggleClass('active', pages.indexOf(idx) != -1);
       });  
+  }
+
+  function setupAnnotations(doc, page, viewport, canvas, $annotationLayerDiv)
+  {
+    var canvasOffset = $(canvas).offset(),
+    annotDivOffset = $annotationLayerDiv.offset(),
+    self = this;
+
+    var promise = page.getAnnotations().then(function (annotationsData)
+      {
+        function createLink(data)
+        {
+          var rect = data.rect,
+          view = page.view,
+          element = $('<a>'),
+          transform = viewport.transform;
+          element.addClass('annot-link')
+            .css({
+              position: 'absolute',
+              display: 'block',
+              left: rect[0] + canvasOffset.left - annotDivOffset.left,
+              top: rect[1] + canvasOffset.top - annotDivOffset.top, 
+              // something is wrong with zoom feature
+              width: rect[2] - rect[0],
+              height: rect[3] - rect[1],
+              transform: 'matrix(' + transform.join(',') + ')',
+              transformOrigin: -rect[0] + 'px ' + -rect[1] + 'px'
+            });
+          if(data.url)
+          {
+            element.attr('href', data.url)
+              .attr('target', '_blank')
+              .click(function()
+                {
+                  var data = {
+                    data: data
+                  };
+                  self.trigger('openlink', [ data ]);
+                  return data.return_value;
+                });
+          }
+          else if(data.dest)
+          {
+            // internal link
+            element.attr('href', '#')
+              .click(function()
+                {
+                  if(dests[data.dest])
+                    doc.getPageIndex(dests[data.dest][0]).then(function(index)
+                      {
+                        self.pdfviewer('openPage', index + 1);
+                      });
+                  return false;
+                });
+          }
+          return element;
+        }
+        var dests;
+        doc.getDestinations().then(function(res)
+          {
+            dests = res;
+          });
+        for (var i = 0; i < annotationsData.length; i++) {
+          var data = annotationsData[i];
+          var annotation = PDFJS.Annotation.fromData(data);
+          if (!annotation || !annotation.hasHtml()) {
+            continue;
+          }
+          //var element = annotation.getHtmlElement(page.commonObjs);
+          data = annotation.getData();
+          if(data.subtype !== 'Link')
+            continue;
+          var element = createLink(data);
+          $annotationLayerDiv.append(element);
+        }
+      });
+    return promise;
   }
   function update_canvas_object(doc, canvas, o, cb)
   {
@@ -205,9 +282,9 @@
       {
         get_render_pages(doc, canvas, o, function(err, pages)
           {
-            o._curPages = pages;
+            o.curPages = pages;
             operation_complete(next, err, pages);
-            self.trigger('_curPages-changed', [ pages ]);
+            self.trigger('curPages-changed', [ pages ]);
           });
       },
       function(pages, next)
@@ -225,6 +302,10 @@
                                                  offx, offy);
         
         self.trigger('before-render');
+
+        if(o.links_div)
+          $(o.links_div).html('');
+        
         $.each(pages, function(i, page)
           {
             var rect = page.rect;
@@ -247,13 +328,28 @@
                                                      scale * page.scale, 0, 
                                                      offx, offy);
                   page.viewport = viewport;
-                  renderTask = docPage.render({canvasContext: context, 
-                                               viewport: viewport})
-                    .then(function()
-                      {
+                  
+                  async.series([
+                    function(cb)
+                    {
+                      renderTask = docPage.render({canvasContext: context, 
+                                                   viewport: viewport})
+                        .then(function() { cb(); })
+                        .catch(cb);
+                    },
+                    function(cb)
+                    {
+                      var el = o.links_div;
+                      if(el)
+                      {  
+                        setupAnnotations.call(self, doc, docPage, viewport, 
+                                              canvas, $(el))
+                          .then(function() { cb() });
+                      }
+                      else
                         cb();
-                      })
-                    .catch(cb);
+                    },
+                  ], cb);
                 });
             });
         
@@ -311,15 +407,17 @@
             return o[p];
           }
         };
-        $this.bind('_curPages-changed', function()
+        $this.bind('curPages-changed', function()
           {
             selector_update_active_pages.call($this);
           });
+        if(!o.canvas)
+          set_methods.canvas.call($this, $('canvas.pdfviewer-canvas')[0]);
+        if(!o.links_div)
+          $this.pdfviewer('set', 'links_div', $('.links-div')[0]);
         methods.init_page_selector.call($this);
         methods.update_page_selector.call($this);
         methods.init_resize.call($this);
-        if(!o.canvas)
-          set_methods.canvas.call($this, $('canvas.pdfviewer-canvas')[0]);
       });
   },
   set_method_call_update = function(self, o, method)
@@ -363,7 +461,8 @@
       on($canvas, releaser, 'mousemove', function(ev)
          {
            var win_height = $(window).height();
-           if(o.show_selector_fac * o._page_sel_height > win_height - ev.clientY)
+           if(o.show_selector_fac * o._page_sel_height > 
+              win_height - ev.clientY)
            {
              if(!page_sel.data(visible_str))
                page_sel.fadeIn(500).data(visible_str, true)
@@ -388,7 +487,7 @@
       ('dblclick', function(ev)
        {
          var offset = self.offset(),
-         viewport = o._curPages ? o._curPages.viewport : null,
+         viewport = o.curPages ? o.curPages.viewport : null,
          relX = (ev.pageX - viewport.offsetX - offset.left) / viewport.width,
          relY = (ev.pageY - viewport.offsetY - offset.top) / viewport.height;
          if(o.zoom > 1)
@@ -398,7 +497,7 @@
          self.trigger('sizechanged');
          self.bind('before-render', function()
            {
-             var viewport = o._curPages ? o._curPages.viewport : null;
+             var viewport = o.curPages ? o.curPages.viewport : null;
              if(o.zoom > 1 && viewport)
              {
                self.prop('scrollLeft', viewport.offsetX +
@@ -433,19 +532,20 @@
       redraw_tm,
       zoom = o.zoom,
       dhtml_ctx = [ dhtml_global_object(o) ];
-      self.dhtml('eval', self.data('resize'), dhtml_ctx);
+      resize_update();
+      if(o.canvas)
+        self.pdfviewer('set_canvas_size');
       on($(window), null, 'resize', resize_handle);
       on(self, null, 'sizechanged', sizechanged_handle)
-        ('_curPages-changed', function init_size_curpages_changed(ev, pages)
+        ('curPages-changed', function init_size_curpages_changed(ev, pages)
           {
-            var vp = pdf_viewport_for_canvas(pages.view, {width:w,height:h}, 'fit');
+            var vp = pdf_viewport_for_canvas(pages.view, {width:w,height:h},
+                                             'fit');
             self.pdfviewer('set_canvas_size', vp);
           });
       function sizechanged_handle()
       {
-        self.dhtml('eval', self.data('resize'), dhtml_ctx);
-        // hack for removing scrollbars
-        self.css('overflow', o.zoom > 1 ? '' : 'hidden');
+        resize_update();
         if(o.pdfDoc && o.canvas)
           self.pdfviewer('update_canvas_object', o.pdfDoc, o.canvas);
         w = self.width();
@@ -453,11 +553,9 @@
       }
       function resize_handle(ev)
       {
-        self.dhtml('eval', self.data('resize'), dhtml_ctx);
+        resize_update();
         var nw = self.width(),
         nh = self.height();
-        // hack for removing scrollbars
-        self.css('overflow', o.zoom > 1 ? '' : 'hidden');
         if(w != nw || h != nh || zoom != o.zoom)
         {
           if(redraw_tm !== undefined)
@@ -466,12 +564,20 @@
             {
               if(o.pdfDoc && o.canvas)
                 self.pdfviewer('update_canvas_object', o.pdfDoc, o.canvas);
+              else if(o.canvas)
+                self.pdfviewer('set_canvas_size');
               redraw_tm = undefined;
             }, redraw_timeout);
         }
         w = nw;
         h = nh;
         zoom = o.zoom;
+      }
+      function resize_update()
+      {
+        self.dhtml('eval', self.data('resize'), dhtml_ctx);
+        // hack for removing scrollbars
+        self.css('overflow', o.zoom > 1 ? '' : 'hidden');
       }
     },
     set_canvas_size: function(size)
@@ -500,52 +606,21 @@
       pages_prev.dhtml('list_init');
       o._page_sel_height = $el.height();
       $el.hide();
-      $el.find('.controls').find('*').dhtml('item_update', dhtml_global_object(o));
       if(releaser)
         funcListCall(releaser);
       releaser = [];
-      function checkIfDocExists(cb)
-      {
-        return function() 
+      on($el, releaser, 'click', '.page-item', function()
         {
           var pdfDoc = o.pdfDoc;
-          if(!pdfDoc || !o._curPages)
+          if(!pdfDoc || !o.curPages)
             return false;
-          return cb.call(this, o, pdfDoc);
-        }
-      }
-      on($el, releaser, 'click', '.next-btn', checkIfDocExists(function(o, pdfDoc)
-        {
-          if(o.curPageIndex + o._curPages.length <= pdfDoc.numPages)
-          {
-            o.curPageIndex += o._curPages.length;
-            if(o.canvas)
-              self.pdfviewer('update_canvas_object', pdfDoc, o.canvas);
-          }
-          return false;
-        }))
-      ('click', '.previous-btn', checkIfDocExists(function(o, pdfDoc)
-        {
-          if(o.curPageIndex - o._curPages.length > 0)
-          {
-            o.curPageIndex -= o._curPages.length;
-            if(o.canvas)
-              self.pdfviewer('update_canvas_object', pdfDoc, o.canvas);
-          }
-          return false;
-        }))
-      ('click', '.page-item', checkIfDocExists(function(o, pdfDoc)
-        {
-          var $this = $(this),
-          page_idx = parseInt($this.data('page-num'));
+          var page_idx = parseInt($(this).data('page-num'));
           if(page_idx > 0 && page_idx <= pdfDoc.numPages)
           {
-            o.curPageIndex = page_idx;
-            if(o.canvas)
-              self.pdfviewer('update_canvas_object', pdfDoc, o.canvas);
+            self.pdfviewer('openPage', page_idx);
           }
           return false;
-        }));
+        });
       on(pages_prev, releaser, 'scroll', pages_prev_track_visibility);
       on($el, releaser, 'visibility-changed', pages_prev_track_visibility);
       pages_prev_track_visibility()
@@ -578,6 +653,14 @@
               });
           });
       }
+    },
+    openPage: function(index)
+    {
+      var self = this,
+      o = self.data(pvobj_key);
+      o.curPageIndex = index;
+      if(o.canvas && o.pdfDoc)
+        self.pdfviewer('update_canvas_object', o.pdfDoc, o.canvas);
     },
     update_page_selector: function()
     {

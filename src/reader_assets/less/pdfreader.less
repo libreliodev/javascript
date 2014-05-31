@@ -2,6 +2,7 @@
 @pdfviewer-page-item-height: 100px;
 
 .pdfviewer {
+  position: relative;
   overflow: auto;
   .pdfviewer-canvas {
     position: relative;
@@ -41,23 +42,42 @@
       height: @pdfviewer-page-item-height - 20;
     }
   }
-  .controls {
-    height: 20px;
-  }
-  .previous-btn {
+  .links-div {
     position: absolute;
+    top: 0px;
     left: 0px;
-  }
-  .next-btn {
-    position: absolute;
-    right: 0px;
+    z-index: 1;
+    .annot-link:hover {
+      background-color: rgba(240, 220, 20, .25);
+    }
   }
 }
-
-.extra-controls {
-  width: 400px;
-  margin: 0px auto;
-  a {
-    padding: 10px;
-  }
+.controls {
+  position: relative;
+  z-index: 2;
+}
+.previous-btn, .next-btn {
+  position: fixed;
+  display: table;
+  height: 100%;
+  font-size: 20px;
+  background: rgba(255, 255, 255, .5);
+}
+.previous-btn i, .next-btn i {
+  vertical-align: middle;
+  display: table-cell;
+  height: 100%;
+}
+.previous-btn:hover, .next-btn:hover {
+  background: rgba(255, 255, 255, 1);
+}
+.previous-btn {
+  padding: 0px 6px;
+  left: 0px;
+  top: 0px
+}
+.next-btn {
+  padding: 0px 6px;
+  right: 0px;
+  top: 0px;
 }
