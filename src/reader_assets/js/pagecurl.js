@@ -338,6 +338,8 @@ p.bind_grab = function()
       update_change(corner, pivot);
     }
     else if(prev_pivot)
+      closestLine();
+    function closestLine()
     {
       function point_in_line(nlen)
       {
@@ -349,8 +351,6 @@ p.bind_grab = function()
       len = distance(prev_pivot, pivot),
       min = 0,
       max = len,
-      p_tan = Math.tan((prev_pivot[0] - pivot[0]) / (prev_pivot[1] / pivot[1])),
-      try_len = 0,
       mp = (max - min) / 2 + min,
       p2 = point_in_line(mp),
       fine_point;
