@@ -331,10 +331,10 @@
                   offy = (canvas.height - view[3] * scale) / 2 +
                     page.offset[1] * scale + pview[1] * scale;
                   scale = scale * page.scale;
-                  page.rect = [ offx - pview[0] * scale, 
-                                offy - pview[1] * scale,
-                                scale * (pview[2] + pview[0]), 
-                                scale * (pview[3] + pview[1]) ] ;
+                  page.rect = [ Math.ceil(offx) - Math.ceil(pview[0] * scale), 
+                                Math.ceil(offy) - Math.ceil(pview[1] * scale),
+                                Math.ceil(scale * (pview[2] + pview[0])), 
+                                Math.ceil(scale * (pview[3] + pview[1])) ] ;
                   viewport =  new PDFJS.PageViewport(docPage.view, scale, 0, 
                                                      offx, offy);
                   page.viewport = viewport;
@@ -585,6 +585,7 @@
           curPageIndex: idx,
           display_mode: o.display_mode,
           links_div: o.links_div ? $(o.links_div).clone()[0] : null,
+          zoom: o.zoom,
           silent: true
         };
         spare_canvas.width = o.canvas.width;
@@ -661,6 +662,8 @@
           o.curPages = page_data.curPages;
           $(o.links_div).replaceWith(page_data.links_div);
           o.links_div = page_data.links_div;
+          self.trigger('curPages-changed', [ o.curPages ]);
+          $.each(pagecurls, PageCurl.prototype.render);
           pagecurl_destroy();
           pagecurl_start();
         }
@@ -792,7 +795,7 @@
           height = self.height(),
           rect = o.curPages && o.curPages[0] ? 
             o.curPages[0].rect : null,
-          ratio = rect ? 2 * rect / rect[3] : 1.5;
+          ratio = rect ? 2 * rect[2] / rect[3] : 1.5;
           if(width / height < ratio)
             o.display_mode = 'portrait';
           else
