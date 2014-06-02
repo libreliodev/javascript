@@ -442,6 +442,18 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/tweenjs/build',
+                        src: 'tween.min.js',
+                        dest: reader_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/tweenjs/examples/js/',
+                        src: 'RequestAnimationFrame.js',
+                        dest: reader_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
                         cwd: reader_assets_src_dir + '/js',
                         src: ['*.js'],
                         dest: reader_assets_dist_dir + '/js/'

@@ -59,39 +59,52 @@ $(function(){
     if(display_mode != disp_mode)
       $('.pdfviewer').pdfviewer('set', 'display_mode', disp_mode);
   }
-/*
-  Var canvas = $('canvas')[0];
-  
-  $(document).on('mousemove', function(ev)
+
+  /*var canvas = $('canvas')[0],
+  img = new Image();
+  img.src = 'assets/img/background.png';
+  var img2 = new Image();
+  img2.src = 'assets/img/logo.png';
+  var mpagecurl = new PageCurl({
+    canvas: canvas,
+    grabbable: true,
+    corner_epsilon_x: 50,
+    corner_epsilon_y: 50,
+    rect: [ 100, 150, $(window).width()/2-100, $(window).height()/2-100 ],
+    corners: [ 'tl', 'bl', ],
+    limits: [ 'tr', 'br' ],
+    src0: {image: img2},
+    src1: {image: img},
+    src2: {image: img2},
+    clear_canvas: true
+  });
+  setTimeout(function(){mpagecurl.render();}, 50);
+  /*mpagecurl.destroy();*/
+  /*$(document).on('mousemove', function(ev)
     {
       var x = ev.pageX,
       y = ev.pageY;
-      try {
-      bookify.render_page(canvas, null, null, {
-        dest_rect: [ 0, 0, $(window).width(), $(window).height() ],
-        image: { }
-      }, null, 'tl', [x, y]);
-      }catch(e) { console.error(e); }
       var ctx = canvas.getContext('2d');
-      var angle = Math.atan2(x, y),
-      x0 = y / Math.tan(angle),
-      y0 = x / Math.tan(Math.PI/2 - angle);
-      var spineBottomToFollowerAngle = Math.atan2(y, x);
-
-			var radiusLeft = Math.cos(spineBottomToFollowerAngle) * canvas.width;
-			//var radiusTop = Math.sin(spineBottomToFollowerAngle) * canvas.height;
-      x0 = radiusLeft;
-      y0 = 100;
-      //ctx.clearRect(0, 0, canvas.width, canvas.height);
-      ctx.strokeStyle = '#00ff00';
-      ctx.beginPath();
-      ctx.moveTo(x0, 0);
-      ctx.lineTo(0, y0);
-      ctx.lineTo(x, y);
-      ctx.closePath();
-      ctx.stroke();
-    });
-  */
+      side = 'tl',
+      rect = [ 150, 150, $(window).width()/2-100, $(window).height()/2-100 ];
+      try {
+        if(!PageCurl.flip_page_restricted(rect, side, [x,y], ['br','tr']))
+        {
+          ctx.clearRect(0, 0, canvas.width, canvas.height),
+          PageCurl.render_page(ctx, rect, 
+                          {image:img}, {image: img}, {image:img2}, side, [x, y]);
+        }
+      }catch(e) { console.error(e); }
+    });*/
+  /*setTimeout(function(){
+    var ctx = canvas.getContext('2d');
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  var rect = [ 150, 150, $(window).width()/2-100, $(window).height()/2-100 ];
+    pivot = [ rect[0] + rect[2]*2, rect[1] ];
+  PageCurl.render_page(ctx, rect, 
+                       {image:img}, {image: img}, {image:img2}, 'tl', pivot);
+},50);*/
+  
   function s3bucket_file_url(key)
   {
     return '//' + config.s3Bucket + '.s3.amazonaws.com/' + key;
