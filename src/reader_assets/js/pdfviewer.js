@@ -214,11 +214,15 @@
             element.attr('href', '#')
               .click(function()
                 {
-                  if(dests[data.dest])
-                    doc.getPageIndex(dests[data.dest][0]).then(function(index)
+                  try {
+                    var dest = typeof data.dest == 'string' ? 
+                      dests[data.dest][0] : data.dest[0];
+                    doc.getPageIndex(dest).then(function(index)
                       {
                         self.pdfviewer('openPage', index + 1);
                       });
+                  }catch(e) {
+                  }
                   return false;
                 });
           }
@@ -603,12 +607,17 @@
                           o.curPageIndex + o.curPages.length ], 
                         render_page, cb);
       }
-      function copy_canvas(dest, src)
+      function copy_canvas(dest, src, dont_change_size)
       {
         var dest_ctx = dest.getContext('2d');
-        dest.width = src.width;
-        dest.height = src.height;
-        dest_ctx.drawImage(src, 0, 0);
+        if(!dont_change_size)
+        {
+          dest.width = src.width;
+          dest.height = src.height;
+          dest_ctx.drawImage(src, 0, 0);
+        }
+        else
+          dest_ctx.drawImage(src, 0, 0, dest.width, dest.height);
       }
       function init_pagecurls(prev_page, next_page)
       {
@@ -662,8 +671,9 @@
           o.curPages = page_data.curPages;
           $(o.links_div).replaceWith(page_data.links_div);
           o.links_div = page_data.links_div;
+          copy_canvas(spare_canvas, canvas);
           self.trigger('curPages-changed', [ o.curPages ]);
-          $.each(pagecurls, PageCurl.prototype.render);
+          copy_canvas(canvas, spare_canvas, true);
           pagecurl_destroy();
           pagecurl_start();
         }
