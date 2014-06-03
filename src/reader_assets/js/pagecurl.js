@@ -363,11 +363,11 @@ p.bind_grab = function()
     {
       function point_in_line(nlen)
       {
-        return [ pivot[0] + nlen * pivot_abs[0] / len, 
-                 pivot[1] + nlen * pivot_abs[1] / len ];
+        return [ pivot[0] + nlen * vec[0] / len, 
+                 pivot[1] + nlen * vec[1] / len ];
       }
-      var pivot_abs = [ Math.abs(prev_pivot[0] - pivot[0]), 
-                        Math.abs(prev_pivot[1] - pivot[1]) ],
+      var vec = [ prev_pivot[0] - pivot[0], 
+                  prev_pivot[1] - pivot[1] ],
       len = distance(prev_pivot, pivot),
       min = 0,
       max = len,
