@@ -97,6 +97,7 @@ function image_object_get_rect(obj, name)
 }
 function render_subrout_draw_behind_page(ctx, drect, mats, src, flip)
 {
+  var srect = src ? image_object_get_rect(src, 'src_rect') : null;
   ctx.save();
 
   ctx.save();
@@ -111,11 +112,8 @@ function render_subrout_draw_behind_page(ctx, drect, mats, src, flip)
   ctx.scale(flip.x ? -1 : 1, flip.y ? -1 : 1);
   ctx.translate((flip.x ? -1 : 0) * drect[2], (flip.y ? -1 : 0) * drect[3]);
   if(src)
-  {
-    var srect = image_object_get_rect(src, 'src_rect');
     ctx.drawImage.apply(ctx, ([ src.image ])
                                .concat(srect, [0,0].concat(drect.slice(2, 4))));
-  }
   else
   {
     ctx.fillStyle = '#ffffff';
@@ -125,13 +123,11 @@ function render_subrout_draw_behind_page(ctx, drect, mats, src, flip)
 }
 function render_subrout_draw_page(ctx, drect, src)
 {
+  var srect = src ? image_object_get_rect(src, 'src_rect') : null;
   ctx.save();
   if(src)
-  {
-    var srect = image_object_get_rect(src, 'src_rect');
     ctx.drawImage.apply(ctx, ([ src.image ])
                                .concat(srect, [0,0].concat(drect.slice(2, 4))));
-  }
   else
   {
     ctx.fillStyle = '#ffffff';
@@ -141,6 +137,7 @@ function render_subrout_draw_page(ctx, drect, src)
 }
 function render_subrout_draw_flipped_page(ctx, drect, mats, src, pivot)
 { 
+  var srect = src ? image_object_get_rect(src, 'src_rect') : null;
   ctx.save();
 
   // clip rect
@@ -157,10 +154,7 @@ function render_subrout_draw_flipped_page(ctx, drect, mats, src, pivot)
     ctx.shadowBlur = 1 * (2 - (pivot[0] / drect[2]));
     ctx.shadowColor = '#444444';
     if(src)
-    {
-      var srect = image_object_get_rect(src, 'src_rect');
       ctx.drawImage.apply(ctx, ([ src.image ]).concat(srect, [0,0,1,1]));
-    }
     else
     {
       ctx.fillStyle = '#ffffff';
@@ -170,11 +164,8 @@ function render_subrout_draw_flipped_page(ctx, drect, mats, src, pivot)
   else
   {
     if(src)
-    {
-      var srect = image_object_get_rect(src, 'src_rect');
       ctx.drawImage.apply(ctx, ([ src.image ])
                           .concat(srect, [0,0].concat(drect.slice(2,4))));
-    }
     else
     {
       ctx.fillStyle = '#ffffff';
@@ -311,6 +302,11 @@ p.render = function()
   PageCurl.render_page(ctx, self.rect, self.src0, self.src1, self.src2, 
                        self.corner, self.pivot);
   $(self).trigger('rendered');
+}
+p.curlpage = function()
+{
+  if(this._curlpage)
+    this._curlpage.apply(this, arguments);
 }
 p.bind_grab = function()
 {
@@ -488,6 +484,7 @@ p.bind_grab = function()
     {
       update(cur_tween_data.corner, [ mx, my ]);
     }
+    return false;
   }
   function animate()
   {
@@ -521,7 +518,8 @@ p.bind_grab = function()
           update_mouse_position(ev);
           $(self).trigger('grab');
         }
-      } 
+      }
+      return false;
     })
   ('mouseup', function(ev)
     {
@@ -571,8 +569,37 @@ p.bind_grab = function()
           .start();
         animate();
         speed = 0;
+        return false;
       }
     });
+  self._curlpage = function(corner, cb)
+  {
+    var info = corner_mouse_info(corner),
+    pivot = [ info.offset[0] + 2 * rect[2] * (info.flip.x ? -1 : 1),
+              info.offset[1] ],
+    flip = info.flip;
+    cur_tween_data.active = true;
+    cur_tween_data.state = '';
+    cur_tween_data.corner = corner;
+    var sx  = cur_tween_data.pivotX = info.offset[0],
+    sy = cur_tween_data.pivotY = info.offset[1];
+    cur_tween = new TWEEN.Tween(cur_tween_data)
+      .to({
+        pivotX: pivot[0],
+        pivotY: [ pivot[1] + rect[3] * .2 * (flip.y ? -1 : 1),
+                  pivot[1] ]
+      }, 800)
+      .easing(TWEEN.Easing.Cubic.InOut)
+      .onComplete(function(){
+        cur_tween_data.corner = '';
+        tween_finished();
+        $(self).trigger('page-curled');
+        cb && cb();
+      })
+      .onUpdate(render_tween)
+      .start();
+    animate();
+  }
 }
 
 PageCurl.render_page = render_page;

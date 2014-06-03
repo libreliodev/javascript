@@ -202,12 +202,12 @@
           element = $('<a>'),
           w_ratio = prect[2] / canvas.width;
           rect = [
-            (rect[0] - view[0]/2) / view[2] * prect[2],
-            prect[3] - (rect[3] - view[1]/2) / view[3] * prect[3],
-            (rect[2] - view[0]) / view[2] * prect[2],
-            prect[3] - (rect[1] - view[1]) / view[3] * prect[3]
+            (rect[0] - view[0]) / (view[2] - view[0]) * prect[2],
+            prect[3] - (rect[3] - view[1]) / (view[3] - view[1]) * prect[3],
+            (rect[2] - view[0]) / (view[2] - view[0]) * prect[2],
+            prect[3] - (rect[1] - view[1]) / (view[3] - view[1]) * prect[3]
           ];
-          // rect in x y w h format
+          // rect in [x y w h] format
           rect = [
             rect[0] + prect[0] +canvasOffset.left - annotDivOffset.left,
             rect[1] + prect[1] + canvasOffset.top - annotDivOffset.top, 
@@ -289,7 +289,7 @@
     $canvas.dhtml('item_update', dhtml_global_object(o));
     o.cancelRender = function(cb)
     {
-      if(renderTask && renderTask.cancel && !canceled)
+      if(renderTask && !canceled)
         renderTask.cancel()
       oncancelEnd = function()
       {
@@ -362,9 +362,9 @@
                   offx = (canvas.width - (view[2] - view[0]) * scale) / 2 +
                     page.offset[0] * scale,
                   offy = (canvas.height - (view[3] - view[0]) * scale) / 2 +
-                    page.offset[1] * scale,
-                  scale = scale * page.scale,
-                  rect = page.rect = [ 
+                    page.offset[1] * scale;
+                  scale = scale * page.scale;
+                  var rect = page.rect = [ 
                     Math.ceil(offx), Math.ceil(offy),
                     Math.ceil(scale * (pview[2] - pview[0])), 
                     Math.ceil(scale * (pview[3] - pview[1])) ] ;
@@ -379,9 +379,8 @@
                       spare_canvas.width = rect[2];
                       spare_canvas.height = rect[3];
                       renderTask = docPage.render({canvasContext: ctx, 
-                                                   viewport: viewport})
-                        .then(function() { callback(); })
-                        .catch(callback);
+                                                   viewport: viewport});
+                      renderTask.then(function() { callback(); }, callback);
                       function callback(err)
                       {
                         if(!err)
@@ -423,7 +422,7 @@
   }
   var string = 'string',
   funcStr = 'function',
-  visible_str = 'visible',
+  isvisible_str = 'isvisible',
   hidden_str = 'hidden',
   pvobj_key = 'pdfviewer-opts',
   viewer = function(opts)
@@ -469,6 +468,7 @@
           set_methods.canvas.call($this, $('canvas.pdfviewer-canvas')[0]);
         if(!o.links_div)
           $this.pdfviewer('set', 'links_div', $('.links-div')[0]);
+        methods.bind_move.call($this);
         methods.init_pagecurl.call($this);
         methods.init_page_selector.call($this);
         methods.update_page_selector.call($this);
@@ -512,35 +512,50 @@
         funcListCall(o.canvas_binds_releaser);
       var releaser = o.canvas_binds_releaser = [],
       $canvas = $(canvas),
-      page_sel = self.find('.page-selector');
+      page_sel = self.find('.page-selector'),
+      click_timeout_id,
+      noclick;
       on($canvas, releaser, 'mousemove', function(ev)
-         {
-           var win_height = $(window).height();
-           if(o.show_selector_fac * o._page_sel_height > 
-              win_height - ev.clientY)
-           {
-             if(!page_sel.data(visible_str))
-               page_sel.fadeIn(500).data(visible_str, true)
-                 .trigger('visibility-changed');
-           }
-           else if(page_sel.data(visible_str))
-             page_sel.fadeOut(500).data(visible_str, false)
-               .trigger('visibility-changed');
-         })
+        {
+          if(this._mousedown)
+            noclick = true;
+        })
       ('mousedown', function()
        {
-         
+         this._mousedown = true;
        })
       ('mouseup', function()
        {
-         
+         this._mousedown = false;
        })
       ('click', function()
        {
-         
+         if(noclick)
+         {
+           noclick = false;
+           return false;
+         }
+         if(click_timeout_id === undefined)
+           click_timeout_id = setTimeout(function()
+             {
+               var win_height = $(window).height();
+               if(!page_sel.data(isvisible_str))
+                 page_sel.fadeIn(500).data(isvisible_str, true)
+                 .trigger('visibility-changed');
+               else
+                 page_sel.fadeOut(500).data(isvisible_str, false)
+                 .trigger('visibility-changed');
+               click_timeout_id = undefined;
+             }, 200);
+         return false;
        })
       ('dblclick', function(ev)
        {
+         if(click_timeout_id !== undefined)
+         {
+           clearTimeout(click_timeout_id);
+           click_timeout_id = undefined;
+         }
          if(!o.curPages || !o.curPages.rect)
            return;
          var offset = self.offset(),
@@ -589,14 +604,14 @@
           if(o.book_mode_fist_page_odd)
             off = 0;
           curPageIndex -= (curPageIndex - off) % curPages.length;
-          if(curPageIndex == 0 && o.book_mode_fist_page_odd)
+          if(curPageIndex === 0 && o.book_mode_fist_page_odd)
             curPageIndex = 1;
           break;
         default:
           curPageIndex -= (curPageIndex - 1) % curPages.length;
         }
         var page = curPageIndex + curPages.length * offset;
-        if(page == 0 && o.book_mode_fist_page_odd)
+        if(page === 0 && o.book_mode_fist_page_odd)
           page = 1;
         if(page > 0 && page <= o.pdfDoc.numPages)
           return page;
@@ -627,6 +642,7 @@
             if(err)
               return;
             init_pagecurls(pages_obj[0], pages_obj[1]);
+            self.trigger('pagecurl-initialized');
           });
       }
       function render_page(idx, cb2)
@@ -676,6 +692,7 @@
       function init_pagecurls(prev_page, next_page)
       {
         var pagecurls = [],
+        pagecurl_data = o.pagecurl_data = {},
         display_mode = o.display_mode,
         canvas = o.canvas,
         ctx = canvas.getContext('2d'),
@@ -685,12 +702,26 @@
         pc_default_opts = {
           canvas: canvas,
           grabbable: true,
-          corner_epsilon_x: canvas.width/12,
-          corner_epsilon_y: canvas.width/12
+          corner_epsilon_x: canvas.width/15,
+          corner_epsilon_y: canvas.width/15
         },
         rendering;
         copy_canvas(spare_canvas, canvas);
         on($(ev_box), releaser, 'clear', destroy);
+        pagecurl_data.curlpage = function(pagecurl, cb)
+        {
+          var curl_corners = [ 'bl', 'br' ];
+          for(var i = 0, l = curl_corners.length; i < l; ++i)
+          {
+            var corner = curl_corners[i];
+            if(pagecurl.corners.indexOf(corner) != -1)
+            {
+              pagecurl.curlpage(corner, cb);
+              return true;
+            }
+          }
+          return false;
+        }
         function destroy()
         {
           $.each(pagecurls, function(i, pc)
@@ -699,6 +730,7 @@
             }); 
           funcListCall(releaser);
           $(o.links_div).show();
+          o.pagecurl_data = null;
         }
         function pagecurl_grab()
         {
@@ -790,7 +822,11 @@
                 },
                 grabbable: !!pages
               }));
-            
+            if(i == 0)
+              pagecurl_data.previous = pagecurl;
+            else
+              pagecurl_data.next = pagecurl
+
             on($(pagecurl), releaser, 'grab', pagecurl_grab)
             ('grabend', pagecurl_grabend)
             ('page-curled', page_curled)
@@ -801,6 +837,38 @@
           break;
         }
       }
+    },
+    pagecurl_to: function(page)
+    {
+      function continue_job()
+      {
+        var pagecurl_data = o.pagecurl_data,
+        pagecurl = page == 'next' ? pagecurl_data.next : pagecurl_data.previous;
+        if(pagecurl && pagecurl.grabbable)
+        {
+            if(!pagecurl_data.curlpage(pagecurl, function()
+                {
+                  o.__waiting_for_curlpage = false;
+                }))
+              o.__waiting_for_curlpage = false;
+        }
+        else
+          o.__waiting_for_curlpage = false;
+      }
+      var self = this,
+      o = self.data(pvobj_key);
+      if(o.__waiting_for_curlpage)
+        return;
+      console.log(o.pagecurl_data);
+      o.__waiting_for_curlpage = true;
+      if(!o.pagecurl_data)
+        self.bind('pagecurl-initialized', function()
+          {
+            continue_job();
+            self.unbind('pagecurl-initialized', arguments.callee);
+          });
+      else
+        continue_job();
     },
     init_resize: function()
     {
@@ -907,7 +975,7 @@
       on($el, releaser, 'click', '.page-item', function()
         {
           var pdfDoc = o.pdfDoc;
-          if(!pdfDoc || !o.curPages)
+          if(!pdfDoc || !o.curPages || this.parentNode._scrolled)
             return false;
           var page_idx = parseInt($(this).data('page-num'));
           if(page_idx > 0 && page_idx <= pdfDoc.numPages)
@@ -916,7 +984,30 @@
           }
           return false;
         });
-      on(pages_prev, releaser, 'scroll', pages_prev_track_visibility);
+      on(pages_prev, releaser, 'scroll', pages_prev_track_visibility)
+      ('mousedown', function(ev)
+        {
+          this._mousedown = true;
+          this._mousedown_data = { mX: ev.pageX, scrollX: this.scrollLeft };
+        })
+      ('mouseup', function()
+        {
+          var self = this;
+          self._mousedown = false;
+          setTimeout(function()
+            {
+              self._scrolled = undefined;
+            }, 0);
+        })
+      ('mousemove', function(ev)
+        {
+          var md_data = this._mousedown_data;
+          if(this._mousedown)
+          {
+            this.scrollLeft = md_data.scrollX - (ev.pageX - md_data.mX);
+            this._scrolled = true;
+          }
+        });
       on($el, releaser, 'visibility-changed', pages_prev_track_visibility);
       pages_prev_track_visibility()
       function pages_prev_track_visibility()
@@ -926,27 +1017,60 @@
             var $this = $(this),
             width = $this.width(),
             offsetX = $this.offset().left,
-            list_visible = $this.css('display') != 'none' && 
-              $this.css('visible') != 'hidden';
-            
+            list_visible = $el.data(isvisible_str);
             $this.find(' > li').each(function()
               {
                 var $el = $(this),
                 offx = $el.offset().left - offsetX,
                 w = $el.width(),
-                was_visible = $el.data('isvisible'),
+                was_visible = $el.data(isvisible_str),
                 p0 = offx,
                 p1 = offx + w,
                 visible = list_visible && w && 
                   ((p0 > 0 && p0 < width) || (p1 > 0 && p1 < width));
                 if(visible != was_visible)
                 {
-                  $el.data('isvisible', visible);
+                  $el.data(isvisible_str, visible);
                   $el.trigger('visibility-changed');
                 }
               });
           });
       }
+    },
+    bind_move: function()
+    {
+      var self = this;
+      on(self, null, 'mousemove', function(ev)
+        {
+          if(self.css('overflow') == 'hidden')
+            return;
+          // scroll
+          var el = this,
+          md_data = el._mousedown_data;
+          if(el._mousedown)
+          {
+            el.scrollLeft = md_data.scrollX - (ev.pageX - md_data.mX);
+            el.scrollTop = md_data.scrollY - (ev.pageY - md_data.mY);
+            el._scrolled = true;
+          }
+        })
+      ('mousedown', function(ev)
+        {
+          var el = this;
+          el._mousedown = true;
+          el._mousedown_data = {
+            mX: ev.pageX,
+            mY: ev.pageY,
+            scrollX: el.scrollLeft,
+            scrollY: el.scrollTop
+          };
+        })
+      ('mouseup', function()
+        {
+          var el = this;
+          el._mousedown = false;
+          setTimeout(function() { el._scrolled = undefined; });
+        });
     },
     openPage: function(index)
     {
@@ -965,25 +1089,24 @@
           {
             var $canvas = this,
             canvas = $canvas[0],
-            draw_cmd_sent;
+            rendered;
             li.bind('visibility-changed', function(ev)
               {
-                if($(this).data('isvisible') && !draw_cmd_sent)
+                var visible = $(this).data(isvisible_str);
+                if(visible && !rendered)
                   draw_page();
               });
             function draw_page()
             {
-              draw_cmd_sent = true;
               pdfDoc.getPage(i).then(function(page)
                 {
                   var viewport, context;
                   try {
                     viewport = pdf_viewport_for_canvas(page.view, canvas, type);
                     context = canvas.getContext('2d');
-                  }catch(e) {
+                  } catch(e) {
                     console.error(e);
-                  }
-                  finally {
+                  } finally {
                     page.render({canvasContext: context, viewport: viewport});
                   }
                 });

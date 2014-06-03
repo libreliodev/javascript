@@ -22,16 +22,22 @@ $(function(){
   }
   $('.next-btn').click(function()
     {
+      /*
       var pageIndex = pdf_viewer.pdfviewer('get', 'pageIndexWithOffset', 1);
       if(pageIndex !== false)
         pdf_viewer.pdfviewer('openPage', pageIndex);
+      */
+      pdf_viewer.pdfviewer('pagecurl_to', 'next');
       return false;
     });
   $('.previous-btn').click(function()
     {
+      /*
       var pageIndex = pdf_viewer.pdfviewer('get', 'pageIndexWithOffset', -1);
       if(pageIndex !== false)
         pdf_viewer.pdfviewer('openPage', pageIndex);
+      */
+      pdf_viewer.pdfviewer('pagecurl_to', 'previous');
       return false;
     });
   $('.portrait-mode-btn').click(function(){ 
