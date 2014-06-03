@@ -586,7 +586,7 @@ p.bind_grab = function()
     cur_tween = new TWEEN.Tween(cur_tween_data)
       .to({
         pivotX: pivot[0],
-        pivotY: [ pivot[1] + rect[3] * .2 * (flip.y ? -1 : 1),
+        pivotY: [ pivot[1] + rect[3] * 0.2 * (flip.y ? -1 : 1),
                   pivot[1] ]
       }, 800)
       .easing(TWEEN.Easing.Cubic.InOut)

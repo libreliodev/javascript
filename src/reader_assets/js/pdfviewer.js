@@ -577,6 +577,11 @@
                self.prop('scrollTop', rect[1] +
                          rect[3] * relY - $(window).height()/2);
              }
+             else
+             {
+               self.prop('scrollLeft', 0);
+               self.prop('scrollTop', 0);
+             }
              self.unbind('before-render', arguments.callee);
            });
          return false;
@@ -822,7 +827,7 @@
                 },
                 grabbable: !!pages
               }));
-            if(i == 0)
+            if(i === 0)
               pagecurl_data.previous = pagecurl;
             else
               pagecurl_data.next = pagecurl
