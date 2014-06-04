@@ -26,6 +26,10 @@
       return this.height() || this.prop('height');
     }
   };
+  function newEl(a)
+  {
+    return document.createElement(a);
+  }
   function wrpFunc(func, thisarg, prepend_args, append_args)
   {
     return function()
@@ -49,19 +53,27 @@
     var dest_ctx = dest.getContext('2d');
     if(!dont_change_size)
     {
-      dest.width = src.width;
-      dest.height = src.height;
+      if(dest.width != src.width || 
+         dest.height != src.height)
+      {
+        dest.width = src.width;
+        dest.height = src.height;
+      }
+      dest_ctx.clearRect(0, 0, dest.width, dest.height);
       dest_ctx.drawImage(src, 0, 0);
     }
     else
+    {
+      dest_ctx.clearRect(0, 0, dest.width, dest.height);
       dest_ctx.drawImage(src, 0, 0, dest.width, dest.height);
+    }
   }
   function get_view_scale_for_canvas(view, size, type)
   {
     var canv_w = size.width,
     canv_h = size.height,
-    page_w = view[2],
-    page_h = view[3],
+    page_w = view[2] - view[0],
+    page_h = view[3] - view[1],
     b = page_w / page_h > canv_w / canv_h,
     scale;
     switch(type)
@@ -325,9 +337,9 @@
       {
         if(canceled)
           return oncancelEnd && oncancelEnd();
-        var context = canvas.getContext('2d'),
+        var ctx = canvas.getContext('2d'),
         render_series = [];
-        context.clearRect(0, 0, canvas.width, canvas.height);
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
         
         var scale = get_view_scale_for_canvas(pages.view, canvas, 'fit'),
         view = pages.view,
@@ -343,6 +355,7 @@
 
         if(o.links_div)
           $(o.links_div).html('');
+        var spare_canvas = newEl('canvas');
         
         $.each(pages, function(i, page)
           {
@@ -365,26 +378,29 @@
                     page.offset[1] * scale;
                   scale = scale * page.scale;
                   var rect = page.rect = [ 
-                    Math.ceil(offx), Math.ceil(offy),
+                    Math.floor(offx), Math.floor(offy),
                     Math.ceil(scale * (pview[2] - pview[0])), 
                     Math.ceil(scale * (pview[3] - pview[1])) ] ;
-                  var viewport = docPage.getViewport(scale);
+                  viewport = new PDFJS.PageViewport(pview, scale, 0, 0, 0);
                   page.viewport = viewport;
                   
                   async.series([
                     function(cb)
                     {
-                      var spare_canvas = $('<canvas/>')[0],
-                      ctx = spare_canvas.getContext('2d');
-                      spare_canvas.width = rect[2];
-                      spare_canvas.height = rect[3];
-                      renderTask = docPage.render({canvasContext: ctx, 
+                      var sctx = spare_canvas.getContext('2d');
+                      if(spare_canvas.width != rect[2])
+                        spare_canvas.width = rect[2];
+                      if(spare_canvas.height != rect[3])
+                        spare_canvas.height = rect[3];
+                      sctx.clearRect(0, 0, 
+                                     spare_canvas.width, spare_canvas.height);
+                      renderTask = docPage.render({canvasContext: sctx, 
                                                    viewport: viewport});
                       renderTask.then(function() { callback(); }, callback);
                       function callback(err)
                       {
                         if(!err)
-                          context.drawImage(spare_canvas, rect[0], rect[1]);
+                          ctx.drawImage(spare_canvas, rect[0], rect[1]);
                         cb(err);
                       }
                     },
@@ -409,6 +425,7 @@
             o.cancelRender = null;
             if(!canceled && !o.silent)
               $(self).trigger('render');
+            spare_canvas = null;
             next(err);
           });
       }
@@ -630,7 +647,12 @@
     {
       var self = this,
       o = self.data(pvobj_key),
-      ev_box = {};
+      ev_box = {},
+      spare_canvases_len = 3,
+      spare_canvases = [];
+      
+      for(var i = 0; i < spare_canvases_len; ++i)
+        spare_canvases.push(newEl('canvas'));
       
       self.on('render', pagecurl_start)
         .on('before-render', pagecurl_destroy);
@@ -642,16 +664,28 @@
       {
         if(o.display_mode !== 'book')
           return;
+        for(var i = 0; i < spare_canvases_len; ++i)
+        {
+          var canvas = spare_canvases[i];
+          if(canvas.width != o.canvas.width || 
+             canvas.height != o.canvas.height)
+          {
+            canvas.width = o.canvas.width;
+            canvas.height = o.canvas.height;
+          }
+        }
         render_nearby_pages(function(err, pages_obj)
           {
             if(err)
               return;
-            init_pagecurls(pages_obj[0], pages_obj[1]);
+            init_pagecurls(pages_obj[0], pages_obj[1], spare_canvases[2]);
             self.trigger('pagecurl-initialized');
           });
       }
-      function render_page(idx, cb2)
+      function render_page(args, cb2)
       {
+        var idx = args[0],
+        spare_canvas = args[1];
         if(!exists(idx))
           return cb2();
         function exists(idx)
@@ -669,8 +703,7 @@
             p_opts.cancelRender();
           cb('Canceled!');
         }
-        var spare_canvas = $('<canvas/>')[0],
-        p_opts = {
+        var p_opts = {
           canvas: spare_canvas,
           curPageIndex: idx,
           display_mode: o.display_mode,
@@ -679,8 +712,6 @@
           silent: true,
           book_mode_fist_page_odd: o.book_mode_fist_page_odd
         };
-        spare_canvas.width = o.canvas.width;
-        spare_canvas.height = o.canvas.height;
         $(ev_box).bind('clear', cancelRender);
         update_canvas_object.call(self, o.pdfDoc, spare_canvas, p_opts,
                                   function()
@@ -690,11 +721,13 @@
       }
       function render_nearby_pages(cb)
       {
-        async.mapSeries([ self.pdfviewer('get', 'pageIndexWithOffset', -1),
-                          self.pdfviewer('get', 'pageIndexWithOffset', 1) ], 
+        async.mapSeries([ [ self.pdfviewer('get', 'pageIndexWithOffset', -1), 
+                            spare_canvases[0] ],
+                          [ self.pdfviewer('get', 'pageIndexWithOffset', 1),
+                            spare_canvases[1] ] ], 
                         render_page, cb);
       }
-      function init_pagecurls(prev_page, next_page)
+      function init_pagecurls(prev_page, next_page, spare_canvas)
       {
         var pagecurls = [],
         pagecurl_data = o.pagecurl_data = {},
@@ -702,7 +735,6 @@
         canvas = o.canvas,
         ctx = canvas.getContext('2d'),
         curPages = o.curPages,
-        spare_canvas = $('<canvas/>')[0],
         releaser = [],
         pc_default_opts = {
           canvas: canvas,
@@ -864,7 +896,6 @@
       o = self.data(pvobj_key);
       if(o.__waiting_for_curlpage)
         return;
-      console.log(o.pagecurl_data);
       o.__waiting_for_curlpage = true;
       if(!o.pagecurl_data)
         self.bind('pagecurl-initialized', function()

@@ -22,22 +22,26 @@ $(function(){
   }
   $('.next-btn').click(function()
     {
-      /*
-      var pageIndex = pdf_viewer.pdfviewer('get', 'pageIndexWithOffset', 1);
-      if(pageIndex !== false)
-        pdf_viewer.pdfviewer('openPage', pageIndex);
-      */
-      pdf_viewer.pdfviewer('pagecurl_to', 'next');
+      if(pdf_viewer.pdfviewer('get', 'display_mode') == 'book')
+        pdf_viewer.pdfviewer('pagecurl_to', 'next');
+      else
+      {
+        var pageIndex = pdf_viewer.pdfviewer('get', 'pageIndexWithOffset', 1);
+        if(pageIndex !== false)
+          pdf_viewer.pdfviewer('openPage', pageIndex);
+      }
       return false;
     });
   $('.previous-btn').click(function()
     {
-      /*
-      var pageIndex = pdf_viewer.pdfviewer('get', 'pageIndexWithOffset', -1);
-      if(pageIndex !== false)
-        pdf_viewer.pdfviewer('openPage', pageIndex);
-      */
-      pdf_viewer.pdfviewer('pagecurl_to', 'previous');
+      if(pdf_viewer.pdfviewer('get', 'display_mode') == 'book')
+        pdf_viewer.pdfviewer('pagecurl_to', 'previous');
+      else
+      {
+        var pageIndex = pdf_viewer.pdfviewer('get', 'pageIndexWithOffset', -1);
+        if(pageIndex !== false)
+          pdf_viewer.pdfviewer('openPage', pageIndex);
+      }
       return false;
     });
   $('.portrait-mode-btn').click(function(){ 

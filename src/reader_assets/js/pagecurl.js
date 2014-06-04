@@ -59,9 +59,8 @@ function flip_page_compute(size, x, y, flipX, flipY, limits)
   var x0_rotation = Math.atan2(y, x - x0),
   p_rotation = Math.PI/2 - x0_rotation,
   offset = 10,
-  middle_line_distance = Math.sqrt(x0 * x0 + y0 * y0),
-  msize = Math.max(distance(size), middle_line_distance) + 
-    distance([x0, y0]) + offset * 2,
+  middle_line_distance = distance([x0, y0]),
+  msize = distance(size) * 3 + offset * 2,
   mask_rot = pivot_middle_angle + Math.PI/2;
   return {
     apply_raster_mat: function(ctx)
@@ -69,7 +68,7 @@ function flip_page_compute(size, x, y, flipX, flipY, limits)
       ctx.translate(x, y);
       ctx.rotate(-p_rotation + Math.PI/2);
       ctx.translate(flipX ? 0 : -size[0], flipY ? size[1] : 0);
-      ctx.scale((flipX ? -1 : 1) * size[0], (flipY ? -1 : 1) * size[1])
+      ctx.scale((flipX ? -1 : 1), (flipY ? -1 : 1))
     },
     apply_mask_mat: function(ctx)
     {
@@ -144,17 +143,18 @@ function render_subrout_draw_flipped_page(ctx, drect, mats, src, pivot)
   if(mats)
   {
     ctx.save();
-    ctx.beginPath()
     mats.apply_mask_mat(ctx);
+    ctx.beginPath()
     ctx.rect(0, 0, 1, 1);
     ctx.restore();
     ctx.clip();
-
+    
     mats.apply_raster_mat(ctx);
     ctx.shadowBlur = 1 * (2 - (pivot[0] / drect[2]));
     ctx.shadowColor = '#444444';
     if(src)
-      ctx.drawImage.apply(ctx, ([ src.image ]).concat(srect, [0,0,1,1]));
+      ctx.drawImage.apply(ctx, ([ src.image ])
+                                .concat(srect, [0,0].concat(drect.slice(2,4))));
     else
     {
       ctx.fillStyle = '#ffffff';
