@@ -383,7 +383,6 @@
                     Math.floor(offx), Math.floor(offy),
                     Math.ceil(scale * (pview[2] - pview[0])), 
                     Math.ceil(scale * (pview[3] - pview[1])) ] ;
-                  console.log(rect);
                   viewport = new PDFJS.PageViewport(pview, scale, 0, 0, 0);
                   page.viewport = viewport;
                   async.series([
@@ -874,55 +873,60 @@
           }
           break;
         case 'portrait':
-          var pages_opts = [
-            {
-              corners: [ 'tl', 'bl', ],
-              limits: [ 'tr', 'br' ],
-            },
-            {
-              corners: [ 'tr', 'br' ],
-              limits: [ 'tl', 'bl', ]
-            }
-          ];
-          var curPage = curPages[0];
-          if(!curPage || !curPage.rect)
-            break;
-          var rect = curPage.rect;
-          for(var i = 0; i < 2; ++i)
-          {
-            var page_data = i === 0 ? prev_page_data : next_page_data;
-            if(!page_data || !page_data.curPages)
-              continue;
-            var other_page = page_data.curPages[0];
-            pagecurl = new PageCurl(
-              $.extend({}, pages_opts[i], pc_default_opts,{
-                page_data: page_data,
-                rect: rect,
-                src0: {
-                  image: page_data.canvas,
-                  src_rect: other_page.rect
-                },
-                src1: null,
-                src2: {
-                  image: spare_canvas,
-                  src_rect: rect
-                },
-                grabbable: true
-              }));
-            if(i === 0)
-              pagecurl_data.previous = pagecurl;
-            else
-              pagecurl_data.next = pagecurl
-
-            on($(pagecurl), releaser, 'grab', pagecurl_grab)
-            ('grabend', pagecurl_grabend)
-            ('page-curled', page_curled)
-            ('before-render', handle_before_render);
-            
-            pagecurls.push(pagecurl);
-          }
+          insert_portrait_pagecurl();
           break;
         }
+      function insert_portrait_pagecurl()
+      {
+        var pages_opts = [
+          {
+            corners: [ 'tl', 'bl', ],
+            limits: [ 'tr', 'br' ],
+          },
+          {
+            corners: [ 'tr', 'br' ],
+            limits: [ 'tl', 'bl', ]
+          }
+        ];
+        var curPage = curPages[0];
+        if(!curPage || !curPage.rect)
+          return;
+        var rect = curPage.rect;
+        for(var i = 0; i < 2; ++i)
+        {
+          var page_data = i === 0 ? prev_page_data : next_page_data;
+          if(!page_data || !page_data.curPages)
+            continue;
+          var other_page = page_data.curPages[0];
+          pagecurl = new PageCurl(
+            $.extend({}, pages_opts[i], pc_default_opts,{
+              page_data: page_data,
+              rect: rect,
+              src0: {
+                image: page_data.canvas,
+                src_rect: other_page.rect
+              },
+              src1: null,
+              src2: {
+                image: spare_canvas,
+                src_rect: rect
+              },
+              grabbable: true
+            }));
+          if(i === 0)
+            pagecurl_data.previous = pagecurl;
+          else
+            pagecurl_data.next = pagecurl
+
+          on($(pagecurl), releaser, 'grab', pagecurl_grab)
+          ('grabend', pagecurl_grabend)
+          ('page-curled', page_curled)
+          ('before-render', handle_before_render);
+          
+          pagecurls.push(pagecurl);
+        }
+
+      }
       }
     },
     pagecurl_to: function(page)
