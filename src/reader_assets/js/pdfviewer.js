@@ -245,7 +245,9 @@
                     data: data
                   };
                   self.trigger('openlink', [ data ]);
-                  return data.return_value;
+                  if(data.return_value !== false)
+                    window.open(element.prop('href'), element.attr('target'));
+                  return false;
                 });
           }
           else if(data.dest)
@@ -374,16 +376,16 @@
                   scale = get_view_scale_for_canvas(view, canvas, 'fit'),
                   offx = (canvas.width - (view[2] - view[0]) * scale) / 2 +
                     page.offset[0] * scale,
-                  offy = (canvas.height - (view[3] - view[0]) * scale) / 2 +
+                  offy = (canvas.height - (view[3] - view[1]) * scale) / 2 +
                     page.offset[1] * scale;
                   scale = scale * page.scale;
                   var rect = page.rect = [ 
                     Math.floor(offx), Math.floor(offy),
                     Math.ceil(scale * (pview[2] - pview[0])), 
                     Math.ceil(scale * (pview[3] - pview[1])) ] ;
+                  console.log(rect);
                   viewport = new PDFJS.PageViewport(pview, scale, 0, 0, 0);
                   page.viewport = viewport;
-                  
                   async.series([
                     function(cb)
                     {
@@ -631,9 +633,10 @@
           break;
         default:
           curPageIndex -= (curPageIndex - 1) % curPages.length;
+          
         }
         var page = curPageIndex + curPages.length * offset;
-        if(page === 0 && o.book_mode_fist_page_odd)
+        if(page === 0 && o.display_mode == 'book' && o.book_mode_fist_page_odd)
           page = 1;
         if(page > 0 && page <= o.pdfDoc.numPages)
           return page;
@@ -662,8 +665,6 @@
       }
       function pagecurl_start()
       {
-        if(o.display_mode !== 'book')
-          return;
         for(var i = 0; i < spare_canvases_len; ++i)
         {
           var canvas = spare_canvases[i];
@@ -727,7 +728,7 @@
                             spare_canvases[1] ] ], 
                         render_page, cb);
       }
-      function init_pagecurls(prev_page, next_page, spare_canvas)
+      function init_pagecurls(prev_page_data, next_page_data, spare_canvas)
       {
         var pagecurls = [],
         pagecurl_data = o.pagecurl_data = {},
@@ -789,7 +790,7 @@
         function page_curled()
         {
           // goto next page
-          var page_data = this.page_data
+          var page_data = this.page_data;
           o.curPageIndex = page_data.curPageIndex;
           o.curPages = page_data.curPages;
           $(o.links_div).replaceWith(page_data.links_div);
@@ -829,11 +830,11 @@
           ];
           for(var i = 0; i < 2; ++i)
           {
+            if(!curPages[i] || !curPages[i].rect)
+              continue;
             var curPage = curPages[i],
             rect = curPage.rect,
-            page_data = i === 0 ? prev_page : next_page;
-            if(!curPage || !curPage.rect)
-              continue;
+            page_data = i === 0 ? prev_page_data : next_page_data;
             var pages = page_data ? page_data.curPages : null, 
             rect0 = null, rect1 = null;
             if(pages)
@@ -858,6 +859,55 @@
                   src_rect: rect
                 },
                 grabbable: !!pages
+              }));
+            if(i === 0)
+              pagecurl_data.previous = pagecurl;
+            else
+              pagecurl_data.next = pagecurl
+
+            on($(pagecurl), releaser, 'grab', pagecurl_grab)
+            ('grabend', pagecurl_grabend)
+            ('page-curled', page_curled)
+            ('before-render', handle_before_render);
+            
+            pagecurls.push(pagecurl);
+          }
+          break;
+        case 'portrait':
+          var pages_opts = [
+            {
+              corners: [ 'tl', 'bl', ],
+              limits: [ 'tr', 'br' ],
+            },
+            {
+              corners: [ 'tr', 'br' ],
+              limits: [ 'tl', 'bl', ]
+            }
+          ];
+          var curPage = curPages[0];
+          if(!curPage || !curPage.rect)
+            break;
+          var rect = curPage.rect;
+          for(var i = 0; i < 2; ++i)
+          {
+            var page_data = i === 0 ? prev_page_data : next_page_data;
+            if(!page_data || !page_data.curPages)
+              continue;
+            var other_page = page_data.curPages[0];
+            pagecurl = new PageCurl(
+              $.extend({}, pages_opts[i], pc_default_opts,{
+                page_data: page_data,
+                rect: rect,
+                src0: {
+                  image: page_data.canvas,
+                  src_rect: other_page.rect
+                },
+                src1: null,
+                src2: {
+                  image: spare_canvas,
+                  src_rect: rect
+                },
+                grabbable: true
               }));
             if(i === 0)
               pagecurl_data.previous = pagecurl;

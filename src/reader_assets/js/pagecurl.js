@@ -158,7 +158,7 @@ function render_subrout_draw_flipped_page(ctx, drect, mats, src, pivot)
     else
     {
       ctx.fillStyle = '#ffffff';
-      ctx.fillRect(0, 0, 1, 1);
+      ctx.fillRect.apply(ctx, [0,0].concat(drect.slice(2,4)));
     }
   }
   else
@@ -495,32 +495,6 @@ p.bind_grab = function()
     }
   }
   on($(window), releaser, 'mousemove', update_mouse_position)
-  ('mousedown', function(ev)
-    {
-      if(!self.grabbable)
-        return;
-      var canvas_off = $canvas.offset(),
-      mx = ev.pageX - canvas_off.left,
-      my = ev.pageY - canvas_off.top,
-      v;
-      prev_pivot = null;
-      for(var i = 0, l = corners.length; i < l; ++i)
-      {
-        var corner = corners[i],
-        info = corner_mouse_info(corner, mx, my);
-        if(info.inspace)
-        {
-          if(cur_tween_data.active && cur_tween)
-            cur_tween.stop();
-          cur_tween_data.active = true;
-          cur_tween_data.state = 'grabbed';
-          cur_tween_data.corner = corner;
-          update_mouse_position(ev);
-          $(self).trigger('grab');
-        }
-      }
-      return false;
-    })
   ('mouseup', function(ev)
     {
       if(cur_tween_data.state == 'grabbed')
@@ -571,6 +545,32 @@ p.bind_grab = function()
         speed = 0;
         return false;
       }
+    });
+  on($canvas, releaser, 'mousedown', function(ev)
+    {
+      if(!self.grabbable)
+        return;
+      var canvas_off = $canvas.offset(),
+      mx = ev.pageX - canvas_off.left,
+      my = ev.pageY - canvas_off.top,
+      v;
+      prev_pivot = null;
+      for(var i = 0, l = corners.length; i < l; ++i)
+      {
+        var corner = corners[i],
+        info = corner_mouse_info(corner, mx, my);
+        if(info.inspace)
+        {
+          if(cur_tween_data.active && cur_tween)
+            cur_tween.stop();
+          cur_tween_data.active = true;
+          cur_tween_data.state = 'grabbed';
+          cur_tween_data.corner = corner;
+          update_mouse_position(ev);
+          $(self).trigger('grab');
+        }
+      }
+      return false;
     });
   self._curlpage = function(corner, cb)
   {
