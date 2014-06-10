@@ -54,17 +54,7 @@ $(function(){
         return null;
       return li;
     }
-    list.on('click', '.mag-read-btn', function()
-      {
-        var li = catchLIElement(this)
-        if(!li)
-          return;
-        var item = li.data('item');
-        if(item.type == MAG_TYPE_FREE)
-          window.open(magazine_file_url(app_data, item.FileName), '_blank');
-        return false;
-      })
-      .on('click', '.mag-sample-btn', function()
+    list.on('click', '.mag-sample-btn, .mag-read-btn', function()
       {
         var li = catchLIElement(this)
         if(!li)
@@ -72,7 +62,9 @@ $(function(){
         var item = li.data('item'),
         fn = paid2free(item.FileName),
         ext = path.extname(fn), url;
-        if(ext == '.pdf')
+        if(ext == '.pdf' &&
+           (($(this).hasClass('mag-read-btn') && item.type == MAG_TYPE_FREE) ||
+            $(this).hasClass('mag-sample-btn')))
           url = 'pdfreader.html?waurl=' + 
              encodeURIComponent(magazine_file_key(app_data, fn));
         else
