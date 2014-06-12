@@ -244,7 +244,7 @@
                   var obj = {
                     data: data
                   };
-                  data.url = 'buy://';
+                  //data.url = 'buy://';
                   self.trigger('openlink', [ obj ]);
                   if(obj.return_value !== false)
                     window.open(element.prop('href'), element.attr('target'));
