@@ -241,11 +241,12 @@
               .attr('target', '_blank')
               .click(function()
                 {
-                  var data = {
+                  var obj = {
                     data: data
                   };
-                  self.trigger('openlink', [ data ]);
-                  if(data.return_value !== false)
+                  data.url = 'buy://';
+                  self.trigger('openlink', [ obj ]);
+                  if(obj.return_value !== false)
                     window.open(element.prop('href'), element.attr('target'));
                   return false;
                 });

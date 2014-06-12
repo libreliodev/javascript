@@ -17,5 +17,6 @@
   "enable_info_in_menu": false,
   "info_url": "http://www.example.com",
   "enable_app_rating": true,
-  "gcm_project_number": ""
+  "gcm_project_number": "",
+  "UserService": "service_name"
 }

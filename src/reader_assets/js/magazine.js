@@ -62,17 +62,38 @@ $(function(){
         var item = li.data('item'),
         fn = paid2free(item.FileName),
         ext = path.extname(fn), url;
-        if(ext == '.pdf' &&
-           (($(this).hasClass('mag-read-btn') && item.type == MAG_TYPE_FREE) ||
-            $(this).hasClass('mag-sample-btn')))
-          url = 'pdfreader.html?waurl=' + 
-             encodeURIComponent(magazine_file_key(app_data, fn));
+        if($(this).hasClass('mag-read-btn') && item.type != MAG_TYPE_FREE)
+        {
+          read_paid_file(item);
+        }
         else
-          url = magazine_file_url(app_data, fn);
+        {
+          if(ext == '.pdf')
+            url = 'pdfreader.html?waurl=' + 
+            encodeURIComponent(magazine_file_key(app_data, fn));
+          else
+            url = magazine_file_url(app_data, fn);
         
-        window.open(url, '_blank');
+          window.open(url, '_blank');
+        }
         return false;
       });
+  }
+  function read_paid_file(item)
+  {
+    var type = app_data.CodeService ? 'code' : 
+      (app_data.UserService ? 'user' : null);
+    if(!type)
+      return;
+    purchase_dialog_open({
+      type: type,
+      client: app_data.client_name,
+      app: app_data.app_name, 
+      service: type == 'user' ? app_data.UserService : 
+        app_data.CodeService,
+      urlstring: magazine_file_key(app_data, item.FileName),
+      deviceid: 'browser'
+    });
   }
   function magazines_create_item(item, data, list)
   {

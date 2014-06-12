@@ -7,7 +7,8 @@ $(function(){
   {
     if(!external_b)
       pdf_url = s3bucket_file_url(pdf_url);
-    PDFJS.getDocument(pdf_url).then(function(pdf)
+    PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler)
+      .then(function(pdf)
       {
         try {
           pdf_viewer.pdfviewer('set', 'pdfDoc', pdf);
@@ -20,6 +21,49 @@ $(function(){
           notifyError(err);
         });
   }
+  function downloadProgressHandler(ev)
+  {
+    if($('.pdfviewer-progress').data('fadingout'))
+      return;
+    $('.pdfviewer-progress .progress-bar')
+      .css('width', (ev.loaded / ev.total * 100) + '%');
+    if(ev.loaded > ev.total)
+      $('.pdfviewer-progress').fadeOut().data('fadingout', true);
+  }
+  pdf_viewer.bind('openlink', function(ev, obj)
+     {
+       var data = obj.data,
+       url = data.url;
+
+       // buy:// protocol
+       if(url == 'buy://')
+       {
+         $.ajax('application_.json', {
+           dataType: 'json',
+           success: function(app_data)
+           {
+             var type = app_data.CodeService ? 'code' : 
+               (app_data.UserService ? 'user' : null);
+             if(!type)
+               return;
+             purchase_dialog_open({
+               type: type,
+               client: app_data.client_name,
+               app: app_data.app_name, 
+               service: type == 'user' ? app_data.UserService : 
+                 app_data.CodeService,
+               urlstring: pdf_url,
+               deviceid: 'browser'
+             });
+           },
+           error: function(xhr, err_text)
+           {
+             notifyError("Failed to request for page: " + err_text);
+           }
+         });
+         obj.return_value = false;
+       }
+     });
   $('.next-btn').click(function()
     {
       pdf_viewer.pdfviewer('pagecurl_to', 'next');

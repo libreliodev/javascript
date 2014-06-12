@@ -26,3 +26,14 @@
   position: relative;
   z-index: 1;
 }
+
+/* Purchase dialog */
+#purchase-dialog {
+  .user-service, .code-service {
+    display: none;
+  }
+}
+#purchase-dialog.purchase-dialog-user-service .user-service,
+#purchase-dialog.purchase-dialog-code-service .code-service {
+  display: block;
+}
