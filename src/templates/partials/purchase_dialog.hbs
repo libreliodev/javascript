@@ -1,0 +1,51 @@
+<!-- Purchase dialog -->
+<div id="purchase-dialog" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h5>
+          <span class="code-service">Enter your code</span>
+          <span class="user-service">Enter your user ID and password</span>
+        </h5>
+      </div>
+      <div class="modal-body">
+        <form class="code-service form-horizontal" role="form">
+          <div class="form-group">
+            <label for="purchase-dlg-code-inp" 
+                   class="col-sm-2 control-label">Code</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="purchase-dlg-code-inp"
+                     placeholder="Code" />
+            </div>
+          </div>
+        </form>
+        <form class="user-service form-horizontal" role="form">
+          <div class="form-group">
+            <label for="purchase-dlg-user-inp"
+                   class="col-sm-2 control-label">Username</label>
+            <div class="col-sm-10">
+              <input type="text" class="form-control" id="purchase-dlg-user-inp"
+                     placeholder="Username" />
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="purchase-dlg-pass-inp"
+                   class="col-sm-2 control-label">Password</label>
+            <div class="col-sm-10">
+              <input type="password" class="form-control" 
+                     id="purchase-dlg-pass-inp" placeholder="Password" />
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button id="purchase-dlg-submit" type="submit" 
+                class="btn btn-primary">Submit</button>
+        <button id="purchase-dlg-cancel" 
+                class="btn btn-default">Cancel</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Purchase dialog end -->
