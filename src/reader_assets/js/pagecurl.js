@@ -553,7 +553,7 @@ p.bind_grab = function()
       var canvas_off = $canvas.offset(),
       mx = ev.pageX - canvas_off.left,
       my = ev.pageY - canvas_off.top,
-      v;
+      v, grabbed;
       prev_pivot = null;
       for(var i = 0, l = corners.length; i < l; ++i)
       {
@@ -568,9 +568,10 @@ p.bind_grab = function()
           cur_tween_data.corner = corner;
           update_mouse_position(ev);
           $(self).trigger('grab');
+          grabbed = true;
         }
       }
-      return false;
+      return !grabbed;
     });
   self._curlpage = function(corner, cb)
   {

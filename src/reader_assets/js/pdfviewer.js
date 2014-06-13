@@ -346,8 +346,8 @@
         
         var scale = get_view_scale_for_canvas(pages.view, canvas, 'fit'),
         view = pages.view,
-        offx = (canvas.width - view[2]) * scale / 2,
-        offy = (canvas.height - view[3]) * scale / 2;
+        offx = (canvas.width - (view[2] * scale)) / 2,
+        offy = (canvas.height - (view[3] * scale)) / 2;
         pages.rect = [ offx, offy, 
                        scale * (view[2] - view[1]), 
                        scale * (view[3] - view[1]) ] ;
