@@ -27,7 +27,7 @@ $(function(){
       return;
     $('.pdfviewer-progress .progress-bar')
       .css('width', (ev.loaded / ev.total * 100) + '%');
-    if(ev.loaded > ev.total)
+    if(ev.loaded >= ev.total)
       $('.pdfviewer-progress').fadeOut().data('fadingout', true);
   }
   pdf_viewer.bind('openlink', function(ev, obj)
