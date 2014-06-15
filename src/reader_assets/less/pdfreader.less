@@ -56,6 +56,23 @@
   .vjs-default-skin .vjs-control-bar {
     font-size: .1%;
   }
+  .flex-viewport {
+    height: 100%;
+  }
+  .slideshow {
+    .slides {
+      display: table !important;
+      height: 100%;
+      li {
+        display: table-cell !important;
+        vertical-align: middle;
+        float: none !important;
+      }
+      img {
+        width: 100%;
+      }
+    }
+  }
 }
 .controls {
   position: relative;

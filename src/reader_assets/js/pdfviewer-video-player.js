@@ -5,6 +5,7 @@ $(function(){
     '.mp4': 'video/mp4',
     '.ogv': 'video/ogg'
   },
+  max_icons_size = 100,
   pdf_viewer = $('.pdfviewer');
   function video_size_update($vid_wrp, player)
   {
@@ -23,11 +24,10 @@ $(function(){
   }
   pdf_viewer.bind('render-link', function(ev, data, page)
      {
-       console.log('render-link');
        var url_str = data.url,
        file_ext = path.extname(url('path', url_str));
        // video file
-       if(video_exts.indexOf(file_ext))
+       if(video_exts.indexOf(file_ext.toLowerCase()) != -1)
        {
          var query = querystring.parse(url('?', url_str)),
          qm_idx = url_str.indexOf('?'),
@@ -42,7 +42,6 @@ $(function(){
          $source = $vid.find('source'),
          rect = data.rect,
          releaser = [],
-         max_icons_size = 100,
          player, exit_proc;
          $source.attr('src', src);
          if(type)
@@ -105,6 +104,10 @@ $(function(){
                 releaser, 'click', function()
                {
                  pdf_viewer.pdfviewer('set', 'auto_resizable', false);
+                 setTimeout(function()
+                   {
+                     pdf_viewer.pdfviewer('set', 'auto_resizable', true);
+                   }, 500);
                });
              video_size_update($vid_wrp, player);
              var curPages = pdf_viewer.pdfviewer('get', 'curPages');
@@ -117,10 +120,6 @@ $(function(){
                .on('fullscreenchange', function()
                  {
                    video_size_update($vid_wrp, player);
-                   setTimeout(function()
-                     {
-                       pdf_viewer.pdfviewer('set', 'auto_resizable', true);
-                     }, 500);
                  });
              if(query.waplay == 'auto' && curPages.indexOf(page) != -1)
                player.play();

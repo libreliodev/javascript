@@ -203,7 +203,6 @@
             rect[2] - rect[0],
             rect[3] - rect[1]
           ];
-          data.url = 'http://localhost/Downloads/mc4.mp4';
           self.trigger('render-link', [ data, page ]);
           if(!data.element)
           {

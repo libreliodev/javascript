@@ -31,6 +31,8 @@
     "querystring": "~3.24.10",
     "tweenjs": "*",
     "videojs": "~4.6.3",
-    "js-url": "~1.8.6"
+    "js-url": "~1.8.6",
+    "flexslider": "*",
+    "screenfull": "~1.2.1"
   }
 }

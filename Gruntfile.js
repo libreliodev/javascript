@@ -466,6 +466,21 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/flexslider/',
+                        src: ['flexslider.css', 'jquery.flexslider-min.js',
+                              'fonts/*'],
+                        dest: reader_assets_dist_dir + '/lib/flexslider/'
+                        
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/screenfull/dist/',
+                        src: 'screenfull.min.js',
+                        dest: reader_assets_dist_dir + '/lib/'
+                        
+                    },
+                    {
+                        expand: true,
                         cwd: reader_assets_src_dir + '/js',
                         src: ['*.js'],
                         dest: reader_assets_dist_dir + '/js/'

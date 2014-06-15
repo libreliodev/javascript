@@ -54,7 +54,7 @@ function flip_page_compute(size, x, y, flipX, flipY, limits)
   tan_pm_angle = Math.tan(pivot_middle_angle),
   x0 = pivot_middle_x - pivot_middle_y / tan_pm_angle,
   y0 = pivot_middle_y - pivot_middle_x * tan_pm_angle;
-  if(y0 == Number.POSITIVE_INFINITY || y0 == Number.NEGATIVE_INFINITY)
+  if(!isFinite(y0))
     y0 = size[1] * 5;
   var x0_rotation = Math.atan2(y, x - x0),
   p_rotation = Math.PI/2 - x0_rotation,
@@ -489,8 +489,7 @@ p.bind_grab = function()
       TWEEN.update();
     }
   }
-  on($(window), releaser, 'mousemove', update_mouse_position)
-  ('mouseup', function(ev)
+  on($(window), releaser, 'mouseup', function(ev)
     {
       if(cur_tween_data.state == 'grabbed')
       {
@@ -542,7 +541,8 @@ p.bind_grab = function()
         return false;
       }
     });
-  on($canvas, releaser, 'mousedown', function(ev)
+  on($canvas, releaser, 'mousemove', update_mouse_position)
+  ('mousedown', function(ev)
     {
       if(!self.grabbable)
         return;
