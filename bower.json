@@ -29,6 +29,8 @@
     "async": "~0.9.0",
     "path": "~3.24.10",
     "querystring": "~3.24.10",
-    "tweenjs": "*"
+    "tweenjs": "*",
+    "videojs": "~4.6.3",
+    "js-url": "~1.8.6"
   }
 }

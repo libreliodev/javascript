@@ -6,7 +6,8 @@
     zoom: 1,
     show_selector_fac: 0.5,
     book_mode_fist_page_odd: true,
-    auto_select_display_mode: true
+    auto_select_display_mode: true,
+    auto_resizable: true
   },
   dhtml_global = {
     screen_width: function()
@@ -29,24 +30,6 @@
   function newEl(a)
   {
     return document.createElement(a);
-  }
-  function wrpFunc(func, thisarg, prepend_args, append_args)
-  {
-    return function()
-    {
-      var args = arraySlice.call(arguments);
-      return func.apply(thisarg || this, 
-                 prepend_args ? prepend_args.concat(args, append_args) :
-                                args.concat(append_bargs));
-    }
-  }
-  function funcListCall(a)
-  {
-    for(var i = 0, l = a.length; i < l; ++i)
-    {
-      var item = a[i];
-      item[1].apply(item[0], item.slice(2));
-    }
   }
   function copy_canvas(dest, src, dont_change_size)
   {
@@ -97,13 +80,6 @@
     var offx = (canv_w - page_w * scale) / 2,
     offy = (canv_h - page_h * scale) / 2;
     return new PDFJS.PageViewport(view, scale, 0, offx, offy);
-  }
-  function on(el, releaser)
-  {
-    el.on.apply(el, arraySlice.call(arguments, 2));
-    if(releaser)
-      releaser.push(([ el, el.off ]).concat(arraySlice.call(arguments, 2)));
-    return wrpFunc(arguments.callee, null, [ el, releaser ]);
   }
   function get_render_pages(doc, canvas, o, cb)
   {
@@ -203,15 +179,16 @@
   {
     var canvasOffset = $(canvas).offset(),
     annotDivOffset = $annotationLayerDiv.offset(),
-    self = this;
+    self = this,
+    docPage = page.docPage;
 
-    var promise = page.getAnnotations().then(function (annotationsData)
+    var promise = docPage.getAnnotations().then(function (annotationsData)
       {
         function createLink(data)
         {
+          data = $.extend(true, {}, data);
           var rect = data.rect,
-          view = page.view,
-          element = $('<a>'),
+          view = docPage.view,
           w_ratio = prect[2] / canvas.width;
           rect = [
             (rect[0] - view[0]) / (view[2] - view[0]) * prect[2],
@@ -220,56 +197,62 @@
             prect[3] - (rect[1] - view[1]) / (view[3] - view[1]) * prect[3]
           ];
           // rect in [x y w h] format
-          rect = [
+          data.rect = rect = [
             rect[0] + prect[0] +canvasOffset.left - annotDivOffset.left,
             rect[1] + prect[1] + canvasOffset.top - annotDivOffset.top, 
             rect[2] - rect[0],
             rect[3] - rect[1]
           ];
-          element.addClass('annot-link')
-            .css({
-              position: 'absolute',
-              display: 'block',
-              left: rect[0],
-              top: rect[1],
-              width: rect[2],
-              height: rect[3]
-            });
-          if(data.url)
+          data.url = 'http://localhost/Downloads/mc4.mp4';
+          self.trigger('render-link', [ data, page ]);
+          if(!data.element)
           {
-            element.attr('href', data.url)
-              .attr('target', '_blank')
-              .click(function()
-                {
-                  var obj = {
-                    data: data
-                  };
-                  //data.url = 'buy://';
-                  self.trigger('openlink', [ obj ]);
-                  if(obj.return_value !== false)
-                    window.open(element.prop('href'), element.attr('target'));
-                  return false;
-                });
+            var element = $('<a>').addClass('annot-link')
+              .css({
+                position: 'absolute',
+                display: 'block',
+                left: rect[0],
+                top: rect[1],
+                width: rect[2],
+                height: rect[3]
+              });
+            if(data.url)
+            {
+              element.attr('href', data.url)
+                .attr('target', '_blank')
+                .click(function()
+                  {
+                    var obj = {
+                      data: data
+                    };
+                    //data.url = 'buy://';
+                    self.trigger('openlink', [ obj, page ]);
+                    if(obj.return_value !== false)
+                      window.open(element.prop('href'), element.attr('target'));
+                    return false;
+                  });
+            }
+            else if(data.dest)
+            {
+              // internal link
+              element.attr('href', '#')
+                .click(function()
+                  {
+                    try {
+                      var dest = typeof data.dest == 'string' ? 
+                        dests[data.dest][0] : data.dest[0];
+                      doc.getPageIndex(dest).then(function(index)
+                        {
+                          self.pdfviewer('openPage', index + 1);
+                        });
+                    }catch(e) {
+                    }
+                    return false;
+                  });
+            }
+            data.element = element;
           }
-          else if(data.dest)
-          {
-            // internal link
-            element.attr('href', '#')
-              .click(function()
-                {
-                  try {
-                    var dest = typeof data.dest == 'string' ? 
-                      dests[data.dest][0] : data.dest[0];
-                    doc.getPageIndex(dest).then(function(index)
-                      {
-                        self.pdfviewer('openPage', index + 1);
-                      });
-                  }catch(e) {
-                  }
-                  return false;
-                });
-          }
-          return element;
+          return data.element;
         }
         var dests;
         doc.getDestinations().then(function(res)
@@ -282,7 +265,7 @@
           if (!annotation || !annotation.hasHtml()) {
             continue;
           }
-          //var element = annotation.getHtmlElement(page.commonObjs);
+          //var element = annotation.getHtmlElement(docPage.commonObjs);
           data = annotation.getData();
           if(data.subtype !== 'Link')
             continue;
@@ -411,7 +394,7 @@
                       var el = o.links_div;
                       if(el)
                       {  
-                        setupAnnotations.call(self, doc, docPage, rect, 
+                        setupAnnotations.call(self, doc, page, rect, 
                                               canvas, $(el))
                           .then(function() { cb() });
                       }
@@ -770,9 +753,25 @@
           $(o.links_div).show();
           o.pagecurl_data = null;
         }
+        function pagecurl_start_handler()
+        {
+          self.trigger('pagecurl-start');
+          /*$(o.links_div).animate({ opacity: 0 }, {
+            queue: false,
+            duration: 500
+          });*/
+        }
+        function pagecurl_end_handler()
+        {
+          self.trigger('pagecurl-end');
+          /*$(o.links_div).animate({ opacity: 1 }, {
+            queue: false,
+            duration: 100
+          });*/
+        }
         function pagecurl_grab()
         {
-          $(o.links_div).hide();
+          $(o.links_div).css('visibility', 'hidden');
           $.each(pagecurls, function(i, pc)
             {
               pc._grabbable = pc.grabbable;
@@ -781,7 +780,7 @@
         }
         function pagecurl_grabend()
         {
-          $(o.links_div).show();
+          $(o.links_div).css('visibility', 'visible');
           $.each(pagecurls, function(i, pc)
             {
               pc.grabbable = pc._grabbable;
@@ -868,7 +867,9 @@
             on($(pagecurl), releaser, 'grab', pagecurl_grab)
             ('grabend', pagecurl_grabend)
             ('page-curled', page_curled)
-            ('before-render', handle_before_render);
+            ('before-render', handle_before_render)
+            ('pagecurl-start', pagecurl_start_handler)
+            ('pagecurl-end', pagecurl_end_handler);
             
             pagecurls.push(pagecurl);
           }
@@ -922,7 +923,9 @@
           on($(pagecurl), releaser, 'grab', pagecurl_grab)
           ('grabend', pagecurl_grabend)
           ('page-curled', page_curled)
-          ('before-render', handle_before_render);
+          ('before-render', handle_before_render)
+          ('pagecurl-start', pagecurl_start_handler)
+          ('pagecurl-end', pagecurl_end_handler);
           
           pagecurls.push(pagecurl);
         }
@@ -992,6 +995,8 @@
       }
       function resize_handle(ev)
       {
+        if(!o.auto_resizable)
+          return;
         resize_update();
         var nw = self.width(),
         nh = self.height();

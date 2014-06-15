@@ -1,9 +1,38 @@
+var arraySlice = Array.prototype.slice;
 function notifyError(err)
 {
   alert(err);
 }
+function wrpFunc(func, thisarg, prepend_args, append_args)
+{
+  return function()
+  {
+    var args = arraySlice.call(arguments);
+    return func.apply(thisarg || this, 
+                 prepend_args ? prepend_args.concat(args, append_args) :
+                                args.concat(append_bargs));
+  }
+}
+function funcListCall(a)
+{
+  for(var i = 0, l = a.length; i < l; ++i)
+  {
+    var item = a[i];
+    item[1].apply(item[0], item.slice(2));
+  }
+}
+function on(el, releaser)
+{
+  el.on.apply(el, arraySlice.call(arguments, 2));
+  if(releaser)
+    releaser.push(([ el, el.off ]).concat(arraySlice.call(arguments, 2)));
+  return wrpFunc(arguments.callee, null, [ el, releaser ]);
+}
 
-
+function parse_url(url)
+{
+  return $('<a/>').prop('href', url)[0].href;
+}
 function get_url_query(url)
 {
   var idx = url.indexOf('?'),

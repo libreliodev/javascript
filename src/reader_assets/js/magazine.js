@@ -11,6 +11,9 @@ $(function(){
   }).done(function(data)
      {
        // get update rate it's in minutes
+       var rurl = parse_url(data.root_view);
+       for(var i in rurl)
+         console.log(i, rurl[i]);
        var q = querystring.parse(get_url_query(data.root_view)) || {},
        update_every = parseFloat(q.waupdate);
        data.update_every = (isNaN(update_every) ? 30 : update_every)*60*1000;

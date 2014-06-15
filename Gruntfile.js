@@ -454,6 +454,18 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/videojs/dist/',
+                        src: 'video-js/**',
+                        dest: reader_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/js-url/',
+                        src: 'url.min.js',
+                        dest: reader_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
                         cwd: reader_assets_src_dir + '/js',
                         src: ['*.js'],
                         dest: reader_assets_dist_dir + '/js/'

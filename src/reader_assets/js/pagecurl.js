@@ -253,31 +253,6 @@ function render_page(ctx, rect, src0, src1, src2, corner, pivot)
   ctx.restore();
 }
 
-function wrpFunc(func, thisarg, prepend_args, append_args)
-{
-  return function()
-  {
-    var args = arraySlice.call(arguments);
-    return func.apply(thisarg || this, 
-                 prepend_args ? prepend_args.concat(args, append_args) :
-                                args.concat(append_bargs));
-  }
-}
-function funcListCall(a)
-{
-  for(var i = 0, l = a.length; i < l; ++i)
-  {
-    var item = a[i];
-    item[1].apply(item[0], item.slice(2));
-  }
-}
-function on(el, releaser)
-{
-  el.on.apply(el, arraySlice.call(arguments, 2));
-  if(releaser)
-    releaser.push(([ el, el.off ]).concat(arraySlice.call(arguments, 2)));
-  return wrpFunc(arguments.callee, null, [ el, releaser ]);
-}
 var PageCurl = function(opts)
 {
   var self = this;
@@ -323,7 +298,24 @@ p.bind_grab = function()
   prev_pivot,
   prev_time,
   speed,
+  pagecurl_started,
   releaser = this._releaser = [];
+  function pagecurl_start()
+  {
+    if(!pagecurl_started)
+    {
+      pagecurl_started = true;
+      $(self).trigger('pagecurl-start');
+    }
+  }
+  function pagecurl_end()
+  {
+    if(pagecurl_started)
+    {
+      pagecurl_started = false;
+      $(self).trigger('pagecurl-end');
+    }
+  }
   function tween_finished()
   {
     cur_tween_data.active = false;
@@ -339,7 +331,8 @@ p.bind_grab = function()
     var pivot = cur_tween_data.active ? 
       [ cur_tween_data.pivotX, cur_tween_data.pivotY ] : null,
     corner = cur_tween_data.active ? cur_tween_data.corner : null;
-    update(corner, pivot); 
+    if(pivot)
+      update(corner, pivot); 
   }
   function update(corner, pivot)
   {
@@ -435,10 +428,11 @@ p.bind_grab = function()
                       info.epsY + cur_tween_data.pivotY ]
           }, 500)
           .easing(TWEEN.Easing.Cubic.InOut)
-          .onComplete(tween_finished)
           .onUpdate(render_tween)
+          .onComplete(tween_finished)
           .start();
         animate();
+        pagecurl_start();
       }
       return true;
     }
@@ -471,11 +465,12 @@ p.bind_grab = function()
             pivotY: info.offset[1]
           }, 500)
           .easing(TWEEN.Easing.Cubic.In)
+          .onUpdate(render_tween)
           .onComplete(function(){
             cur_tween_data.corner = '';
             tween_finished();
+            pagecurl_end();
           })
-          .onUpdate(render_tween)
           .start();
         animate();
       }
@@ -532,14 +527,15 @@ p.bind_grab = function()
           }, 500)
           .easing(!speedy_curl ? 
                      TWEEN.Easing.Cubic.In : TWEEN.Easing.Linear.None)
+          .onUpdate(render_tween)
           .onComplete(function(){
             $(self).trigger('grabend');
             cur_tween_data.corner = '';
             tween_finished();
+            pagecurl_end();
             if(curl_page)
               $(self).trigger('page-curled');
           })
-          .onUpdate(render_tween)
           .start();
         animate();
         speed = 0;
@@ -569,6 +565,8 @@ p.bind_grab = function()
           update_mouse_position(ev);
           $(self).trigger('grab');
           grabbed = true;
+          pagecurl_start();
+          break;
         }
       }
       return !grabbed;
@@ -591,15 +589,17 @@ p.bind_grab = function()
                   pivot[1] ]
       }, 800)
       .easing(TWEEN.Easing.Cubic.InOut)
+      .onUpdate(render_tween)
       .onComplete(function(){
         cur_tween_data.corner = '';
+        pagecurl_end();
         tween_finished();
         $(self).trigger('page-curled');
         cb && cb();
       })
-      .onUpdate(render_tween)
       .start();
     animate();
+    pagecurl_start();
   }
 }
 
