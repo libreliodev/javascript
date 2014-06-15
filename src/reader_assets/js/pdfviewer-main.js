@@ -12,6 +12,11 @@ $(function(){
       {
         try {
           pdf_viewer.pdfviewer('set', 'pdfDoc', pdf);
+          pdf_viewer.on('render', function()
+            {
+              $('.pdfviewer-loadingscreen').fadeOut();
+              pdf_viewer.off('render', arguments.callee);
+            });
         }catch(e) {
           console.error(e);
         }
