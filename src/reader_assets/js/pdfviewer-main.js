@@ -55,9 +55,8 @@ $(function(){
              purchase_dialog_open({
                type: type,
                client: app_data.client_name,
-               app: app_data.app_name, 
-               service: type == 'user' ? app_data.UserService : 
-                 app_data.CodeService,
+               app: app_data.magazine_name, 
+               service: app_data.service_name,
                urlstring: pdf_url,
                deviceid: 'browser'
              });

@@ -11,9 +11,6 @@ $(function(){
   }).done(function(data)
      {
        // get update rate it's in minutes
-       var rurl = parse_url(data.root_view);
-       for(var i in rurl)
-         console.log(i, rurl[i]);
        var q = querystring.parse(get_url_query(data.root_view)) || {},
        update_every = parseFloat(q.waupdate);
        data.update_every = (isNaN(update_every) ? 30 : update_every)*60*1000;
@@ -91,9 +88,8 @@ $(function(){
     purchase_dialog_open({
       type: type,
       client: app_data.client_name,
-      app: app_data.app_name, 
-      service: type == 'user' ? app_data.UserService : 
-        app_data.CodeService,
+      app: app_data.magazine_name,
+      service: app_data.service_name,
       urlstring: magazine_file_key(app_data, item.FileName),
       deviceid: 'browser'
     });

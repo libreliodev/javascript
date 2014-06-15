@@ -65,7 +65,7 @@ $(function()
         var url,
         query = {
           client: opts.client,
-          app: opts.app_name, 
+          app: opts.app, 
           service: opts.service,
           urlstring: opts.urlstring,
           deviceid: opts.deviceid
