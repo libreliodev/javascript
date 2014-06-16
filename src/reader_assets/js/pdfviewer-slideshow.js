@@ -4,28 +4,15 @@ $(function(){
   max_icons_size = 1;
   function slideshow_size_update($slides_wrp)
   {
-    var width, size;
-    $slides_wrp.fadeIn();
-    if(screenfull.isFullscreen)
-    {
-      $slides_wrp.css({
-        width: $(window).width(),
-        height: $(window).height()
-      });
-    }
-    else
-    {
-      var tmp_size = $slides_wrp.data('_tmp_size');
-      if(tmp_size)
-        $slides_wrp.css(tmp_size);
-      $slides_wrp.css('position', 'absolute');
-    }
-    $slides_wrp.trigger('resize');
-    width = $slides_wrp.width();
-    size = width / 150;
+    var width = $slides_wrp.width(),
+    size = width / 150,
+    slider = $slides_wrp.data('flexslider');
+    
+    $slides_wrp.data('resizing', true);
+    if(slider)
+      slider.resize();
     if(size > max_icons_size)
       size = max_icons_size;
-
     var s = size * 36 + 4;
     $slides_wrp.find('.flex-direction-nav a').css({
       width: s,
@@ -34,7 +21,7 @@ $(function(){
       fontSize: s
     });
     $slides_wrp.find('.flex-pauseplay a').css('fontSize', size * 16 + 4);
-
+    $slides_wrp.data('resizing', false);
   }
   pdf_viewer.bind('render-link', function(ev, data, page)
      {
@@ -51,29 +38,34 @@ $(function(){
            img.prop('src', s);
            $slides.append(li.append(img));
          }
-         $slides_wrp.on('click', '.flex-pauseplay', function()
+         $slides_wrp.on('click', '.flex-pauseplay a', function()
            {
-             if(query.warect == 'full' && screenfull.enabled)
+             var slider = $slides_wrp.data('flexslider'),
+             playb = !$(this).hasClass(slider.vars.namespace + 'play');
+             if(query.warect == 'full')
              {
-               pdf_viewer.pdfviewer('set', 'auto_resizable', false);
-               if(!screenfull.isFullscreen)
-               {
-                 $slides_wrp.data('_tmp_size', {
-                   width: rect[2],
-                   height: rect[3]
-                 });
-               }
-               $slides_wrp.hide().css('position', 'static');
-               screenfull.toggle($slides_wrp[0]);
+               pdf_viewer.pdfviewer('set', 'auto_resizable', !playb);
+               $('body').toggleClass('in-fullscreen-view', playb);
+               $slides_wrp.toggleClass('fullscreen-view', playb);
+               slideshow_size_update($slides_wrp);
+               // for some reason 'fullscreen-view' will be removed
+               // first time I'll set it again after awhile
+               setTimeout(function()
+                 {
+                   $slides_wrp.toggleClass('fullscreen-view', playb);
+                 }, 500);
              }
            });
-         
+         var delay = query.wadelay && !isNaN(parseInt(query.wadelay)) ? 
+           parseInt(query.wadelay) : 7000,
+         bgcolor = query.wabgcolor || 'black';
          $slides_wrp.append($slides)
+           .addClass('slideshow-theme-' + bgcolor)
            .flexslider({
              animation: 'slide',
              pausePlay: true,
-             slideshowSpeed: 7000, //Integer: Set the speed of the slideshow cycling, in milliseconds
-             animationSpeed: 600, //Integer: Set the speed of animations, in milliseconds
+             slideshowSpeed: delay, //Integer: Set the speed of the slideshow cycling, in milliseconds
+             animationSpeed: query.watransition == 'none' ? 0 : 600, //Integer: Set the speed of animations, in milliseconds
              controlNav: false,
              nextText: '',
              prevText: '',
@@ -85,13 +77,11 @@ $(function(){
            $slides_wrp.flexslider('play');
          
          slideshow_size_update($slides_wrp);
-         on($(document), releaser, screenfull.raw.fullscreenchange, function()
+         on($(window), releaser, 'resize', function()
            {
-             //setTimeout(function()
-               //{
-                 //pdf_viewer.pdfviewer('set', 'auto_resizable', true);
-               //}, 5000);
-             slideshow_size_update($slides_wrp);
+             if($slides_wrp.hasClass('fullscreen-view') && 
+                !$slides_wrp.data('resizing'))
+               slideshow_size_update($slides_wrp);
            });
        }
        
@@ -119,7 +109,6 @@ $(function(){
          file_basename = tmp.slice(0, tmp.length - 1).join('_');
          
          $slides_wrp.css({
-           position: 'absolute',
            left: rect[0],
            top: rect[1],
            width: rect[2],

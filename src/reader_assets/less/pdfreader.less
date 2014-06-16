@@ -82,7 +82,32 @@
   .flex-viewport {
     height: 100%;
   }
+  .fullscreen-view {
+    position: fixed !important;
+    top: 0px !important;
+    left: 0px !important;
+    z-index: 10 !important;
+    width: 100% !important;
+    height: 100% !important;
+  }
+  .slideshow-theme-black {
+    background-color: black;
+    border-color: black;
+    .flex-direction-nav a,
+    .flex-pauseplay a {
+      color: white;
+    }
+  }
+  .slideshow-theme-white {
+    background-color: white;
+    border-color: white;
+    .flex-direction-nav a,
+    .flex-pauseplay a {
+      color: black;
+    }
+  }
   .slideshow {
+    position: absolute;
     .slides {
       display: table !important;
       height: 100%;
@@ -153,5 +178,11 @@
     font-size: 18px;
     display: inline-block;
     text-align: center;
+  }
+}
+.in-fullscreen-view {
+  visibility: hidden;
+  .fullscreen-view {
+    visibility: visible;
   }
 }
