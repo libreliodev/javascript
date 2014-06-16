@@ -438,6 +438,26 @@ p.bind_grab = function()
     }
     return false;
   }
+  function remove_corner()
+  {
+    var info = corner_mouse_info(cur_tween_data.corner);
+    cur_tween_data.active = true;
+    cur_tween_data.state = '';
+    cur_tween = new TWEEN.Tween(cur_tween_data)
+      .to({
+        pivotX: info.offset[0],
+        pivotY: info.offset[1]
+      }, 500)
+      .easing(TWEEN.Easing.Cubic.In)
+      .onUpdate(render_tween)
+      .onComplete(function(){
+        cur_tween_data.corner = '';
+        tween_finished();
+        pagecurl_end();
+      })
+      .start();
+    animate();
+  }
   function update_mouse_position(ev)
   {
     var canvas_off = $canvas.offset(),
@@ -456,23 +476,7 @@ p.bind_grab = function()
       }
       if(!res && cur_tween_data.corner)
       {
-        var info = corner_mouse_info(cur_tween_data.corner);
-        cur_tween_data.active = true;
-        cur_tween_data.state = '';
-        cur_tween = new TWEEN.Tween(cur_tween_data)
-          .to({
-            pivotX: info.offset[0],
-            pivotY: info.offset[1]
-          }, 500)
-          .easing(TWEEN.Easing.Cubic.In)
-          .onUpdate(render_tween)
-          .onComplete(function(){
-            cur_tween_data.corner = '';
-            tween_finished();
-            pagecurl_end();
-          })
-          .start();
-        animate();
+        remove_corner();
       }
     }
     else if(cur_tween_data.state == 'grabbed')
@@ -542,6 +546,13 @@ p.bind_grab = function()
       }
     });
   on($canvas, releaser, 'mousemove', update_mouse_position)
+  ('mouseout', function(ev)
+    {
+      if(!cur_tween_data.active && cur_tween_data.corner)
+      {
+        remove_corner();
+      }
+    })
   ('mousedown', function(ev)
     {
       if(!self.grabbable)
