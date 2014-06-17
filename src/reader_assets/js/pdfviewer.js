@@ -7,7 +7,8 @@
     show_selector_fac: 0.5,
     book_mode_fist_page_odd: true,
     auto_select_display_mode: true,
-    auto_resizable: true
+    auto_resizable: true,
+    moveable: true
   },
   dhtml_global = {
     screen_width: function()
@@ -206,7 +207,8 @@
           self.trigger('render-link', [ data, page ]);
           if(!data.element)
           {
-            var element = $('<a>').addClass('annot-link')
+            var click_b = true,
+            element = $('<a>').addClass('annot-link')
               .css({
                 position: 'absolute',
                 display: 'block',
@@ -214,13 +216,34 @@
                 top: rect[1],
                 width: rect[2],
                 height: rect[3]
-              });
+              })
+              .on('mousemove', function()
+                {
+                  if(this._mousedown)
+                    click_b = false;
+                })
+              .on('mousedown', function(ev)
+                {
+                  ev.preventDefault();
+                  this._mousedown = true;
+                })
+              .on('mouseup', function(ev)
+                {
+                  ev.preventDefault();
+                  this._mousedown = false;
+                  setTimeout(function()
+                    {
+                      click_b = true;
+                    });
+                });
             if(data.url)
             {
               element.attr('href', data.url)
                 .attr('target', '_blank')
                 .click(function()
                   {
+                    if(!click_b)
+                      return;
                     var obj = {
                       data: data
                     };
@@ -237,6 +260,8 @@
               element.attr('href', '#')
                 .click(function()
                   {
+                    if(!click_b)
+                      return;
                     try {
                       var dest = typeof data.dest == 'string' ? 
                         dests[data.dest][0] : data.dest[0];
@@ -1134,10 +1159,11 @@
     },
     bind_move: function()
     {
-      var self = this;
+      var self = this,
+      o = self.data(pvobj_key);
       on(self, null, 'mousemove', function(ev)
         {
-          if(self.css('overflow') == 'hidden')
+          if(!o.moveable || self.css('overflow') == 'hidden')
             return;
           // scroll
           var el = this,
@@ -1151,6 +1177,8 @@
         })
       ('mousedown', function(ev)
         {
+          if(!o.moveable)
+            return;
           var el = this;
           el._mousedown = true;
           el._mousedown_data = {

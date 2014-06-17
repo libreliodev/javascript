@@ -1,12 +1,18 @@
+var doc_query = querystring.parse(get_url_query(document.location+'')),
+pdf_url = doc_query ? doc_query.waurl : null,
+external_b = doc_query ? typeof doc_query.external != 'undefined' : null,
+pdf_url_dir;
+if(pdf_url)
+{
+  if(!external_b)
+    pdf_url = s3bucket_file_url(pdf_url);
+  pdf_url_dir = url_dir(pdf_url);
+}
+
 $(function(){
-  var doc_query = querystring.parse(get_url_query(document.location+'')),
-  pdf_url = doc_query ? doc_query.waurl : null,
-  external_b = doc_query ? typeof doc_query.external != 'undefined' : null,
-  pdf_viewer = $('.pdfviewer');
+  var pdf_viewer = $('.pdfviewer');
   if(pdf_url)
   {
-    if(!external_b)
-      pdf_url = s3bucket_file_url(pdf_url);
     PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler)
       .then(function(pdf)
       {
@@ -35,6 +41,11 @@ $(function(){
     if(ev.loaded >= ev.total)
       $('.pdfviewer-progress').fadeOut().data('fadingout', true);
   }
+  pdf_viewer.bind('render-link', function(ev, data, page)
+     {
+       if(data.url)
+         data.url = librelio_resolve_url(data.url, pdf_url_dir);
+     });
   pdf_viewer.bind('openlink', function(ev, obj)
      {
        var data = obj.data,
@@ -92,10 +103,5 @@ $(function(){
     var display_mode = $('.pdfviewer').pdfviewer('get', 'display_mode');
     if(display_mode != disp_mode)
       $('.pdfviewer').pdfviewer('set', 'display_mode', disp_mode);
-  }
-  
-  function s3bucket_file_url(key)
-  {
-    return '//' + config.s3Bucket + '.s3.amazonaws.com/' + key;
   }
 });

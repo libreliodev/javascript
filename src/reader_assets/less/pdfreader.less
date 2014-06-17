@@ -109,19 +109,20 @@
   .slideshow {
     position: absolute;
     .slides {
-      display: table !important;
       height: 100%;
       li {
-        display: table-cell !important;
-        vertical-align: middle;
-        float: none !important;
+        overflow: hidden;
       }
       img {
         width: 100%;
       }
     }
   }
+  .vjs-fullscreen-control {
+    display: none;
+  }
 }
+
 .controls {
   position: relative;
   z-index: 3;
@@ -180,9 +181,25 @@
     text-align: center;
   }
 }
+
 .in-fullscreen-view {
   visibility: hidden;
   .fullscreen-view {
     visibility: visible;
   }
+}
+.vjs-full-window {
+  visibility: hidden;
+ .video-js {
+   visibility: visible;
+   position: fixed;
+   overflow: hidden;
+   z-index: 1000;
+   top: 0 !important;
+   left: 0 !important;
+   width: 100% !important;
+   height: 100% !important;
+   /* IE6 full-window (underscore hack) */
+   _position: absolute;
+ }
 }

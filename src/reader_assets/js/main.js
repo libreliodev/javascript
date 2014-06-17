@@ -106,3 +106,34 @@ $(function()
         return false;
       });
   });
+function librelio_resolve_url(s, relto)
+{
+  function relpath(s)
+  {
+    var query = url('?', s),
+    hash = url('#'),
+    path = url('path', s);
+    return (path[0] == '/' ? path.substr(1) : path) +
+      (query ? '?' + query : '') + (hash ? '#' + hash : '');
+  }
+  var hostname = url('hostname', s);
+  if(hostname == 'localhost' || !hostname)
+    return (relto ? relto + '/' : '') + relpath(s);
+  return s;
+}
+function url_till_hostname(s)
+{
+  var proto = url('protocol', s),
+  auth = url('auth', s);
+  return (proto ? proto + '://' : (hostname ? '//' : '')) +
+    (auth ? auth + '@' : '') + (url('hostname', s) || '');
+}
+function url_dir(s)
+{
+  var dirname = path.dirname(url('path', s));
+  return url_till_hostname(s) + (dirname[0] == '/' ? '' : '/') + dirname;
+}
+function s3bucket_file_url(key)
+{
+  return '//' + config.s3Bucket + '.s3.amazonaws.com/' + key;
+}

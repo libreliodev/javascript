@@ -21,7 +21,48 @@ $(function(){
       fontSize: s
     });
     $slides_wrp.find('.flex-pauseplay a').css('fontSize', size * 16 + 4);
+
+    $slides_wrp.find('img').each(function()
+      {
+        if(this.width || this.height)
+          slideshow_update_image_size($slides_wrp, this);
+      });
     $slides_wrp.data('resizing', false);
+  }
+  function slideshow_update_image_size($slides_wrp, img)
+  {
+    var orig_img = new Image();
+    orig_img.src = img.src;
+    orig_img.onload = function()
+    {
+      var $container = $slides_wrp.find('.flex-viewport').length > 0 ?
+        $slides_wrp.find('.flex-viewport') : $slides_wrp,
+      $img = $(img),
+      $parent = $img.parent(),
+      sw = $parent.width(),
+      sh = $container.height(),
+      ratio = orig_img.width / orig_img.height,
+      scale;
+      if(ratio >= 1)
+        scale = sw / orig_img.width;
+      else
+        scale = sh / orig_img.height;
+      $parent.css({
+        'position': 'relative',
+        'height': sh
+      });
+      var nw = orig_img.width * scale,
+      nh = orig_img.height * scale;
+      $img.css({
+        width: nw,
+        height: nh,
+        left: '50%',
+        top: '50%',
+        marginTop: -nh/2,
+        marginLeft: -nw/2,
+        position: 'absolute'
+      });
+    }
   }
   pdf_viewer.bind('render-link', function(ev, data, page)
      {
@@ -29,13 +70,20 @@ $(function(){
        {
          if(exit_proc)
            return;
-
+         function image_loaded()
+         {
+           slideshow_update_image_size($slides_wrp, this);
+         }
+         var path_host = url_till_hostname(url_str);
          for(var i = start, l = end + 1; i < l; ++i)
          {
-           var s = path.join(file_dirname, file_basename + '_' + i + file_ext),
+           var rel_path = path.join(file_dirname, 
+                                    file_basename + '_' + i + file_ext),
+           s = path_host + (rel_path[0] == '/' ? '' : '/') + rel_path,
            img = $('<img/>'),
            li = $('<li/>');
-           img.prop('src', s);
+           img.bind('load', image_loaded);
+           img.prop('src', librelio_resolve_url(s, pdf_url_dir));
            $slides.append(li.append(img));
          }
          $slides_wrp.on('click', '.flex-pauseplay a', function()
@@ -92,8 +140,6 @@ $(function(){
        if(img_exts.indexOf(file_ext.toLowerCase()) != -1)
        {
          var query = querystring.parse(url('?', url_str)),
-         qm_idx = url_str.indexOf('?'),
-         src = qm_idx == -1 ? url_str : url_str.substring(0, qm_idx),
          $slides_wrp = $('<div/>').addClass('slideshow').addClass('flexslider'),
          $slides = $('<ul/>').addClass('slides'),
          rect = data.rect,

@@ -477,13 +477,16 @@ p.bind_grab = function()
       if(!res && cur_tween_data.corner)
       {
         remove_corner();
+        return false;
       }
+      else if(res)
+        return false;
     }
     else if(cur_tween_data.state == 'grabbed')
     {
       update(cur_tween_data.corner, [ mx, my ]);
+      return false;
     }
-    return false;
   }
   function animate()
   {

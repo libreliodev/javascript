@@ -9,11 +9,8 @@ $(function(){
   pdf_viewer = $('.pdfviewer');
   function video_size_update($vid_wrp, player)
   {
-    var width, size;
-    if(player.isFullscreen())
-      width = $(window).width();
-    else
-      width = player.width();
+    var width = player.isFullWindow || player.isFullscreen()
+      ? $(window).width() : player.width(),
     size = 200 / 640 * width;
     if(size > max_icons_size)
       size = max_icons_size;
@@ -43,7 +40,7 @@ $(function(){
          rect = data.rect,
          releaser = [],
          player, exit_proc;
-         $source.attr('src', src);
+         $source.attr('src', librelio_resolve_url(src, pdf_url_dir));
          if(type)
            $source.attr('type', type);
          $vid.attr('width', rect[2])
@@ -56,8 +53,17 @@ $(function(){
            height: rect[3]
          });
          on($vid_wrp, null, 'click', false)
-         ('mousedown', false)
-         ('mouseup', false);
+         ('mousedown', function()
+           {
+             pdf_viewer.pdfviewer('set', 'moveable', false);
+           })
+         ('mouseup', function()
+          {
+            setTimeout(function()
+              {
+                pdf_viewer.pdfviewer('set', 'moveable', true);
+              });
+          });
          on(pdf_viewer, releaser, 'pagecurl-start', function()
            {
              $vid_wrp.animate({ opacity: 0 }, {
@@ -90,7 +96,7 @@ $(function(){
             funcListCall(releaser);
           });
          data.element = $vid_wrp[0];
-         
+         videojs.ControlBar.prototype.options.fullscreenToggle = undefined;
          videojs($vid[0], {}, function()
            {
              player = this;
@@ -111,13 +117,21 @@ $(function(){
                });
              video_size_update($vid_wrp, player);
              var curPages = pdf_viewer.pdfviewer('get', 'curPages');
-             player.on('play', function()
-               {
-                 pdf_viewer.pdfviewer('set', 'auto_resizable', false);
-                 if(query.warect == 'full' && !player.isFullscreen())
-                   player.requestFullscreen();
-               })
-               .on('fullscreenchange', function()
+             on($vid_wrp, releaser, 'click', 
+                '.vjs-big-play-button,.vjs-tech,.vjs-play-control', function()
+                 {
+                   if(query.warect == 'full')
+                   {
+                     var b = player.isFullWindow;
+                     pdf_viewer.pdfviewer('set', 'auto_resizable', b);
+                     if(!b)
+                       player.enterFullWindow();
+                     else
+                       player.exitFullWindow();
+                     player.trigger('fullscreenchange');
+                   }
+                 });
+             player.on('fullscreenchange', function()
                  {
                    video_size_update($vid_wrp, player);
                  });
