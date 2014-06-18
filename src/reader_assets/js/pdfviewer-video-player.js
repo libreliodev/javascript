@@ -29,7 +29,7 @@ $(function(){
           query.waplay == 'auto')
        {
          data.element = $('<div/>')[0];
-         initVideo(data);
+         initVideo(data, page);
        }
      })
    .bind('openlink', function(ev, obj, page)

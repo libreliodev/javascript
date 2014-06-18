@@ -474,8 +474,8 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'bower_components/screenfull/dist/',
-                        src: 'screenfull.min.js',
+                        cwd: 'bower_components/fingerprint/',
+                        src: 'fingerprint.js',
                         dest: reader_assets_dist_dir + '/lib/'
                         
                     },
