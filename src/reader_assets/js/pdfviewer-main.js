@@ -7,9 +7,6 @@ if(pdf_url)
   if(!external_b)
     pdf_url = s3bucket_file_url(pdf_url);
   pdf_url_dir = url_dir(pdf_url);
-  pdf_url_dir = 'http://librelio-europe.s3.amazonaws.com/niveales/wind/wind_355';
-  doc_query.waurl = 'niveales/wind/wind_355/wind_355.pdf';
-  external_b = false;
 }
 
 $(function(){

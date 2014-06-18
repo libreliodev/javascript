@@ -74,8 +74,14 @@ $(function(){
        if(img_exts.indexOf(file_ext.toLowerCase()) != -1 &&
           query.play == 'auto')
        {
-         data.element = $('<div/>')[0];
-         initSlideshow(data, page);
+         var el = $('<div/>')[0],
+         tmp = data.element;
+         data.element = el;
+         if(!initSlideshow(data, page))
+         {
+           data.element = tmp;
+           return;
+         }
        }
      })
    .bind('openlink', function(ev, obj, page)
