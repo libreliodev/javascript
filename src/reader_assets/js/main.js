@@ -44,14 +44,126 @@ function get_url_query(url)
 function purchase_dialog_open(opts)
 {
   var type = opts.type,
-  dlg = $('#purchase-dialog');
+  dlg = $('#purchase-dialog'),
+  auth;
   if(dlg.length === 0)
     return;
-  dlg.toggleClass('purchase-dialog-user-service', type == 'user')
-    .toggleClass('purchase-dialog-code-service', type == 'code')
-    .data('pdata', opts)
-    .modal('show');
+  try {
+    auth = JSON.parse(localStorage.getItem('reader-auth'));
+  }catch(e) {
+  }
+  $('#purchase-dlg-submit').css('display', '');
+  if(auth && type == 'user')
+  {
+    purchase_dialog_submit($.extend({}, opts, auth), function(success)
+      {
+        if(success)
+          setup();
+        else
+          setup(type);
+      });
+  }
+  else
+    setup(type);
+  function setup(type)
+  {
+    if(type)
+    {
+      purchase_dialog_set_page(type);
+      dlg.find('input').val('');
+    }
+    dlg.data('pdata', opts)
+      .modal('show');
+  }
   
+}
+function purchase_dialog_set_page(page)
+{
+  $('#purchase-dialog')
+    .toggleClass('purchase-dialog-user-service', page == 'user')
+    .toggleClass('purchase-dialog-code-service', page == 'code')
+    .toggleClass('purchase-dialog-result', page == 'result');
+}
+function purchase_dialog_submit(opts, cb)
+{
+  // make a request
+  var dlg = $('#purchase-dialog'),
+  url_str,
+  query = {
+    client: opts.client,
+    app: opts.app, 
+    service: opts.service,
+    urlstring: opts.urlstring,
+    deviceid: new Fingerprint().get(),
+    header: '200'
+  };
+  switch(opts.type)
+  {
+  case 'user':
+    if(typeof opts.user != 'undefined')
+    {
+      query.user = opts.user;
+      query.pswd = opts.pswd;
+    }
+    else
+    {
+      query.user =  $('#purchase-dlg-user-inp').val();
+      query.pswd = $('#purchase-dlg-pass-inp').val();
+    }
+    url_str = 'http://download.librelio.com/downloads/subscribers.php?' +
+      querystring.stringify(query);
+    break;
+  case 'code':
+    if(typeof opts.code != 'undefined')
+      query.code = opts.code;
+    else
+      query.code = $('#purchase-dlg-code-inp').val();
+    url_str = 'http://download.librelio.com/downloads/pswd.php?' +
+      querystring.stringify(query);
+    break;
+  default:
+    return;
+  }
+  $.ajax(url_str, {
+    dataType: 'xml',
+    success: function(xmlDoc)
+    {
+      var $xmlDoc = $(xmlDoc),
+      $err = $xmlDoc.find('Error'),
+      $url = $xmlDoc.find('UrlString');
+      if($err.length > 0)
+      {
+        notifyError($err.find('Message').text());
+        cb && cb(false);
+      }
+      else if($url.length > 0)
+      {
+        var url_str = $url.text();
+        purchase_dialog_set_page('result');
+        $('#purchase-dlg-submit').css('display', 'none');
+        dlg.find('.result-pdfreader-url')
+          .attr('href', 'pdfreader.html?waurl=' + 
+                encodeURIComponent(url_path_plus(url_str)));
+        dlg.find('result-download-url').attr('href', url_str);
+        if(opts.type == 'user')
+          localStorage.setItem('reader-auth', JSON.stringify({
+            user: query.user,
+            pswd: query.pswd
+          }));
+        cb && cb(true);
+      }
+      else
+      {
+        cb && cb(false);
+        notifyError("Unknown response!");
+      }
+    },
+    error: function(xhr, err_text)
+    {
+      cb && cb(false);
+      notifyError("Failed to request for page: " + err_text);
+    }
+  });
 }
 $(function()
   {
@@ -60,60 +172,19 @@ $(function()
         // make a request
         var dlg = $('#purchase-dialog'),
         opts = dlg.data('pdata');
-        if(!opts)
-          return;
-        var url,
-        query = {
-          client: opts.client,
-          app: opts.app, 
-          service: opts.service,
-          urlstring: opts.urlstring,
-          deviceid: new Fingerprint().get(),
-          header: '200'
-        };
-        switch(opts.type)
-        {
-        case 'user':
-          query.user = $('#purchase-dlg-user-inp').val();
-          query.pswd = $('#purchase-dlg-pass-inp').val();
-          url = 'http://download.librelio.com/downloads/subscribers.php?' +
-            querystring.stringify(query);
-          break;
-        case 'code':
-          query.code = $('#purchase-dlg-code-inp').val();
-          url = 'http://download.librelio.com/downloads/pswd.php?' +
-            querystring.stringify(query);
-          break;
-        default:
-          return;
-        }
-        $.ajax(url, {
-          dataType: 'xml',
-          success: function(xmlDoc)
-          {
-            var $xmlDoc = $(xmlDoc),
-            $err = $xmlDoc.find('Error'),
-            $url = $xmlDoc.find('UrlString');
-            if($err.length > 0)
-            {
-              notifyError($err.find('Message').text());
-            }
-            else if($url.length > 0)
-            {
-              $('#purchase-dlg-cancel').click();
-              window.open($url.text(), '_blank');
-            }
-            else
-              notifyError("Unknown response!");
-          },
-          error: function(xhr, err_text)
-          {
-            notifyError("Failed to request for page: " + err_text);
-          }
-        });
+        if(opts)
+          purchase_dialog_submit(opts);
         return false;
       });
-
+    $('#purchase-dlg-pass-inp,#purchase-dlg-code-inp')
+      .on('keypress', function(ev)
+      {
+        if(ev.which == 13)
+        {
+          $('#purchase-dlg-submit').click();
+          return false;
+        }
+      });
     $('#purchase-dlg-cancel').click(function()
       {
         $('#purchase-dialog').modal('hide')
@@ -148,9 +219,17 @@ function url_dir(s)
   var dirname = path.dirname(url('path', s));
   return url_till_hostname(s) + (dirname[0] == '/' ? '' : '/') + dirname;
 }
+function url_path_plus(url_str)
+{
+  var query_str = url('?', url_str),
+  hash_str = url('#', url_str);
+  return url('path', url_str) + (query_str ? '?' + query_str : '') + 
+    (hash_str ? '#' + hash_str : '');
+}
 function s3bucket_file_url(key)
 {
-  return '//' + config.s3Bucket + '.s3.amazonaws.com/' + key;
+  return '//' + config.s3Bucket + '.s3.amazonaws.com' + 
+    (key[0] == '/' ? '' : '/') + key;
 }
 
 function magazine_name_free2paid(fn, noext)

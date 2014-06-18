@@ -85,7 +85,6 @@ $(function(){
       (app_data.UserService ? 'user' : null);
     if(!type)
       return;
-//http://download.librelio.com/downloads/subscribers.php?client=niveales&app=wind&service=DynamoDb&urlstring=%2Fwind_384%2Fwind_384_.pdf&deviceid=uniqidgoeshere&user=serverfire&pswd=test
     purchase_dialog_open({
       type: type,
       client: app_data.client_name,
