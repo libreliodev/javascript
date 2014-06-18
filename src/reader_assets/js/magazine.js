@@ -85,13 +85,13 @@ $(function(){
       (app_data.UserService ? 'user' : null);
     if(!type)
       return;
+//http://download.librelio.com/downloads/subscribers.php?client=niveales&app=wind&service=DynamoDb&urlstring=%2Fwind_384%2Fwind_384_.pdf&deviceid=uniqidgoeshere&user=serverfire&pswd=test
     purchase_dialog_open({
       type: type,
       client: app_data.client_name,
       app: app_data.magazine_name,
       service: app_data.service_name,
-      urlstring: magazine_file_key(app_data, item.FileName),
-      deviceid: 'browser'
+      urlstring: (item.FileName[0] != '/' ? '/' : '') + item.FileName
     });
   }
   function magazines_create_item(item, data, list)

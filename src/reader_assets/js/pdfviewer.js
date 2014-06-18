@@ -243,11 +243,10 @@
                 .click(function()
                   {
                     if(!click_b)
-                      return;
+                      return false;
                     var obj = {
                       data: data
                     };
-                    //data.url = 'buy://';
                     self.trigger('openlink', [ obj, page ]);
                     if(obj.return_value !== false)
                       window.open(element.prop('href'), element.attr('target'));
@@ -261,7 +260,7 @@
                 .click(function()
                   {
                     if(!click_b)
-                      return;
+                      return false;
                     try {
                       var dest = typeof data.dest == 'string' ? 
                         dests[data.dest][0] : data.dest[0];
@@ -744,11 +743,12 @@
         ctx = canvas.getContext('2d'),
         curPages = o.curPages,
         releaser = [],
+        corner_offset = canvas.width/20 < 50 ? 50 : canvas.width/20,
         pc_default_opts = {
           canvas: canvas,
           grabbable: true,
-          corner_epsilon_x: canvas.width/15,
-          corner_epsilon_y: canvas.width/15
+          corner_epsilon_x: corner_offset,
+          corner_epsilon_y: corner_offset
         },
         rendering;
         copy_canvas(spare_canvas, canvas);
@@ -780,18 +780,10 @@
         function pagecurl_start_handler()
         {
           self.trigger('pagecurl-start');
-          /*$(o.links_div).animate({ opacity: 0 }, {
-            queue: false,
-            duration: 500
-          });*/
         }
         function pagecurl_end_handler()
         {
           self.trigger('pagecurl-end');
-          /*$(o.links_div).animate({ opacity: 1 }, {
-            queue: false,
-            duration: 100
-          });*/
         }
         function pagecurl_grab()
         {

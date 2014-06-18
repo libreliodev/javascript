@@ -8,7 +8,7 @@
   "enable_username_password_login": true,
   "client_name": "niveales",
   "magazine_name": "wind",
-  "service_name": "biwing",
+  "service_name": "DynamoDb",
   "google_analytics": "UA-1732003-23",
   "enable_send_log_in_menu": false,
   "enable_downloads_in_menu": true,

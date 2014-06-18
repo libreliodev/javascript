@@ -7,6 +7,9 @@ if(pdf_url)
   if(!external_b)
     pdf_url = s3bucket_file_url(pdf_url);
   pdf_url_dir = url_dir(pdf_url);
+  pdf_url_dir = 'http://librelio-europe.s3.amazonaws.com/niveales/wind/wind_355';
+  doc_query.waurl = 'niveales/wind/wind_355/wind_355.pdf';
+  external_b = false;
 }
 
 $(function(){
@@ -53,7 +56,7 @@ $(function(){
        file_ext = path.extname(url('path', url_str));
 
        // buy:// protocol
-       if(url_str == 'buy://')
+       if(url_str == 'buy://' && !external_b)
        {
          $.ajax('application_.json', {
            dataType: 'json',
@@ -63,13 +66,20 @@ $(function(){
                (app_data.UserService ? 'user' : null);
              if(!type)
                return;
+             
+             // get file name from its key(remove prefix)
+             var prefix = app_data.client_name + '/' + app_data.magazine_name,
+             path_str = doc_query.waurl,
+             pref_idx = path_str.indexOf(prefix)
+             if(pref_idx === 0 || (pref_idx === 1 && path_str[0] == '/'))
+               path_str = path_str.substr(pref_idx + prefix.length);
+             
              purchase_dialog_open({
                type: type,
                client: app_data.client_name,
                app: app_data.magazine_name, 
                service: app_data.service_name,
-               urlstring: pdf_url,
-               deviceid: 'browser'
+               urlstring: magazine_name_free2paid(path_str)
              });
            },
            error: function(xhr, err_text)

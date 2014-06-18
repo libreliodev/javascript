@@ -68,7 +68,7 @@ $(function()
           app: opts.app, 
           service: opts.service,
           urlstring: opts.urlstring,
-          deviceid: opts.deviceid
+          deviceid: new Fingerprint().get()
         };
         switch(opts.type)
         {
@@ -136,4 +136,11 @@ function url_dir(s)
 function s3bucket_file_url(key)
 {
   return '//' + config.s3Bucket + '.s3.amazonaws.com/' + key;
+}
+
+function magazine_name_free2paid(fn, noext)
+{
+  var ext = path.extname(fn),
+  bn = path.join(path.dirname(fn), path.basename(fn, ext));
+  return bn + '_'  + (noext ? '' : ext);
 }
