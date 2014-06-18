@@ -13,6 +13,7 @@ $(function(){
   var pdf_viewer = $('.pdfviewer');
   if(pdf_url)
   {
+    PDFJS.disableRange = false;
     PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler)
       .then(function(pdf)
       {
