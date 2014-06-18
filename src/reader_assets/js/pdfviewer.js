@@ -1197,6 +1197,33 @@
     },
     update_page_selector: function()
     {
+      var render_queue = [],
+      render_concurrent_tasks = 0,
+      render_concurrent_tasks_len = 2;
+      function render_queue_add(task)
+      {
+        if(render_concurrent_tasks >= render_concurrent_tasks_len)
+          render_queue.push(task);
+        else
+        {
+          render_concurrent_tasks += 1;
+          task();
+        }
+      }
+      function render_queue_remove(task)
+      {
+        var i = render_queue.indexOf(task);
+        if(i != -1)
+          render_queue.splice(i, 1);
+      }
+      function render_queue_task_end()
+      {
+        var next_task = render_queue.shift();
+        if(!next_task)
+          render_concurrent_tasks -= 1; 
+        else
+          next_task();
+      }
       function update_page(i)
       {
         var item = {
@@ -1204,26 +1231,43 @@
           {
             var $canvas = this,
             canvas = $canvas[0],
-            rendered;
+            rendered, renderTask;
             li.bind('visibility-changed', function(ev)
               {
                 var visible = $(this).data(isvisible_str);
-                if(visible && !rendered)
-                  draw_page();
+                if(!visible && renderTask)
+                {
+                  renderTask.cancel();
+                  renderTask = null;
+                  render_queue_task_end();
+                }
+                else if(visible && !rendered && !renderTask)
+                  render_queue_add(draw_page)
+                else if(!visible && !rendered && !renderTask)
+                  render_queue_remove(draw_page);
               });
             function draw_page()
             {
               pdfDoc.getPage(i).then(function(page)
                 {
-                  var viewport, context;
-                  try {
-                    viewport = pdf_viewport_for_canvas(page.view, canvas, type);
-                    context = canvas.getContext('2d');
-                  } catch(e) {
-                    console.error(e);
-                  } finally {
-                    page.render({canvasContext: context, viewport: viewport});
-                  }
+                  var spare_canvas = newEl('canvas'),
+                  spare_ctx = spare_canvas.getContext('2d');
+                  spare_canvas.width = canvas.width;
+                  spare_canvas.height = canvas.height,
+                  viewport = pdf_viewport_for_canvas(page.view, 
+                                                     spare_canvas, type);
+                  renderTask = page.render({
+                    canvasContext: spare_ctx, 
+                    viewport: viewport
+                  });
+                  renderTask.then(function()
+                    {
+                      var context = canvas.getContext('2d');
+                      context.drawImage(spare_canvas, 0, 0);
+                      rendered = true;
+                      renderTask = null;
+                      render_queue_task_end();
+                    });
                 });
             }
           },

@@ -54,6 +54,16 @@ $(function(){
     {
       return query.waplay == 'auto' || data.play == 'auto';
     }
+    function playAuto()
+    {
+      player.play();
+      if(query.warect == 'full')
+      {
+        pdf_viewer.pdfviewer('set', 'auto_resizable', true);
+        player.enterFullWindow();
+        player.trigger('fullscreenchange');
+      }
+    }
     var url_str = data.url,
     file_ext = path.extname(url('path', url_str)),
     query = querystring.parse(url('?', url_str)),
@@ -168,16 +178,6 @@ $(function(){
               player.trigger('fullscreenchange');
             }
           });
-        function playAuto()
-        {
-          player.play();
-          if(query.warect == 'full')
-          {
-            pdf_viewer.pdfviewer('set', 'auto_resizable', true);
-            player.enterFullWindow();
-            player.trigger('fullscreenchange');
-          }
-        }
         player.on('fullscreenchange', function()
           {
             video_size_update($vid_wrp, player);

@@ -68,7 +68,8 @@ $(function()
           app: opts.app, 
           service: opts.service,
           urlstring: opts.urlstring,
-          deviceid: new Fingerprint().get()
+          deviceid: new Fingerprint().get(),
+          header: '200'
         };
         switch(opts.type)
         {
@@ -87,9 +88,23 @@ $(function()
           return;
         }
         $.ajax(url, {
-          success: function(data)
+          dataType: 'xml',
+          success: function(xmlDoc)
           {
-            console.log(data);
+            var $xmlDoc = $(xmlDoc),
+            $err = $xmlDoc.find('Error'),
+            $url = $xmlDoc.find('UrlString');
+            if($err.length > 0)
+            {
+              notifyError($err.find('Message').text());
+            }
+            else if($url.length > 0)
+            {
+              $('#purchase-dlg-cancel').click();
+              window.open($url.text(), '_blank');
+            }
+            else
+              notifyError("Unknown response!");
           },
           error: function(xhr, err_text)
           {
