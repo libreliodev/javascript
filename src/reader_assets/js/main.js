@@ -52,7 +52,6 @@ function purchase_dialog_open(opts)
     auth = JSON.parse(localStorage.getItem('reader-auth'));
   }catch(e) {
   }
-  $('#purchase-dlg-submit').css('display', '');
   if(auth && type == 'user')
   {
     purchase_dialog_submit($.extend({}, opts, auth), function(success)
@@ -139,17 +138,13 @@ function purchase_dialog_submit(opts, cb)
       else if($url.length > 0)
       {
         var url_str = $url.text();
-        purchase_dialog_set_page('result');
-        $('#purchase-dlg-submit').css('display', 'none');
-        dlg.find('.result-pdfreader-url')
-          .attr('href', 'pdfreader.html?waurl=' + 
-                encodeURIComponent(url_path_plus(url_str)));
-        dlg.find('result-download-url').attr('href', url_str);
         if(opts.type == 'user')
           localStorage.setItem('reader-auth', JSON.stringify({
             user: query.user,
             pswd: query.pswd
           }));
+        document.location = 'pdfreader.html?waurl=' + 
+          encodeURIComponent(url_path_plus(url_str))
         cb && cb(true);
       }
       else
