@@ -1,6 +1,6 @@
 ### About this project
 
-This project contains the Librelio Web Site, the Librelio Admin console, and a cusomizable HTML5 viewer.
+This project contains the Librelio Web Site, the Librelio Admin console, and a customizable HTML5 viewer.
 
 The viewer is intended mainly for publishers and marketers. It is also available natively on [iOS](https://github.com/libreliodev/iOS), [Windows 8](https://github.com/libreliodev/windows8) and  [Android](https://github.com/libreliodev/android)
 If you need to publish dynamic and/or paid contents, you need to set up your own server and develop your own code. You can also opt for Librelio's [paid plans](http://www.librelio.com/index.php#pricing).
