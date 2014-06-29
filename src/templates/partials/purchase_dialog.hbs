@@ -38,19 +38,23 @@
             </div>
           </div>
         </form>
+        <div class="login-result">
+          <div class="login-failed">Login request failed: %s</div>
+        </div>
         <div class="result">
-          <ul>
-            <li><a target="_blank" 
-                   class="result-pdfreader-url">View PDF File</a></li>
-            <li><a class="result-download-url">Download File</a></li>
-            </ul>
+          <div class="login-result">
+            <div class="login-success">Logged in successfully!</div>
+          </div>
         </div>
       </div>
       <div class="modal-footer">
         <button id="purchase-dlg-submit" type="submit" 
                 class="btn btn-primary">Submit</button>
         <button id="purchase-dlg-cancel" 
-                class="btn btn-default">Cancel</button>
+                class="btn btn-default">
+          <span class="result">Close</span>
+          <span class="user-service code-service">Cancel</span>
+        </button>
       </div>
     </div>
   </div>

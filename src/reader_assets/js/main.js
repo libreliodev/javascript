@@ -52,27 +52,27 @@ function purchase_dialog_open(opts)
     auth = JSON.parse(localStorage.getItem('reader-auth'));
   }catch(e) {
   }
-  if(auth && type == 'user')
+  if(auth)
   {
     purchase_dialog_submit($.extend({}, opts, auth), function(success)
       {
-        if(success)
-          setup();
-        else
+        if(!success)
+        {
+          localStorage.setItem('reader-auth', null)
           setup(type);
+        }
       });
   }
   else
     setup(type);
   function setup(type)
   {
-    if(type)
-    {
-      purchase_dialog_set_page(type);
-      dlg.find('input').val('');
-    }
+    purchase_dialog_set_page(type);
+    dlg.find('input').val('');
     dlg.data('pdata', opts)
       .modal('show');
+    dlg.find('.login-result').hide();
+    $('#purchase-dlg-submit').show();
   }
   
 }
@@ -82,9 +82,12 @@ function purchase_dialog_set_page(page)
     .toggleClass('purchase-dialog-user-service', page == 'user')
     .toggleClass('purchase-dialog-code-service', page == 'code')
     .toggleClass('purchase-dialog-result', page == 'result');
+  if(page == 'result') // hide submit btn in result page 
+    $('#purchase-dlg-submit').hide();
 }
 function purchase_dialog_submit(opts, cb)
 {
+  cb = cb || opts.submit_callback;
   // make a request
   var dlg = $('#purchase-dialog'),
   url_str,
@@ -92,7 +95,7 @@ function purchase_dialog_submit(opts, cb)
     client: opts.client,
     app: opts.app, 
     service: opts.service,
-    urlstring: opts.urlstring,
+    urlstring: opts.urlstring || '',
     deviceid: new Fingerprint().get(),
     header: '200'
   };
@@ -123,6 +126,25 @@ function purchase_dialog_submit(opts, cb)
   default:
     return;
   }
+  dlg.find('.login-result').hide();
+  function show_login_result(err)
+  {
+    var $res_div = dlg.find('.login-result').show();
+    $res_div.find('.login-success')[!err ? 'show' : 'hide']();
+    var $login_failed = $res_div.find('.login-failed')[err ? 'show' : 'hide']();
+    if(err)
+    {
+      var failed_text = $login_failed.data('text');
+      if(!failed_text)
+      {
+        failed_text = $login_failed.text();
+        $login_failed.data('text', failed_text);
+      }
+      $login_failed.text(sprintf(failed_text, err));
+    }
+    else
+      purchase_dialog_set_page('result');
+  }
   $.ajax(url_str, {
     dataType: 'xml',
     success: function(xmlDoc)
@@ -132,31 +154,40 @@ function purchase_dialog_submit(opts, cb)
       $url = $xmlDoc.find('UrlString');
       if($err.length > 0)
       {
-        notifyError($err.find('Message').text());
+        show_login_result($err.find('Message').text());
         cb && cb(false);
       }
       else if($url.length > 0)
       {
-        var url_str = $url.text();
+        var url_str = $url.text(),
+        auth_obj = { type: opts.type };
         if(opts.type == 'user')
-          localStorage.setItem('reader-auth', JSON.stringify({
-            user: query.user,
-            pswd: query.pswd
-          }));
-        document.location = 'pdfreader.html?waurl=' + 
-          encodeURIComponent(url_path_plus(url_str))
+        {
+          auth_obj.user = query.user;
+          auth_obj.pswd = query.pswd;
+        }
+        else if(opts.type == 'code')
+          auth_obj.code = query.code;
+        localStorage.setItem('reader-auth', JSON.stringify(auth_obj));
+        if(!opts.urlstring)
+          show_login_result();
+        else
+          document.location = 'pdfreader.html?waurl=' + 
+            encodeURIComponent(url_path_plus(url_str));
         cb && cb(true);
       }
       else
       {
         cb && cb(false);
-        notifyError("Unknown response!");
+        var err = "Unknown response!";
+        show_login_result(err);
       }
     },
     error: function(xhr, err_text)
     {
       cb && cb(false);
-      notifyError("Failed to request for page: " + err_text);
+      var err = "Failed to request for page: " + err_text;
+      show_login_result(err);
     }
   });
 }
@@ -176,7 +207,8 @@ $(function()
       {
         if(ev.which == 13)
         {
-          $('#purchase-dlg-submit').click();
+          if($(this).val())
+            $('#purchase-dlg-submit').click();
           return false;
         }
       });

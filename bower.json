@@ -34,6 +34,7 @@
     "js-url": "~1.8.6",
     "flexslider": "*",
     "screenfull": "~1.2.1",
-    "fingerprint": "~0.5.3"
+    "fingerprint": "~0.5.3",
+    "sprintf": "~1.0.0"
   }
 }

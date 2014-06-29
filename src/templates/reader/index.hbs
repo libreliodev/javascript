@@ -10,7 +10,15 @@ theme: dark-bkg
 ---
 <div class="reader-container">
   <div class="reader-background"></div>
-  <h4 class="headline text-center">{{title}}</h4>
+  <div class="headline">
+    <h4 class="text-center">{{title}}</h4>
+    <div class="upper-right-buttons">
+      <button id="login-btn" type="button"
+              class="btn btn-success">Login</button>
+      <button id="logout-btn" type="button"
+              class="btn btn-default">Logout</button>
+    </div>
+  </div>
   <div class="reader-content container">
     <ul class="magazines">
       <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2" data-id="default">

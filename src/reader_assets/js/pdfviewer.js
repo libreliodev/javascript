@@ -189,8 +189,7 @@
         {
           data = $.extend(true, {}, data);
           var rect = data.rect,
-          view = docPage.view,
-          w_ratio = prect[2] / canvas.width;
+          view = docPage.view;
           rect = [
             (rect[0] - view[0]) / (view[2] - view[0]) * prect[2],
             prect[3] - (rect[3] - view[1]) / (view[3] - view[1]) * prect[3],

@@ -481,6 +481,13 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
+                        cwd: 'bower_components/sprintf/dist/',
+                        src: 'sprintf.min.js',
+                        dest: reader_assets_dist_dir + '/lib/'
+                        
+                    },
+                    {
+                        expand: true,
                         cwd: reader_assets_src_dir + '/js',
                         src: ['*.js'],
                         dest: reader_assets_dist_dir + '/js/'

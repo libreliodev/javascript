@@ -162,4 +162,39 @@ $(function(){
     return (bn.length > 0 && bn[bn.length - 1] == '_' ? 
             bn.substr(0, bn.length - 1) : bn) + (noext ? '' : ext);
   }
+
+  // login/logout
+  // There's two buttons in the page, User should be able to logout or login
+  // with these buttons. One of them should be visible at a time.
+  // CodeService and UserService does support login choice.
+  // login dialog could be the same as purchase dialog with few changes.
+  login_or_out_update();
+  $('#login-btn').click(function()
+    {
+      var type = app_data.CodeService ? 'code' : 
+        (app_data.UserService ? 'user' : null);
+      if(!type)
+        return;
+      purchase_dialog_open({
+        type: type,
+        client: app_data.client_name,
+        app: app_data.magazine_name,
+        service: app_data.service_name,
+        submit_callback: login_or_out_update
+      });
+      return false;
+    });
+  $('#logout-btn').click(function()
+    {
+      localStorage.setItem('reader-auth', '');
+      login_or_out_update();
+      return false;
+    });
+  function login_or_out_update()
+  {
+    var auth = !!localStorage.getItem('reader-auth');
+    $('#login-btn')[!auth ? 'show' : 'hide']();
+    $('#logout-btn')[auth ? 'show' : 'hide']();
+  }
+
 });
