@@ -1,20 +1,14 @@
+### About this project
+
+This project contains the Librelio Web Site, the Librelio Admin console, and a customizable HTML5 viewer.
+
+The viewer is intended mainly for publishers and marketers. It is also available natively on [iOS](https://github.com/libreliodev/iOS), [Windows 8](https://github.com/libreliodev/windows8) and  [Android](https://github.com/libreliodev/android)
+If you need to publish dynamic and/or paid contents, you need to set up your own server and develop your own code. You can also opt for Librelio's [paid plans](http://www.librelio.com/index.php#pricing).
+
+An example of viewer is available on the [librelio-com S3 bucket](http://librelio-com.s3-website-eu-west-1.amazonaws.com). 
 
 
-### Building
 
-#### 
-required [node.js](http://nodejs.org/) & [bower](http://bower.io/) & [grunt](http://gruntjs.com/getting-started)
-
-    $ git clone https://github.com/onokumus/Bootstrap-Admin-Template.git yourfoldername
-    $ cd yourfoldername
-    $ git submodule init
-    $ git submodule update
-    $ npm install
-    $ bower install 
-    $ grunt 
-    $ cd dist/
-    $ open index.html
-    
 
 
 ### Credits
