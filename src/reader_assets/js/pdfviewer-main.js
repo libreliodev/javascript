@@ -166,7 +166,7 @@ $(function(){
     if(cur_zoom != zoom)
       pdf_viewer.pdfviewer('zoomTo', zoom, x, y);
   }
-  $(document).on('keypress', function(ev)
+  $(document).on('keyup', function(ev)
     {
       switch(ev.keyCode)
       {
