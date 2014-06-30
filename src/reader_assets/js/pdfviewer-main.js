@@ -118,4 +118,70 @@ $(function(){
     if(display_mode != disp_mode)
       $('.pdfviewer').pdfviewer('set', 'display_mode', disp_mode);
   }
+
+  // show pdfviewer left/right arrow when cursor is near it
+  var arrow_near_epsilon = 100;
+  show_$el(false, $('.previous-btn'));
+  show_$el(false, $('.next-btn'));
+  function show_$el(b, $el)
+  {
+    function end_action()
+    {
+      $(this).data('in-action', false);
+    }
+    if(b && !$el.data('in-action') && $el.data('visible') !== true)
+      $el.data('in-action', true).data('visible', true).fadeIn(end_action);
+    else if(!b && !$el.data('in-action') && $el.data('visible') !== false)
+      $el.data('in-action', true).data('visible', false).fadeOut(end_action);
+  }
+  $(document).on('mousemove', function(ev)
+    {
+      var x = ev.pageX,
+      w = $(window).width();
+
+      show_$el(x <= arrow_near_epsilon, $('.previous-btn'));
+      show_$el(w - x <= arrow_near_epsilon, $('.next-btn'));
+      
+    });
+
+  
+  // keyboard bindings left/right/top/bottom -> prev-page/next-page/zoom-in/zoom-out
+  function zoom_plus(v)
+  {
+    var cur_zoom = pdf_viewer.pdfviewer('get', 'zoom'),
+    zoom = cur_zoom + v,
+    el = pdf_viewer[0],
+    x = 0.5, y = 0.5;
+    if(zoom > 4)
+      zoom = 4;
+    else if(zoom < 1)
+      zoom = 1;
+    
+    if(cur_zoom > 1 && el)
+    {
+      x = (el.scrollLeft + pdf_viewer.width()/2) / el.scrollWidth;
+      y = (el.scrollTop + pdf_viewer.height()/2) / el.scrollHeight;
+    }
+
+    if(cur_zoom != zoom)
+      pdf_viewer.pdfviewer('zoomTo', zoom, x, y);
+  }
+  $(document).on('keypress', function(ev)
+    {
+      switch(ev.keyCode)
+      {
+      case 38: // up arrow
+        zoom_plus(1.5);
+        break;
+      case 40: // down arrow
+        zoom_plus(-1.5);
+        break;
+      case 37: // left arrow
+        pdf_viewer.pdfviewer('pagecurl_to', 'previous');
+        break;
+      case 39: // right arrow
+        pdf_viewer.pdfviewer('pagecurl_to', 'next');
+        break;
+      }
+    });
 });

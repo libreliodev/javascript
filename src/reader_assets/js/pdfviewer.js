@@ -509,6 +509,13 @@
       self.pdfviewer.apply(self, arraySlice.call(arguments, 2));
   }
   set_methods = {
+    zoom: function(zoom)
+    {
+      var self = this,
+      o = self.data(pvobj_key);
+      o.zoom = zoom;
+      self.trigger('sizechanged');
+    },
     display_mode: function(mode)
     {
       var self = this,
@@ -586,29 +593,13 @@
          var offset = self.offset(),
          rect = o.curPages.rect,
          relX = (ev.pageX - rect[0] - offset.left) / rect[2],
-         relY = (ev.pageY - rect[1] - offset.top) / rect[3];
+         relY = (ev.pageY - rect[1] - offset.top) / rect[3],
+         zoom;
          if(o.zoom > 1)
-           o.zoom = 1;
+           zoom = 1;
          else
-           o.zoom = 2;
-         self.trigger('sizechanged');
-         self.bind('before-render', function()
-           {
-             var rect = o.curPages ? o.curPages.rect : null;
-             if(o.zoom > 1 && rect)
-             {
-               self.prop('scrollLeft', rect[0] +
-                         rect[2] * relX - $(window).width()/2);
-               self.prop('scrollTop', rect[1] +
-                         rect[3] * relY - $(window).height()/2);
-             }
-             else
-             {
-               self.prop('scrollLeft', 0);
-               self.prop('scrollTop', 0);
-             }
-             self.unbind('before-render', arguments.callee);
-           });
+           zoom = 2;
+         self.pdfviewer('zoomTo', zoom, relX, relY);
          return false;
        });
       o.canvas = canvas;
@@ -1186,6 +1177,29 @@
           el._mousedown = false;
           setTimeout(function() { el._scrolled = undefined; });
         });
+    },
+    zoomTo: function(zoom, x, y)
+    {
+      var self = this,
+      o = self.data(pvobj_key);
+      self.pdfviewer('set', 'zoom', zoom);
+      self.bind('before-render', function()
+        {
+          var rect = o.curPages ? o.curPages.rect : null;
+          if(o.zoom > 1 && rect)
+          {
+            self.prop('scrollLeft', rect[0] +
+                      rect[2] * x - $(window).width()/2);
+            self.prop('scrollTop', rect[1] +
+                      rect[3] * y - $(window).height()/2);
+          }
+          else
+          {
+            self.prop('scrollLeft', 0);
+            self.prop('scrollTop', 0);
+          }
+          self.unbind('before-render', arguments.callee);
+        }); 
     },
     openPage: function(index)
     {
