@@ -94,9 +94,12 @@ function image_object_get_rect(obj, name)
     r = rect;
   return r;
 }
+function is_image_object(obj)
+{
+  return typeof obj == 'object';
+}
 function render_subrout_draw_behind_page(ctx, drect, mats, src, flip)
 {
-  var srect = src ? image_object_get_rect(src, 'src_rect') : null;
   ctx.save();
 
   ctx.save();
@@ -110,33 +113,37 @@ function render_subrout_draw_behind_page(ctx, drect, mats, src, flip)
 
   ctx.scale(flip.x ? -1 : 1, flip.y ? -1 : 1);
   ctx.translate((flip.x ? -1 : 0) * drect[2], (flip.y ? -1 : 0) * drect[3]);
-  if(src)
+  if(is_image_object(src))
+  {
+    var srect = image_object_get_rect(src, 'src_rect');
     ctx.drawImage.apply(ctx, ([ src.image ])
                                .concat(srect, [0,0].concat(drect.slice(2, 4))));
+  }
   else
   {
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = typeof src == 'string' ? src : '#ffffff';
     ctx.fillRect.apply(ctx, [0,0].concat(drect.slice(2, 4)));
   }
   ctx.restore();
 }
 function render_subrout_draw_page(ctx, drect, src)
 {
-  var srect = src ? image_object_get_rect(src, 'src_rect') : null;
   ctx.save();
-  if(src)
+  if(is_image_object(src))
+  {
+    var srect = image_object_get_rect(src, 'src_rect');
     ctx.drawImage.apply(ctx, ([ src.image ])
                                .concat(srect, [0,0].concat(drect.slice(2, 4))));
+  }
   else
   {
-    ctx.fillStyle = '#ffffff';
+    ctx.fillStyle = typeof src == 'string' ? src : '#ffffff';
     ctx.fillRect.apply(ctx, [0,0].concat(drect.slice(2, 4)));
   }
   ctx.restore();
 }
 function render_subrout_draw_flipped_page(ctx, drect, mats, src, pivot)
 { 
-  var srect = src ? image_object_get_rect(src, 'src_rect') : null;
   ctx.save();
 
   // clip rect
@@ -152,25 +159,17 @@ function render_subrout_draw_flipped_page(ctx, drect, mats, src, pivot)
     mats.apply_raster_mat(ctx);
     ctx.shadowBlur = 1 * (2 - (pivot[0] / drect[2]));
     ctx.shadowColor = '#444444';
-    if(src)
-      ctx.drawImage.apply(ctx, ([ src.image ])
-                                .concat(srect, [0,0].concat(drect.slice(2,4))));
-    else
-    {
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect.apply(ctx, [0,0].concat(drect.slice(2,4)));
-    }
+  }
+  if(is_image_object(src))
+  {
+    var srect = image_object_get_rect(src, 'src_rect');
+    ctx.drawImage.apply(ctx, ([ src.image ])
+                        .concat(srect, [0,0].concat(drect.slice(2,4))));
   }
   else
   {
-    if(src)
-      ctx.drawImage.apply(ctx, ([ src.image ])
-                          .concat(srect, [0,0].concat(drect.slice(2,4))));
-    else
-    {
-      ctx.fillStyle = '#ffffff';
-      ctx.fillRect.apply(ctx, [0,0].concat(drect.slice(2, 4)));
-    }
+    ctx.fillStyle = typeof src == 'string' ? src : '#ffffff';
+    ctx.fillRect.apply(ctx, [0,0].concat(drect.slice(2, 4)));
   }
   
   ctx.restore();

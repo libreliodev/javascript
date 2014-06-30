@@ -10,10 +10,16 @@ if(pdf_url)
 }
 
 $(function(){
-  var pdf_viewer = $('.pdfviewer');
+  var pdf_viewer = $('.pdfviewer'),
+  bkg_color;
+  if($('body').hasClass('dark-bkg'))
+    bkg_color = '#000000';
+  else
+    bkg_color = '#ffffff';
+  pdf_viewer.pdfviewer('set', 'background', bkg_color);
   if(pdf_url)
   {
-    PDFJS.disableRange = false;
+    PDFJS.disableRange = true;
     PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler)
       .then(function(pdf)
       {

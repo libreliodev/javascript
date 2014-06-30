@@ -74,7 +74,7 @@ $(function(){
           else
             url = magazine_file_url(app_data, fn);
         
-          window.open(url, '_blank');
+          document.location = url;
         }
         return false;
       });

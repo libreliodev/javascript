@@ -1,3 +1,4 @@
+
 @pdfviewer-page-item-width: 75px;
 @pdfviewer-page-item-height: 100px;
 
@@ -48,9 +49,7 @@
     top: 0px;
     left: 0px;
     z-index: 1;
-    .annot-link:hover {
-      background-color: rgba(240, 220, 20, .25);
-    }
+    cursor: pointer;
   }
   .vjs-default-skin .vjs-big-play-button,
   .vjs-default-skin .vjs-control-bar {
@@ -127,19 +126,19 @@
   position: relative;
   z-index: 3;
 }
-.previous-btn, .next-btn {
+.controls a {
   position: fixed;
   display: table;
   height: 100%;
   font-size: 20px;
   background: rgba(255, 255, 255, .5);
 }
-.previous-btn i, .next-btn i {
+.controls a i {
   vertical-align: middle;
   display: table-cell;
   height: 100%;
 }
-.previous-btn:hover, .next-btn:hover {
+.controls a:hover {
   background: rgba(255, 255, 255, 1);
 }
 .previous-btn {

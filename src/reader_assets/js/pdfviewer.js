@@ -8,7 +8,8 @@
     book_mode_fist_page_odd: true,
     auto_select_display_mode: true,
     auto_resizable: true,
-    moveable: true
+    moveable: true,
+    background: '#ffffff'
   },
   dhtml_global = {
     screen_width: function()
@@ -863,11 +864,11 @@
                 src0: rect0 ? {
                   image: page_data.canvas,
                   src_rect: rect0
-                } : null,
+                } : o.background,
                 src1: rect1 ? {
                   image: page_data.canvas,
                   src_rect: rect1
-                } : null,
+                } : o.background,
                 src2: {
                   image: spare_canvas,
                   src_rect: rect
@@ -923,7 +924,7 @@
                 image: page_data.canvas,
                 src_rect: other_page.rect
               },
-              src1: null,
+              src1: o.background,
               src2: {
                 image: spare_canvas,
                 src_rect: rect
