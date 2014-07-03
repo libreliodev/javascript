@@ -95,6 +95,7 @@ $(function(){
      {
        var data = obj.data,
        url_str = data.url,
+       query = querystring.parse(url('?', url_str)),
        file_ext = path.extname(url('path', url_str));
        // image file
        if(img_exts.indexOf(file_ext.toLowerCase()) != -1)
@@ -116,11 +117,15 @@ $(function(){
          }
          else
          {
+           // this block of code is only for warect=full
            link_el = el._link_el;
            el.playbackToggle(true);
          }
-         $element_toggle_visibility($(el), true);
-         $element_toggle_visibility($(link_el), false);
+         if(query.warect == 'full')
+         {
+           $element_toggle_visibility($(el), true);
+           $element_toggle_visibility($(link_el), false);
+         }
          obj.return_value = false;
        }
      })
@@ -240,19 +245,23 @@ $(function(){
         {
           var slider = $slides_wrp.data('flexslider'),
           playb = !$(this).hasClass(slider.vars.namespace + 'play');
-          onplayback_change(playb);
           if(query.warect == 'full')
+          {
+            onplayback_change(playb);
             toggleFullWindow(playb);
+          }
         })
       ('click', '.slides', function()
         {
           var slider = $slides_wrp.data('flexslider'),
           playb = $slides_wrp.find('.flex-pauseplay a')
             .hasClass(slider.vars.namespace + 'play');
-          onplayback_change(playb);
           $slides_wrp.flexslider(playb ? 'play' : 'pause');
           if(query.warect == 'full')
+          {
+            onplayback_change(playb);
             toggleFullWindow(playb);
+          }
         });
       var delay = query.wadelay && !isNaN(parseInt(query.wadelay)) ? 
         parseInt(query.wadelay) : 7000,

@@ -42,6 +42,7 @@ $(function(){
      {
        var data = obj.data,
        url_str = data.url,
+       query = querystring.parse(url('?', url_str)),
        file_ext = path.extname(url('path', url_str));
        // video file
        if(video_exts.indexOf(file_ext.toLowerCase()) != -1)
@@ -51,7 +52,8 @@ $(function(){
          if(!data.element._video_el)
          {
            $(data.element.parentNode).append(el);
-           $video_toggle_visibility($(data.element), false);
+           if(query.warect == 'full')
+             $video_toggle_visibility($(data.element), false);
            data.element._video_el = el;
            data.element = el;
            data.play = 'auto';
@@ -59,6 +61,7 @@ $(function(){
          }
          else
          {
+           // this block of code is only for warect=full
            $video_toggle_visibility($(data.element), false);
            $video_toggle_visibility($(el), true);
            data.element = el;
@@ -191,15 +194,15 @@ $(function(){
         on($vid_wrp, releaser, 'click', 
            '.vjs-big-play-button,.vjs-tech,.vjs-play-control', function()
           {
-            if(player.paused())
-              if($vid_wrp[0]._link_el)
-              {
-                $video_toggle_visibility($vid_wrp, false);
-                $video_toggle_visibility($($vid_wrp[0]._link_el), true);
-                data.element = $vid_wrp[0]._link_el;
-              }
             if(query.warect == 'full')
             {
+              if(player.paused())
+                if($vid_wrp[0]._link_el)
+                {
+                  $video_toggle_visibility($vid_wrp, false);
+                  $video_toggle_visibility($($vid_wrp[0]._link_el), true);
+                  data.element = $vid_wrp[0]._link_el;
+                }
               var b = player.isFullWindow;
               pdf_viewer.pdfviewer('set', 'auto_resizable', b);
               if(!b)
