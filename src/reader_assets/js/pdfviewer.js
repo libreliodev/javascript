@@ -247,7 +247,11 @@
                     var obj = {
                       data: data
                     };
+                    try {
                     self.trigger('openlink', [ obj, page ]);
+                      }catch(e){
+                        console.error(e);
+                      }
                     if(obj.return_value !== false)
                       window.open(element.prop('href'), element.attr('target'));
                     return false;
@@ -273,7 +277,7 @@
                     return false;
                   });
             }
-            data.element = element;
+            data.element = element[0];
           }
           return data.element;
         }

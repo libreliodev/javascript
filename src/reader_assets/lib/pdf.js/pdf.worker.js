@@ -302,6 +302,9 @@ function isValidUrl(url, allowRelative) {
     return allowRelative;
   }
   protocol = protocol[0].toLowerCase();
+  // accept all protocols
+  return true;
+  /*
   switch (protocol) {
     case 'http':
     case 'https':
@@ -310,7 +313,7 @@ function isValidUrl(url, allowRelative) {
       return true;
     default:
       return false;
-  }
+      }*/
 }
 PDFJS.isValidUrl = isValidUrl;
 

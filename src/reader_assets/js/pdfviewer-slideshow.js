@@ -29,6 +29,13 @@ $(function(){
       });
     $slides_wrp.data('resizing', false);
   }
+  function $element_toggle_visibility($el, b)
+  {
+    if(b)
+      $el.show();
+    else
+      $el.hide();
+  }
   function slideshow_update_image_size($slides_wrp, img)
   {
     var orig_img = new Image();
@@ -92,16 +99,28 @@ $(function(){
        // image file
        if(img_exts.indexOf(file_ext.toLowerCase()) != -1)
        {
-         var el = $('<div/>')[0],
-         tmp = data.element;
+         var el = data.element._slideshow_el || $('<div/>')[0],
+         link_el = data.element;
          data.element = el;
-         data.play = 'auto';
-         if(!initSlideshow(data, page))
+         if(!link_el._slideshow_el)
          {
-           data.element = tmp;
-           return;
+           data.play = 'auto';
+           if(!initSlideshow(data, page))
+           {
+             data.element = link_el;
+             return;
+           }
+           link_el._slideshow_el = el;
+           el._link_el = link_el;
+           $(link_el.parentNode).append(el);
          }
-         $(tmp).replaceWith(el);
+         else
+         {
+           link_el = el._link_el;
+           el.playbackToggle(true);
+         }
+         $element_toggle_visibility($(el), true);
+         $element_toggle_visibility($(link_el), false);
          obj.return_value = false;
        }
      })
@@ -109,18 +128,36 @@ $(function(){
   {
     function toggleFullWindow(playb)
     {
+      pdf_viewer.pdfviewer('set', 'auto_resizable', false);
       $('body').toggleClass('in-fullscreen-view', playb);
       $slides_wrp.toggleClass('fullscreen-view', playb);
-      pdf_viewer.pdfviewer('set', 'auto_resizable', false);
       slideshow_size_update($slides_wrp);
-      pdf_viewer.pdfviewer('set', 'auto_resizable', !playb);
       // for some reason 'fullscreen-view' will be removed
       // first time I'll set it again after awhile
       setTimeout(function()
         {
           $slides_wrp.toggleClass('fullscreen-view', playb);
+          pdf_viewer.pdfviewer('set', 'auto_resizable', !playb);
         }, 500);
     }
+    function onplayback_change(playb)
+    {
+      if(!playb && $slides_wrp[0]._link_el)
+      {
+        var link_el = $slides_wrp[0]._link_el;
+        $element_toggle_visibility($slides_wrp, false);
+        $element_toggle_visibility($(link_el), true);
+        data.element = link_el;
+      }
+    }
+    function playback_toggle(b)
+    {
+      onplayback_change(b);
+      if(query.warect == 'full')
+        toggleFullWindow(b);
+      $slides_wrp.flexslider(b ? 'play' : 'pause');
+    }
+    data.element.playbackToggle = playback_toggle;
     var url_str = data.url,
     url_path = url('path', url_str),
     file_ext = path.extname(url_path),
@@ -199,10 +236,21 @@ $(function(){
         img.prop('src', librelio_resolve_url(s, pdf_url_dir));
         $slides.append(li.append(img));
       }
-      $slides_wrp.on('click', '.flex-pauseplay a', function()
+      on($slides_wrp, releaser, 'click', '.flex-pauseplay a', function()
         {
           var slider = $slides_wrp.data('flexslider'),
           playb = !$(this).hasClass(slider.vars.namespace + 'play');
+          onplayback_change(playb);
+          if(query.warect == 'full')
+            toggleFullWindow(playb);
+        })
+      ('click', '.slides', function()
+        {
+          var slider = $slides_wrp.data('flexslider'),
+          playb = $slides_wrp.find('.flex-pauseplay a')
+            .hasClass(slider.vars.namespace + 'play');
+          onplayback_change(playb);
+          $slides_wrp.flexslider(playb ? 'play' : 'pause');
           if(query.warect == 'full')
             toggleFullWindow(playb);
         });
@@ -236,9 +284,7 @@ $(function(){
       {
         setTimeout(function()
           {
-            if(query.warect == 'full')
-              toggleFullWindow(true);
-            $slides_wrp.flexslider('play');
+            playback_toggle(true);
           });
       }
     }
