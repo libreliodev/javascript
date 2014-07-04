@@ -98,7 +98,8 @@ $(function(){
        query = querystring.parse(url('?', url_str)),
        file_ext = path.extname(url('path', url_str));
        // image file
-       if(img_exts.indexOf(file_ext.toLowerCase()) != -1)
+       if(img_exts.indexOf(file_ext.toLowerCase()) != -1 && 
+          obj.return_value !== false)
        {
          var el = data.element._slideshow_el || $('<div/>')[0],
          link_el = data.element;

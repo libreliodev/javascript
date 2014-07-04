@@ -11,6 +11,8 @@ $(function(){
   }
   function is_webframe(s)
   {
+    if(s === undefined || url_protocol(s) === null)
+      return false;
     var query = querystring.parse(url_query2(s));
     for(var i in query)
       if(i.indexOf('wa') === 0)
@@ -56,7 +58,7 @@ $(function(){
      {
        var data = obj.data,
        url_str = data.url;
-       if(is_webframe(url_str))
+       if(is_webframe(url_str) && obj.return_value !== false)
        {
          var el = data.element._frame_el || $('<div/>')[0];
          el._link_el = data.element;
