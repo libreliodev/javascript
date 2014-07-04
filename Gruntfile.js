@@ -261,7 +261,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'bower_components/jquery/dist',
-                        src: ['./**/jquery*.min.*'],
+                        src: ['./**/jquery*'],
                         dest: admin_assets_dist_dir + '/lib'
                     },
                     {
@@ -346,7 +346,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'bower_components/jquery/dist',
-                        src: ['./**/jquery*.min.*'],
+                        src: ['./**/jquery*'],
                         dest: site_assets_dist_dir + '/lib'
                     },
                     {
@@ -389,7 +389,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'bower_components/jquery/dist',
-                        src: ['./**/jquery*.min.*'],
+                        src: ['./**/jquery*'],
                         dest: reader_assets_dist_dir + '/lib'
                     },
                     {

@@ -19,7 +19,7 @@ $(function(){
   pdf_viewer.pdfviewer('set', 'background', bkg_color);
   if(pdf_url)
   {
-    PDFJS.disableRange = true;
+    PDFJS.disableRange = false;
     PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler)
       .then(function(pdf)
       {
@@ -51,16 +51,19 @@ $(function(){
   pdf_viewer.bind('render-link', function(ev, data, page)
      {
        if(data.url)
+       {
+         data.protocol = url('protocol', data.url);
+         data.real_url = data.url;
          data.url = librelio_resolve_url(data.url, pdf_url_dir);
+       }
      });
   pdf_viewer.bind('openlink', function(ev, obj)
      {
        var data = obj.data,
-       url_str = data.url,
-       file_ext = path.extname(url('path', url_str));
-
+       path_str = url('path', data.real_url);
+       
        // buy:// protocol
-       if(url_str == 'buy://' && !external_b)
+       if(data.protocol == 'buy')
        {
          $.ajax('application_.json', {
            dataType: 'json',
@@ -72,18 +75,13 @@ $(function(){
                return;
              
              // get file name from its key(remove prefix)
-             var prefix = app_data.client_name + '/' + app_data.magazine_name,
-             path_str = doc_query.waurl,
-             pref_idx = path_str.indexOf(prefix)
-             if(pref_idx === 0 || (pref_idx === 1 && path_str[0] == '/'))
-               path_str = path_str.substr(pref_idx + prefix.length);
-             
+             var prefix = app_data.client_name + '/' + app_data.magazine_name;
              purchase_dialog_open({
                type: type,
                client: app_data.client_name,
                app: app_data.magazine_name, 
                service: app_data.service_name,
-               urlstring: magazine_name_free2paid(path_str)
+               urlstring: path_str
              });
            },
            error: function(xhr, err_text)

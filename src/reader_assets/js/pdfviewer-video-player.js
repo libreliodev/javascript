@@ -7,6 +7,12 @@ $(function(){
   },
   max_icons_size = 100,
   pdf_viewer = $('.pdfviewer');
+  function $video_toggle_visibility($el, b)
+  {
+    var v = b ? 'visible' : 'hidden';
+    $el.css('visibility', v);
+     $el.find('.vjs-control-bar').css('visibility', v);
+  }
   function video_size_update($vid_wrp, player)
   {
     var width = player.isFullWindow || player.isFullscreen()
@@ -36,15 +42,32 @@ $(function(){
      {
        var data = obj.data,
        url_str = data.url,
+       query = querystring.parse(url('?', url_str)),
        file_ext = path.extname(url('path', url_str));
        // video file
        if(video_exts.indexOf(file_ext.toLowerCase()) != -1)
        {
-         var el = $('<div/>')[0];
-         $(data.element).replaceWith(el);
-         data.element = el;
-         data.play = 'auto';
-         initVideo(data, page);
+         var el = data.element._video_el || $('<div/>')[0];
+         el._link_el = data.element;
+         if(!data.element._video_el)
+         {
+           $(data.element.parentNode).append(el);
+           if(query.warect == 'full')
+             $video_toggle_visibility($(data.element), false);
+           data.element._video_el = el;
+           data.element = el;
+           data.play = 'auto';
+           initVideo(data, page);
+         }
+         else
+         {
+           // this block of code is only for warect=full
+           $video_toggle_visibility($(data.element), false);
+           $video_toggle_visibility($(el), true);
+           data.element = el;
+           if(el.player)
+             el.player.play();
+         }
          obj.return_value = false;
        }
      })
@@ -53,16 +76,6 @@ $(function(){
     function isAutoplay()
     {
       return query.waplay == 'auto' || data.play == 'auto';
-    }
-    function playAuto()
-    {
-      player.play();
-      if(query.warect == 'full')
-      {
-        pdf_viewer.pdfviewer('set', 'auto_resizable', true);
-        player.enterFullWindow();
-        player.trigger('fullscreenchange');
-      }
     }
     var url_str = data.url,
     file_ext = path.extname(url('path', url_str)),
@@ -118,13 +131,15 @@ $(function(){
       })
     ('pagecurl-end', function()
       {
-        $vid_wrp.css('visibility', 'visible');
+        if($vid_wrp[0] == data.element)
+          $vid_wrp.css('visibility', 'visible');
         $vid_wrp.animate({ opacity: 1 }, {
           queue: false,
           duration: 200,
           complete: function()
           {
-             $vid_wrp.css('visibility', 'visible');
+            if($vid_wrp[0] == data.element)
+              $vid_wrp.css('visibility', 'visible');
           }
         });
       })
@@ -134,7 +149,7 @@ $(function(){
         {
           is_cur_page = true;
           if(player && isAutoplay())
-            playAuto();
+            player.play();
           return;
         }
         exit_proc = true;
@@ -147,6 +162,18 @@ $(function(){
     videojs($vid[0], {}, function()
       {
         player = this;
+        $vid_wrp[0].player = player;
+        var play_m = player.play;
+        player.play = function()
+        {
+          play_m.apply(this, arguments);
+          if(query.warect == 'full')
+          {
+            pdf_viewer.pdfviewer('set', 'auto_resizable', true);
+            player.enterFullWindow();
+            player.trigger('fullscreenchange');
+          }
+        }
         if(exit_proc)
         {
           player.pause();
@@ -169,10 +196,17 @@ $(function(){
           {
             if(query.warect == 'full')
             {
+              if(player.paused())
+                if($vid_wrp[0]._link_el)
+                {
+                  $video_toggle_visibility($vid_wrp, false);
+                  $video_toggle_visibility($($vid_wrp[0]._link_el), true);
+                  data.element = $vid_wrp[0]._link_el;
+                }
               var b = player.isFullWindow;
               pdf_viewer.pdfviewer('set', 'auto_resizable', b);
               if(!b)
-                player.enterFullWindow();
+                player.enterFullWindow(); 
               else
                 player.exitFullWindow();
               player.trigger('fullscreenchange');
@@ -180,10 +214,15 @@ $(function(){
           });
         player.on('fullscreenchange', function()
           {
+            if(player.isFullWindow)
+              $vid_wrp.css({
+                opacity: 1,
+                visibility: 'visible'
+              });
             video_size_update($vid_wrp, player);
           });
         if(isAutoplay() && curPages.indexOf(page) != -1)
-         playAuto();
+         player.play();
       });
   }
 });

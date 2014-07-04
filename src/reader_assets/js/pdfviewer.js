@@ -273,7 +273,7 @@
                     return false;
                   });
             }
-            data.element = element;
+            data.element = element[0];
           }
           return data.element;
         }
