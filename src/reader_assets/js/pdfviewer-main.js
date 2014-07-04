@@ -20,6 +20,7 @@ $(function(){
   if(pdf_url)
   {
     PDFJS.disableRange = false;
+    PDFJS.requestMethod = 'POST';
     PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler)
       .then(function(pdf)
       {
