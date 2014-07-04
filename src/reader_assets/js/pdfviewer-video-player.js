@@ -32,7 +32,7 @@ $(function(){
        query = querystring.parse(url('?', url_str));
        // video file
        if(video_exts.indexOf(file_ext.toLowerCase()) != -1 &&
-          query.waplay == 'auto')
+          query.waplay == 'auto' && !data.element)
        {
          data.element = $('<div/>')[0];
          initVideo(data, page);

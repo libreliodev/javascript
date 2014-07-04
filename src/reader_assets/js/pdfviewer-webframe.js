@@ -36,7 +36,7 @@ $(function(){
      {
        var url_str = data.url,
        query = querystring.parse(url_query2(url_str));
-       if(is_webframe(url_str))
+       if(is_webframe(url_str) && !data.element)
        {
          var data_wa = data.wa = {};
          for(var i in query)
