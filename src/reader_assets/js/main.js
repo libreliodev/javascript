@@ -234,17 +234,27 @@ function librelio_resolve_url(s, relto)
     return (relto ? relto + '/' : '') + relpath(s);
   return s;
 }
+function url_protocol(s)
+{
+  var pttrn = /^(\w+:)\/\//,
+  match = pttrn.exec(s);
+  return match ? match[1] : (s.substr(0, 2) == '//' ? '' : null);
+}
 function url_till_hostname(s)
 {
-  var proto = url('protocol', s),
+  var proto = url_protocol(s),
+  hostname = url('hostname', s),
   auth = url('auth', s);
-  return (proto ? proto + '://' : (hostname ? '//' : '')) +
-    (auth ? auth + '@' : '') + (url('hostname', s) || '');
+  if(proto === null)
+    return '';
+  else
+    return proto + '//' + (auth ? auth + '@' : '') + url('hostname', s);
 }
 function url_dir(s)
 {
-  var dirname = path.dirname(url('path', s));
-  return url_till_hostname(s) + (dirname[0] == '/' ? '' : '/') + dirname;
+  var url_str = url_till_hostname(s),
+  dirname = path.dirname(url_str == '' ? s : url('path', s));
+  return url_str + (dirname[0] == '/' ? '' : '/') + dirname;
 }
 function url_path_plus(url_str)
 {

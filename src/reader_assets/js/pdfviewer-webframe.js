@@ -11,6 +11,8 @@ $(function(){
   }
   function is_webframe(s)
   {
+    if(s === undefined || url_protocol(s) === null)
+      return false;
     var query = querystring.parse(url_query2(s));
     for(var i in query)
       if(i.indexOf('wa') === 0)
@@ -34,7 +36,7 @@ $(function(){
      {
        var url_str = data.url,
        query = querystring.parse(url_query2(url_str));
-       if(is_webframe(url_str))
+       if(is_webframe(url_str) && !data.element)
        {
          var data_wa = data.wa = {};
          for(var i in query)
@@ -56,7 +58,7 @@ $(function(){
      {
        var data = obj.data,
        url_str = data.url;
-       if(is_webframe(url_str))
+       if(is_webframe(url_str) && obj.return_value !== false)
        {
          var el = data.element._frame_el || $('<div/>')[0];
          el._link_el = data.element;

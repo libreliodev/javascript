@@ -21,11 +21,12 @@ $(function(){
       fontSize: s
     });
     $slides_wrp.find('.flex-pauseplay a').css('fontSize', size * 16 + 4);
-
-    $slides_wrp.find('img').each(function()
+    $slides_wrp.find('.slides li > *').each(function()
       {
-        if(this.width || this.height)
+        if(this.nodeName == 'IMG')
           slideshow_update_image_size($slides_wrp, this);
+        else
+          slide_align_child_center($slides_wrp, this);
       });
     $slides_wrp.data('resizing', false);
   }
@@ -36,40 +37,49 @@ $(function(){
     else
       $el.hide();
   }
+  function slide_align_child_center($slides_wrp, el)
+  {
+    var $container = $slides_wrp.find('.flex-viewport').length > 0 ?
+      $slides_wrp.find('.flex-viewport') : $slides_wrp,
+    $el = $(el),
+    sh = $container.height(),
+    $parent = $el.parent();
+    $parent.css({
+      'position': 'relative',
+      'height': sh
+    });
+    $el.css({
+      left: '50%',
+      top: '50%',
+      marginTop: -$el.height()/2,
+      marginLeft: -$el.width()/2,
+      position: 'absolute'
+    });
+  }
   function slideshow_update_image_size($slides_wrp, img)
   {
-    var orig_img = new Image();
-    orig_img.src = img.src;
-    orig_img.onload = function()
-    {
-      var $container = $slides_wrp.find('.flex-viewport').length > 0 ?
-        $slides_wrp.find('.flex-viewport') : $slides_wrp,
-      $img = $(img),
-      $parent = $img.parent(),
-      sw = $parent.width(),
-      sh = $container.height(),
-      ratio = orig_img.width / orig_img.height,
-      scale;
-      if(ratio >= 1)
-        scale = sw / orig_img.width;
-      else
-        scale = sh / orig_img.height;
-      $parent.css({
-        'position': 'relative',
-        'height': sh
-      });
-      var nw = orig_img.width * scale,
-      nh = orig_img.height * scale;
-      $img.css({
-        width: nw,
-        height: nh,
-        left: '50%',
-        top: '50%',
-        marginTop: -nh/2,
-        marginLeft: -nw/2,
-        position: 'absolute'
-      });
-    }
+    var $container = $slides_wrp.find('.flex-viewport').length > 0 ?
+      $slides_wrp.find('.flex-viewport') : $slides_wrp,
+    $img = $(img),
+    $parent = $img.parent(),
+    sw = $parent.width(),
+    sh = $container.height(),
+    iwidth = img._orig_width,
+    iheight = img._orig_height,
+    scale;
+    if(!iwidth || !iheight)
+      return;
+    if(iwidth / iheight > sw / sh)
+      scale = sw / iwidth;
+    else
+      scale = sh / iheight;
+    var nw = iwidth * scale,
+    nh = iheight * scale;
+    $img.css({
+      width: nw,
+      height: nh
+    });
+    slide_align_child_center($slides_wrp, $img);
   }
   pdf_viewer.bind('render-link', function(ev, data, page)
      {
@@ -79,7 +89,7 @@ $(function(){
        query = querystring.parse(url('?', url_str));
        // image file
        if(img_exts.indexOf(file_ext.toLowerCase()) != -1 &&
-          query.play == 'auto')
+          query.play == 'auto' && !data.element)
        {
          var el = $('<div/>')[0],
          tmp = data.element;
@@ -98,14 +108,14 @@ $(function(){
        query = querystring.parse(url('?', url_str)),
        file_ext = path.extname(url('path', url_str));
        // image file
-       if(img_exts.indexOf(file_ext.toLowerCase()) != -1)
+       if(img_exts.indexOf(file_ext.toLowerCase()) != -1 && 
+          obj.return_value !== false)
        {
          var el = data.element._slideshow_el || $('<div/>')[0],
          link_el = data.element;
          data.element = el;
          if(!link_el._slideshow_el)
          {
-           data.play = 'auto';
            if(!initSlideshow(data, page))
            {
              data.element = link_el;
@@ -136,11 +146,12 @@ $(function(){
       pdf_viewer.pdfviewer('set', 'auto_resizable', false);
       $('body').toggleClass('in-fullscreen-view', playb);
       $slides_wrp.toggleClass('fullscreen-view', playb);
-      slideshow_size_update($slides_wrp);
       // for some reason 'fullscreen-view' will be removed
       // first time I'll set it again after awhile
       setTimeout(function()
         {
+          if(playb)
+            slideshow_size_update($slides_wrp);
           $slides_wrp.toggleClass('fullscreen-view', playb);
           pdf_viewer.pdfviewer('set', 'auto_resizable', !playb);
         }, 500);
@@ -160,6 +171,13 @@ $(function(){
       onplayback_change(b);
       if(query.warect == 'full')
         toggleFullWindow(b);
+      else
+        setTimeout(function()
+          {
+            pdf_viewer.pdfviewer('set', 'auto_resizable', false);
+            slideshow_size_update($slides_wrp);
+            pdf_viewer.pdfviewer('set', 'auto_resizable', true);
+          });
       $slides_wrp.flexslider(b ? 'play' : 'pause');
     }
     data.element.playbackToggle = playback_toggle;
@@ -227,8 +245,12 @@ $(function(){
         return;
       function image_loaded()
       {
+        this._orig_width = this.width;
+        this._orig_height = this.height;
+        this._li.empty().append(this);
         slideshow_update_image_size($slides_wrp, this);
       }
+
       var path_host = url_till_hostname(url_str);
       for(var i = start, l = end + 1; i < l; ++i)
       {
@@ -237,9 +259,15 @@ $(function(){
         s = path_host + (rel_path[0] == '/' ? '' : '/') + rel_path,
         img = $('<img/>'),
         li = $('<li/>');
+        img[0]._li = li;
+        li[0]._img = img;
         img.bind('load', image_loaded);
         img.prop('src', librelio_resolve_url(s, pdf_url_dir));
-        $slides.append(li.append(img));
+        var $loading_el = $('<div>Loading...</div>')
+          .width(70).height(20);
+        slide_align_child_center($slides_wrp, $loading_el);
+        li.append($loading_el);
+        $slides.append(li);
       }
       on($slides_wrp, releaser, 'click', '.flex-pauseplay a', function()
         {
@@ -281,21 +309,13 @@ $(function(){
         });
       $slides_wrp.flexslider('pause');
       
-      slideshow_size_update($slides_wrp);
       on($(window), releaser, 'resize', function()
         {
           if($slides_wrp.hasClass('fullscreen-view') && 
              !$slides_wrp.data('resizing'))
             slideshow_size_update($slides_wrp);
         });
-
-      if(query.waplay == 'auto' || data.play == 'auto')
-      {
-        setTimeout(function()
-          {
-            playback_toggle(true);
-          });
-      }
+      playback_toggle(true);
     }
     return true;
   }

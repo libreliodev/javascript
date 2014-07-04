@@ -32,7 +32,7 @@ $(function(){
        query = querystring.parse(url('?', url_str));
        // video file
        if(video_exts.indexOf(file_ext.toLowerCase()) != -1 &&
-          query.waplay == 'auto')
+          query.waplay == 'auto' && !data.element)
        {
          data.element = $('<div/>')[0];
          initVideo(data, page);
@@ -45,7 +45,8 @@ $(function(){
        query = querystring.parse(url('?', url_str)),
        file_ext = path.extname(url('path', url_str));
        // video file
-       if(video_exts.indexOf(file_ext.toLowerCase()) != -1)
+       if(video_exts.indexOf(file_ext.toLowerCase()) != -1 && 
+          obj.return_value !== false)
        {
          var el = data.element._video_el || $('<div/>')[0];
          el._link_el = data.element;
