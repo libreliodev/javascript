@@ -2378,6 +2378,7 @@ var NetworkManager = (function NetworkManagerClosure() {
     this.isHttp = /^https?:/i.test(url);
     this.httpHeaders = (this.isHttp && args.httpHeaders) || {};
     this.withCredentials = args.withCredentials || false;
+    this.requestMethod = args.requestMethod || 'GET';
     this.getXhr = args.getXhr ||
       function NetworkManager_getXhr() {
         return new XMLHttpRequest();
@@ -2425,7 +2426,7 @@ var NetworkManager = (function NetworkManagerClosure() {
         xhr: xhr
       };
 
-      xhr.open('GET', this.url);
+      xhr.open(this.requestMethod, this.url);
       xhr.withCredentials = this.withCredentials;
       for (var property in this.httpHeaders) {
         var value = this.httpHeaders[property];
@@ -2811,7 +2812,8 @@ var ChunkedStreamManager = (function ChunkedStreamManagerClosure() {
       this.networkManager = new NetworkManager(this.url, {
         getXhr: getXhr,
         httpHeaders: args.httpHeaders,
-        withCredentials: args.withCredentials
+        withCredentials: args.withCredentials,
+        requestMethod: args.requestMethod
       });
       this.sendRequest = function ChunkedStreamManager_sendRequest(begin, end) {
         this.networkManager.requestRange(begin, end, {
@@ -3210,7 +3212,8 @@ var NetworkPdfManager = (function NetworkPdfManagerClosure() {
       withCredentials: args.withCredentials,
       chunkedViewerLoading: args.chunkedViewerLoading,
       disableAutoFetch: args.disableAutoFetch,
-      initialData: args.initialData
+      initialData: args.initialData,
+      requestMethod: args.requestMethod
     };
     this.streamManager = new ChunkedStreamManager(args.length, RANGE_CHUNK_SIZE,
                                                   args.url, params);
@@ -37718,7 +37721,8 @@ var WorkerMessageHandler = PDFJS.WorkerMessageHandler = {
 
       var networkManager = new NetworkManager(source.url, {
         httpHeaders: source.httpHeaders,
-        withCredentials: source.withCredentials
+        withCredentials: source.withCredentials,
+        requestMethod: source.requestMethod
       });
       var fullRequestXhrId = networkManager.requestFull({
         onHeadersReceived: function onHeadersReceived() {

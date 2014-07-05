@@ -2430,6 +2430,14 @@ PDFJS.disableRange = (PDFJS.disableRange === undefined ?
                       false : PDFJS.disableRange);
 
 /**
+ * Seting request method will change http requests of pdf file.
+ * Possible values are ('GET','POST','PUT','HEAD','DELETE')
+ * getDocument method will use this requet method
+ */
+PDFJS.requestMethod = (PDFJS.requestMethod === undefined ? 
+                       'GET' : PDFJS.requestMethod);
+
+/**
  * Disable pre-fetching of PDF file data. When range requests are enabled PDF.js
  * will automatically keep fetching more data even if it isn't needed to display
  * the current page. This default behavior can be disabled.
@@ -3302,6 +3310,7 @@ var WorkerTransport = (function WorkerTransportClosure() {
     fetchDocument: function WorkerTransport_fetchDocument(source) {
       source.disableAutoFetch = PDFJS.disableAutoFetch;
       source.chunkedViewerLoading = !!this.pdfDataRangeTransport;
+      source.requestMethod = PDFJS.requestMethod;
       this.messageHandler.send('GetDocRequest', {
         source: source,
         disableRange: PDFJS.disableRange,
