@@ -81,15 +81,18 @@ $(function(){
   }
   function read_paid_file(item)
   {
-    var type = app_data.CodeService ? 'code' : 
-      (app_data.UserService ? 'user' : null);
+  
+    var type = app_data.code_service ? 'code' : 
+      (app_data.user_service ? 'user' : null);
+    var service_name = app_data.code_service ? app_data.code_service : 
+      (app_data.user_service ? app_data.user_service : null);
     if(!type)
       return;
     purchase_dialog_open({
       type: type,
       client: app_data.client_name,
       app: app_data.magazine_name,
-      service: app_data.service_name,
+      service: service_name,
       urlstring: (item.FileName[0] != '/' ? '/' : '') + item.FileName
     });
   }
@@ -171,15 +174,17 @@ $(function(){
   login_or_out_update();
   $('#login-btn').click(function()
     {
-      var type = app_data.CodeService ? 'code' : 
-        (app_data.UserService ? 'user' : null);
+      var type = app_data.code_service ? 'code' : 
+        (app_data.user_service ? 'user' : null);
+    var service_name = app_data.code_service ? app_data.code_service : 
+      (app_data.user_service ? app_data.user_service : null);
       if(!type)
         return;
       purchase_dialog_open({
         type: type,
         client: app_data.client_name,
         app: app_data.magazine_name,
-        service: app_data.service_name,
+        service: service_name,
         submit_callback: login_or_out_update
       });
       return false;
