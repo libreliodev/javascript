@@ -1,0 +1,166 @@
+# SOME DESCRIPTIVE TITLE.
+# Copyright (C) YEAR THE PACKAGE'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the PACKAGE package.
+# FIRST AUTHOR <EMAIL@ADDRESS>, YEAR.
+#
+#, fuzzy
+msgid ""
+msgstr ""
+"Project-Id-Version: Librelio Reader\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-05 18:31+0430\n"
+"PO-Revision-Date: YEAR-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=CHARSET\n"
+"Content-Transfer-Encoding: utf8\n"
+
+#: reader_assets/js/magazine.js:28 reader_assets/js/magazine.js:130
+#: reader_assets/js/pdfviewer-main.js:90
+#, javascript-format
+msgid "Couldn't load `%s`: %s"
+msgstr ""
+
+#: reader_assets/js/main.js:182
+msgid "Unknown response!"
+msgstr ""
+
+#: reader_assets/js/main.js:189
+#, javascript-format
+msgid "Request has failed: %s"
+msgstr ""
+
+#: reader_assets/js/pdfviewer-video-player.js:92
+#, javascript-format
+msgid ""
+"To view this video please enable JavaScript, and consider upgrading to a web "
+"browser that %ssupports HTML5 video%s"
+msgstr ""
+
+#. Title of magazine page
+#: template/reader/index.hbs
+#, text
+msgid "Magazines"
+msgstr ""
+
+#. Title of pdf reader page
+#: template/reader/pdfreader.hbs
+#, text
+msgid "PDF Reader"
+msgstr ""
+
+#. Login Button
+#: templates/reader/index.hbs:17
+#, text
+msgid "Login"
+msgstr ""
+
+#. Logout Button
+#: templates/reader/index.hbs:19
+#, text
+msgid "Logout"
+msgstr ""
+
+#. Magazine's read button
+#: templates/reader/index.hbs:29
+#, text
+msgid "magazine_read_btn"
+msgstr "Read"
+
+#. Magazine's sample button
+#: templates/reader/index.hbs:30
+#, text
+msgid "magazine_sample_btn"
+msgstr "Sample"
+
+#. PDF Viewer initialization failed!
+#: templates/reader/pdfreader.hbs:34
+#, text
+msgid ""
+"Could not initiate PDF Viewer. "
+"You should update your browser to see this page."
+msgstr ""
+
+#. Loading text
+#: templates/reader/pdfreader.hbs:50 reader_assets/js/pdfviewer-slideshow.js:266
+#, text
+msgid "Loading..."
+msgstr ""
+
+#: templates/partials/purchase_dialog.hbs:8
+#, text
+msgid "Enter your code"
+msgstr ""
+
+#: templates/partials/purchase_dialog.hbs:9
+#, text
+msgid "Enter your user ID and password"
+msgstr ""
+
+#. Code label
+#: templates/partials/purchase_dialog.hbs:16
+#, text
+msgid "Code"
+msgstr ""
+
+#. Code input text placeholder
+#: templates/partials/purchase_dialog.hbs:19
+#, text
+msgid "code_placeholder"
+msgstr "Code"
+
+
+#. Username label
+#: templates/partials/puchase_dialog.hbs:26
+#, text
+msgid "Username"
+msgstr ""
+
+#. Username input text placeholder
+#: templates/partials/purchase_dialog.hbs:29
+#, text
+msgid "username_placeholder"
+msgstr "Username"
+
+#. Password label
+#: templates/partials/purchase_dialog.hbs:34
+#, text
+msgid "Password"
+msgstr ""
+
+#. Password input text placeholder
+#: templates/partials/purchase_dialog.hbs:37
+#, text
+msgid "password_placeholder"
+msgstr "Password"
+
+#. DO NOT REMOVE `%s`
+#: templates/partials/purchase_dialog.hbs:42
+#, text
+msgid "Login request failed: %s"
+msgstr ""
+
+#: templates/partials/purchase_dialog.hbs:46
+#, text
+msgid "Logged in successfully!"
+msgstr ""
+
+#. Submit button
+#: templates/partials/purchase_dialog.hbs:52
+#, text
+msgid "Submit"
+msgstr ""
+
+#. Close button
+#: templates/partials/purchase_dialog.hbs:55
+#, text
+msgid "Close"
+msgstr ""
+
+#. Cancel button
+#: templates/partials/purchase_dialog.hbs:56
+#, text
+msgid "Cancel"
+msgstr ""

@@ -4,9 +4,10 @@ $(function(){
   app_data,
   MAG_TYPE_FREE = 'Free',
   MAG_TYPE_PAID = 'Paid',
-  refresh_timeout;
+  refresh_timeout,
+  url_str = 'application_.json';
   magazines_init(magazines_list);
-  $.ajax('application_.json', {
+  $.ajax(url_str, {
     dataType: 'json'
   }).done(function(data)
      {
@@ -24,7 +25,8 @@ $(function(){
      })
   .fail(function(jqXHR, textStatus, err)
      {
-       notifyError("Couldn't load application_.json: " + textStatus);
+       notifyError(sprintf(_("Couldn't load `%s`: %s"), url_str,
+                           textStatus));
      })
   function magazines_loaded_handle(err)
   {
@@ -95,25 +97,21 @@ $(function(){
   }
   function magazines_create_item(item, data, list)
   {
-    var defined_objects = {
-      magazines: {
-        read_btn: 'Read',
-        sample_btn: 'Sample'
-      }
-    };
-    var li = list.dhtml('list_new_item', null, [ item, defined_objects ]);
+    var li = list.dhtml('list_new_item', null, item);
     li.addClass('mag-type-' + (item.type == MAG_TYPE_PAID ? 'paid' : 'free'));
     return li;
   }
   function magazines_load(data, list, cb)
   {
+    var filename = 'Magazines.plist';
     $.ajax(magazines_url(data), {
       dataType: 'xml'
     }).success(function(xml)
          {
            var items = $.plist(xml);
            if(!items)
-             return cb && cb(new Error("Counldn't parse Magazines.plist"));
+             return cb && cb(new Error(_(sprintf("Counldn't parse `%s`"), 
+                                         filename)));
            list.html('');
            for(var i = 0, l = items.length; i < l; ++i)
            {
@@ -129,7 +127,8 @@ $(function(){
          })
       .fail(function(xhr, textStatus, err)
          {
-           cb && cb(new Error("Couldn't load Magazines.plist: " + textStatus));
+           cb && cb(new Error(sprintf(_("Couldn't load `%s`: %s"), filename,
+                                      textStatus)));
          });
   }
   function magazine_file_url(data, file)

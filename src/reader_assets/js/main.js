@@ -179,14 +179,14 @@ function purchase_dialog_submit(opts, cb)
       else
       {
         cb && cb(false);
-        var err = "Unknown response!";
+        var err = _("Unknown response!");
         show_login_result(err);
       }
     },
     error: function(xhr, err_text)
     {
       cb && cb(false);
-      var err = "Failed to request for page: " + err_text;
+      var err = sprintf(_("Request has failed: %s"), err_text);
       show_login_result(err);
     }
   });

@@ -53,7 +53,7 @@ $(function(){
                           users_tableData.fnUpdate(npass, user._tr, 1, 
                                                    true, false);
                           
-                          alert('User info updated!')
+                          alert(_('User info has been updated!'))
                       });
              }
              else
@@ -76,7 +76,7 @@ $(function(){
                             handleAWSS3Error(err)
                             return;
                         }
-                        alert('User has been created successfully!')
+                        alert(_('User has been created successfully!'))
                         location.reload();
                     })
              }
@@ -143,7 +143,7 @@ $(function(){
                           var b = (item.Status = !item.Status ? 1 : 0);
                           $this.toggleClass('btn-success', b)
                               .toggleClass('btn-danger', !b)
-                              .html(b ? 'Active' : 'Inactive');
+                              .html(b ? _('Active') : _('Inactive'));
                       });
                    return false;
                }
@@ -177,7 +177,7 @@ $(function(){
                                (val == 1 ? 'btn-success' : 'btn-danger') +
                                ' btn-xs text-center"'+
                                ' href="#">'+ 
-                               (val == 1 ? 'Active' : 'Inactive') + '</a>';
+                               (val == 1 ? _('Active') : _('Inactive')) + '</a>';
                    default:
                        return '<span' + classStr(true) + '>' + 
                          $('<td/>').text(val || '').html() +
@@ -189,7 +189,7 @@ $(function(){
                tableData.fnClearTable();
                var columns = [ 'User Name', 'Password', 'Status' ],
                columns_class = $.map(columns, encodeStringToClassName);
-               
+
                for(var i = 0, l = items.length; i < l; ++i)
                {
                    var row = items[i], item,

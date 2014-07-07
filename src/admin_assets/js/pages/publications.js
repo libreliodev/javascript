@@ -110,7 +110,7 @@ $(function() {
 					         message : plupload.translate('HTTP Error.'),
 					         file : file,
 					         response: err+'',
-					         status: xhr ? xhr.status : 'unknown',
+					         status: xhr ? xhr.status : _('Unknown'),
 					         responseHeaders: 
                              xhr ? xhr.getAllResponseHeaders() : {}
 				         });
@@ -309,7 +309,7 @@ $(function() {
                  return false;
              if(illegalPubs.indexOf(title_val) >= 0)                
              {
-                 notifyUserError('Invalid publication name!');
+                 notifyUserError(_('Invalid publication name!'));
                  return false;
              }
              $this.ladda({}).ladda('start').data('isLoading', true);
@@ -335,7 +335,7 @@ $(function() {
                     else
                     {
                         $title_inp.prop('disabled', false);
-                        notifyUserError('Folder exists!');
+                        notifyUserError(_('Folder exists!'));
                     }
                 });
              return false;
@@ -458,8 +458,8 @@ $(function() {
                            data-trigger="fileinput" \
                            style="width: 200px; height: 150px;"></div>' : '') +
 				      '<div>\
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input '+(isImg ? 'data-type="Image" ' : '')+'type="file" name="'+ key + '"></span>\
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>\
+				        <span class="btn btn-default btn-file"><span class="fileinput-new">'+_('Select file')+'</span><span class="fileinput-exists fileinput-change">'+_('Change')+'</span><input '+(isImg ? 'data-type="Image" ' : '')+'type="file" name="'+ key + '"></span>\
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">'+_('Remove')+'</a>\
 				      </div>\
 			        </div>\
                   </div>\
@@ -523,7 +523,7 @@ $(function() {
                             Title: "",
                             Subtitle: "",
                             status: "inactive",
-                            statusBtn: "<a data-filename='" + isolateFolderName(appsList[i].Prefix) + "' class='btn  btn-danger btn-xs text-center btnActive' href='#'>Inactive</a>",
+                            statusBtn: "<a data-filename='" + isolateFolderName(appsList[i].Prefix) + "' class='btn  btn-danger btn-xs text-center btnActive' href='#'>"+_("Inactive")+"</a>",
                             id: 0
                         }
                         for(var j = 0; j < activeListLength; ++j) {
@@ -551,7 +551,7 @@ $(function() {
                                 temp[count].Title = activeList[j].Title;
                                 temp[count].Subtitle = activeList[j].Subtitle;
                                 temp[count].status = "active";
-                                temp[count].statusBtn = "<a data-filename='" + isolateFolderName(appsList[i].Prefix) + "' data-id='" + j + "' class='btn  btn-success btn-xs text-center btnInactive' href='#'>Active</a>";
+                                temp[count].statusBtn = "<a data-filename='" + isolateFolderName(appsList[i].Prefix) + "' data-id='" + j + "' class='btn  btn-success btn-xs text-center btnInactive' href='#'>"+_("Active")+"</a>";
                                 temp[count].id = j;
                                 added = true;
                                 break;
@@ -679,13 +679,13 @@ function activeInactiveEvents(publicationsTable) {
 
 function activePublication(obj, publicationsTable) {
     var some_html = '<form class="form-horizontal"> <div class="form-group"> ' +
-        '<label class="control-label col-lg-4">Title</label> ' +
+        '<label class="control-label col-lg-4">'+_('Title')+'</label> ' +
         '<div class="col-lg-8"> ' +
         '<input type="text" name="pubTitleInput" /> ' +
         '</div> ' +
         '</div>';
     some_html += '<div class="form-group"> ' +
-        '<label class="control-label col-lg-4">Subtitle</label> ' +
+        '<label class="control-label col-lg-4">'+_('Subtitle')+'</label> ' +
         '<div class="col-lg-8"> ' +
         '<input type="text" name="pubSubtitleInput" /> ' +
         '</div> ' +

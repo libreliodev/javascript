@@ -9,8 +9,8 @@
            // load requested svg if exists
            var filename = doc_query.filename;
            if(!filename)
-               alert('No file is select to edit!');
-           $.open_dialog('Please wait..', {})
+               alert(_('No file is select to edit!'));
+           $.open_dialog(_('Please wait..'), {})
            loadSVGFileFromApp(filename, function(err)
               {
                   if(err && err.code != 'NoSuchKey')
@@ -164,9 +164,9 @@
             {
                 return {
                     tools: {
-                        open_doc: 'Open',
-                        save_doc: 'Save',
-                        import_doc: 'Import'
+                        open_doc: _('Open'),
+                        save_doc: _('Save'),
+                        import_doc: _('Import')
                     }
                 };
             }

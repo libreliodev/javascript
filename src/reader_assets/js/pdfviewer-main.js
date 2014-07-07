@@ -20,7 +20,6 @@ $(function(){
   if(pdf_url)
   {
     PDFJS.disableRange = false;
-    //PDFJS.requestMethod = 'POST';
     PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler)
       .then(function(pdf)
       {
@@ -60,13 +59,13 @@ $(function(){
      });
   pdf_viewer.bind('openlink', function(ev, obj)
      {
-       var data = obj.data,
-       path_str = url('path', data.real_url);
+       var data = obj.data;
        
        // buy:// protocol
        if(data.protocol == 'buy')
        {
-         $.ajax('application_.json', {
+         var app_url = 'application_.json'
+         $.ajax(app_url, {
            dataType: 'json',
            success: function(app_data)
            {
@@ -87,7 +86,8 @@ $(function(){
            },
            error: function(xhr, err_text)
            {
-             notifyError("Failed to request for page: " + err_text);
+             notifyError(sprintf(_("Couldn't load `%s`: %s"), app_url,
+                                 textStatus));
            }
          });
          obj.return_value = false;

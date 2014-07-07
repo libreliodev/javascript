@@ -18,8 +18,13 @@
       <script src="{{assets}}/lib/formLoading/ladda.jquery.js"></script>
       <script src="https://sdk.amazonaws.com/js/aws-sdk-2.0.0-rc13.min.js"></script>
       <script>
-        var config = {{ jsonStringify config }};
+        var config = {{ jsonStringify config }},
+        assets = '{{ assets }}';
       </script>
+      <script src="{{assets}}/js/dhtml.js"></script>
+      <script src="{{assets}}/lib/localeplanet/icu_{{config.locale}}.js"></script>
+      <script src="{{assets}}/lib/localeplanet/translate.js"></script>
+      <script src="{{assets}}/js/localize.js"></script>
 	  <script src="{{assets}}/js/login.js"></script>
     <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){

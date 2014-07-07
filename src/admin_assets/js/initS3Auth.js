@@ -1,7 +1,7 @@
 var s3AuthObj,
 awsS3;
 if(!storage)
-    alert("This app does not support your browser");
+    alert(_("This app does not support your browser"));
 else
 {
     storage.type = 'local';

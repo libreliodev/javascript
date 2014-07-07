@@ -42,17 +42,17 @@ scripts:
         <div class="box">
             <header>
                 <div class="icons"><i class="fa fa-table"></i></div>
-                <h5>Publications </h5>
+                <h5 localize>Publications</h5>
             </header>
             <div id="collapse4" class="body">
-            	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn btn-primary new-pub-btn" href="#pubModal">New publication</a></p>
+            	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn btn-primary new-pub-btn" href="#pubModal" localize>New publication</a></p>
                 <table id="dataTable" class="table table-bordered table-condensed table-hover table-striped publicationDataTable">
 					<thead>
 					<tr>
-						<th>Folder name</th>
-						<th>Title</th>
-						<th>Subtitle</th>
-						<th class="text-center" style="width: 90px;">Status</th>
+						<th localize>Folder name</th>
+						<th localize>Title</th>
+						<th localize>Subtitle</th>
+						<th class="text-center" style="width: 90px;" localize>Status</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -69,21 +69,21 @@ scripts:
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title">
-          <span class="pub-dlg-new">New publication</span>
-          <span class="pub-dlg-update">Update publication</span>
+          <span class="pub-dlg-new" localize>New publication</span>
+          <span class="pub-dlg-update" localize>Update publication</span>
         </h4>
       </div>
       <div class="modal-body">
         <form><!-- Pub Title -->
           <div class="form-group">
-            <label class="control-label col-lg-2">FolderName</label>
+            <label class="control-label col-lg-2" localize>Folder name</label>
             <div class="col-lg-8">
-              <input type="text" name="FolderName" placeholder="Folder name" class="form-control">
+              <input type="text" name="FolderName" placeholder="Folder name" class="form-control" localize="_.attr('placeholder','foldername_placeholder')">
             </div>
 		  </div>
           <div class="form-group">
             <button class="btn btn-primary set-title-btn">
-              <span>Set</span>
+              <span localize>Set</span>
             </button>
           </div>
         </form>
@@ -94,13 +94,13 @@ scripts:
               <div class="col-sm-offset-1 radio">
                 <label class="control-label col-lg-1">
                   <input type="radio" name="Type" value="Free">
-                  Free
+                  <span localize>Free</span>
                 </label>
               </div>
               <div class="col-sm-offset-1 radio">
                 <label class="control-label col-lg-1">
                   <input type="radio" name="Type" value="Paid">
-                  Paid
+                  <span localize>Paid</span>
                 </label>
               </div>
             </div>
@@ -108,15 +108,15 @@ scripts:
             <ul class="upload-list list-group">
               <li class="list-group-item">
                 <div class="form-group">
-                  <label class="control-label col-lg-2">Free version</label>
+                  <label class="control-label col-lg-2" localize>Free version</label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input class="freefileupload" type="file" name="*FolderName**fileext*"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select file</span><span class="fileinput-exists fileinput-change" localize>Change</span><input class="freefileupload" type="file" name="*FolderName**fileext*"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
                         <button type="button" class="btn btn-default svgedit-btn fileinput-is-svg"
-                                data-filename="*FolderName*.svg">Edit SVG</button>
+                                data-filename="*FolderName*.svg" localize>Edit SVG</button>
 				      </div>
 			        </div>
                   </div>
@@ -124,13 +124,13 @@ scripts:
               </li>
               <li class="list-group-item paid-elem">
                 <div class="form-group">
-                  <label class="control-label col-lg-2">Paid version</label>
+                  <label class="control-label col-lg-2" localize>Paid version</label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select file</span><span class="fileinput-exists fileinput-change">Change</span><input class="paidfileupload" type="file" name="*FolderName*_*fileext*"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select file</span><span class="fileinput-exists fileinput-change" localize>Change</span><input class="paidfileupload" type="file" name="*FolderName*_*fileext*"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
                         <button type="button" class="btn btn-default svgedit-btn fileinput-is-svg"
                                 data-filename="*FolderName*_.svg">Edit SVG</button>
 				      </div>
@@ -140,7 +140,7 @@ scripts:
               </li>
               <li class="list-group-item">
                 <div class="form-group">
-                  <label class="control-label col-lg-2">Medium res cover</label>
+                  <label class="control-label col-lg-2" localize>Medium res cover</label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
@@ -148,8 +148,8 @@ scripts:
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*_newsstand.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*_newsstand.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -157,7 +157,7 @@ scripts:
               </li>
               <li class="list-group-item">
                 <div class="form-group">
-                  <label class="control-label col-lg-2">Low res cover</label>
+                  <label class="control-label col-lg-2" localize>Low res cover</label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
@@ -165,8 +165,8 @@ scripts:
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -174,7 +174,7 @@ scripts:
               </li>
             </ul>
             <div id="asset-uploader" data-dir="">
-              <p>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
+              <p localize>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
             </div>
           </form>
         </div><!-- pub-body-form -->

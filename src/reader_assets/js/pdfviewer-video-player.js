@@ -88,7 +88,9 @@ $(function(){
     $vid = $('<video class="video-js vjs-default-skin" controls ' +
              'poster="">' +
              '<source/>' +
-             '<p class="vjs-no-js">To view this video please enable JavaScript, and consider upgrading to a web browser that <a href="http://videojs.com/html5-video-support/" target="_blank">supports HTML5 video</a></p>' +
+             '<p class="vjs-no-js">' + 
+             sprintf(_("To view this video please enable JavaScript, and consider upgrading to a web browser that %ssupports HTML5 video%s"),
+                     '<a href="http://videojs.com/html5-video-support/" target="_blank">', '</a>') + '</p>' +
              '</video>'),
     $source = $vid.find('source'),
     rect = data.rect,

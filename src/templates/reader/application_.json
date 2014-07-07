@@ -18,5 +18,5 @@
   "info_url": "http://www.example.com",
   "enable_app_rating": true,
   "gcm_project_number": "",
-  "CodeService": "S3"
+  "UserService": true
 }

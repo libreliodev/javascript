@@ -6,7 +6,6 @@ javascripts:
 - lib/pdf.js/compatibility.js
 - lib/pdf.js/pdf.js
 - lib/async.js
-- js/dhtml.js
 - lib/RequestAnimationFrame.js
 - lib/tween.min.js
 - lib/video-js/video.dev.js
@@ -30,7 +29,7 @@ theme: dark-bkg
      data-resize="mod_style('width',screen_width(),'height',screen_height())">
   <div class="links-div">
   </div>
-  <canvas class="pdfviewer-canvas">
+  <canvas class="pdfviewer-canvas" localize>
     Could not initiate PDF Viewer. You should update your browser to see this page.
   </canvas>
   <div class="page-selector">
@@ -47,5 +46,5 @@ theme: dark-bkg
 <div class="progress pdfviewer-progress">
   <div class="progress-bar" role="progressbar" style="width:0%;"></div>
 </div>
-<div class="pdfviewer-loadingscreen"><span>Loading...</span></div>
+<div class="pdfviewer-loadingscreen"><span localize>Loading...</span></div>
 {{> purchase_dialog }}

@@ -44,7 +44,7 @@ $(function(){
                if(prev_val != val)
                {
                    $this.prop('disabled', true);
-                   $this.val('Saving...')
+                   $this.val(_('Saving...'))
                        .data('value', val);
                    if(isSaving)
                    {

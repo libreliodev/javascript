@@ -1,0 +1,149 @@
+# English translations for Librelio package.
+# Copyright (C) 2014 THE Librelio'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Librelio package.
+# Hossein Amin <hossein@hosseins-macbook-air.local>, 2014.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Librelio Reader\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-05 18:31+0430\n"
+"PO-Revision-Date: 2014-07-07 16:40+0430\n"
+"Last-Translator: <info@serverfire.net>\n"
+"Language-Team: English\n"
+"Language: en_US\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: reader_assets/js/magazine.js:28 reader_assets/js/magazine.js:130
+#: reader_assets/js/pdfviewer-main.js:90
+#, javascript-format
+msgid "Couldn't load `%s`: %s"
+msgstr "Couldn't load `%s`: %s"
+
+#: reader_assets/js/main.js:182
+msgid "Unknown response!"
+msgstr "Unknown response!"
+
+#: reader_assets/js/main.js:189
+#, javascript-format
+msgid "Request has failed: %s"
+msgstr "Request has failed: %s"
+
+#: reader_assets/js/pdfviewer-video-player.js:92
+#, javascript-format
+msgid ""
+"To view this video please enable JavaScript, and consider upgrading to a web "
+"browser that %ssupports HTML5 video%s"
+msgstr ""
+"To view this video please enable JavaScript, and consider upgrading to a web "
+"browser that %ssupports HTML5 video%s"
+
+#. Title of magazine page
+#: template/reader/index.hbs
+msgid "Magazines"
+msgstr "Magazines"
+
+#. Title of pdf reader page
+#: template/reader/pdfreader.hbs
+msgid "PDF Reader"
+msgstr "PDF Reader"
+
+#. Login Button
+#: templates/reader/index.hbs:17
+msgid "Login"
+msgstr "Login"
+
+#. Logout Button
+#: templates/reader/index.hbs:19
+msgid "Logout"
+msgstr "Logout"
+
+#. Magazine's read button
+#: templates/reader/index.hbs:29
+msgid "magazine_read_btn"
+msgstr "Read"
+
+#. Magazine's sample button
+#: templates/reader/index.hbs:30
+msgid "magazine_sample_btn"
+msgstr "Sample"
+
+#. PDF Viewer initialization failed!
+#: templates/reader/pdfreader.hbs:34
+msgid ""
+"Could not initiate PDF Viewer. You should update your browser to see this "
+"page."
+msgstr ""
+"Could not initiate PDF Viewer. You should update your browser to see this "
+"page."
+
+#. Loading text
+#: templates/reader/pdfreader.hbs:50
+#: reader_assets/js/pdfviewer-slideshow.js:266
+msgid "Loading..."
+msgstr "Loading..."
+
+#: templates/partials/purchase_dialog.hbs:8
+msgid "Enter your code"
+msgstr "Enter your code"
+
+#: templates/partials/purchase_dialog.hbs:9
+msgid "Enter your user ID and password"
+msgstr "Enter your user ID and password"
+
+#. Code label
+#: templates/partials/purchase_dialog.hbs:16
+msgid "Code"
+msgstr "Code"
+
+#. Code input text placeholder
+#: templates/partials/purchase_dialog.hbs:19
+msgid "code_placeholder"
+msgstr "Code"
+
+#. Username label
+#: templates/partials/puchase_dialog.hbs:26
+msgid "Username"
+msgstr "Username"
+
+#. Username input text placeholder
+#: templates/partials/purchase_dialog.hbs:29
+msgid "username_placeholder"
+msgstr "Username"
+
+#. Password label
+#: templates/partials/purchase_dialog.hbs:34
+msgid "Password"
+msgstr "Password"
+
+#. Password input text placeholder
+#: templates/partials/purchase_dialog.hbs:37
+msgid "password_placeholder"
+msgstr "Password"
+
+#. DO NOT REMOVE `%s`
+#: templates/partials/purchase_dialog.hbs:42
+msgid "Login request failed: %s"
+msgstr "Login request failed: %s"
+
+#: templates/partials/purchase_dialog.hbs:46
+msgid "Logged in successfully!"
+msgstr "Logged in successfully!"
+
+#. Submit button
+#: templates/partials/purchase_dialog.hbs:52
+msgid "Submit"
+msgstr "Submit"
+
+#. Close button
+#: templates/partials/purchase_dialog.hbs:55
+msgid "Close"
+msgstr "Close"
+
+#. Cancel button
+#: templates/partials/purchase_dialog.hbs:56
+msgid "Cancel"
+msgstr "Cancel"

@@ -474,17 +474,7 @@
         $this.data(pvobj_key, $.extend({ _initialized: true }, default_opts));
         if(opts)
           methods.setOptions.call($this, opts);
-        var o = $this.data(pvobj_key),
-        tmp;
-        o._pdfviewer_ctx = {
-          next: 'Next',
-          previous: 'Previous', 
-          option: function(p)
-          {
-            var o = $this.data(pvobj_key);
-            return o[p];
-          }
-        };
+        var o = $this.data(pvobj_key);
         $this.bind('curPages-changed', function()
           {
             selector_update_active_pages.call($this);

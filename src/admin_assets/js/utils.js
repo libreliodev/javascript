@@ -240,8 +240,8 @@ root.s3UploadInit = function($upload, opts)
                   .css('marginTop', 16),
               rmHandler;
               isUploading = true;
-              $new_btn.text('Uploading...');
-              $change_btn.text('Uploading...');
+              $new_btn.text(_('Uploading...'));
+              $change_btn.text(_('Uploading...'));
               setPBar(0);
               
               var request = opts.s3.putObject({

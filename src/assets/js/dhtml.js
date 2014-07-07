@@ -21,7 +21,7 @@
       if(!$.isArray(contexts))
         contexts = [ contexts ];
       contexts.push(global_ctx);
-      m_eval(s, contexts, this);
+      return m_eval(s, contexts, this);
     }
   };
 

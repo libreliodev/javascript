@@ -119,7 +119,7 @@ $(function(){
                          handleAWSS3Error(err);
                          return;
                      }
-                     alert('Ad has saved successfully!');
+                     alert(_('Ad has saved successfully!'));
                      
                      if(!$adDlg.data('adObj'))
                      {

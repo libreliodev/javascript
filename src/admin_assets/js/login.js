@@ -14,7 +14,7 @@ $(function(){
             var rds_idx = rootDirectory.indexOf("/");
             if(!rootDirectory || rds_idx === 0)
             {
-                alert('Root directory should not be empty');
+                alert(_('Root directory should not be empty'));
                 $submitBtn.ladda( 'stop' );
                 return false;
             }
@@ -49,18 +49,18 @@ $(function(){
                    if(err)
                    {
                        $submitBtn.ladda( 'stop' );
-                       alert("Couldn't connect to aws s3: " + err);
+                       alert(_("Couldn't connect to aws s3") + ": " + err);
                    }
                    else if(!data || !data.Contents || 
                            data.Contents.length <= 0)
                    {
                        $submitBtn.ladda( 'stop' );
-                       alert("Invalid directory!");
+                       alert(_("Invalid directory!"));
                    }
                    else
                    {
                        if(!storage)
-                           alert("This app does not support your browser");
+                           alert(_("This app does not support your browser"));
                        else
                        {
                            var auth_obj = {
@@ -255,7 +255,7 @@ function loggedInGooglePlus(response)
                   {
                       if(!resp.id)
                       {
-                          alert("Couldn't get users info!")
+                          alert(_("Couldn't get users info!"))
                           return;
                       }
                       idFedLogin({

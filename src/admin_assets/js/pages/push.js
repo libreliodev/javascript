@@ -10,7 +10,7 @@ $(function(){
 
     $("#notification-form input[type=submit]").click(function()
         {
-            return confirm("Are you sure you want to send this message?");
+            return confirm(_("Are you sure you want to send this message?"));
         });
     $("#notification-form").bind('submit', function()
        {
@@ -29,12 +29,12 @@ $(function(){
 
            if(!app_name)
            {
-               alert("Please select application before sending notification");
+               alert(_("Please select application before sending notification"));
            }
            else if(msg == '' || msg.length > 300)
            {
-               alert("Message box is empty or is to long, "+
-                     "it should be less or equal than 300");
+               alert(_("Message box is empty or is to long, "+
+                       "it should be less or equal than 300"));
            }
            else
            {
@@ -62,7 +62,7 @@ $(function(){
                       if(err)
                           alert(err);
                       else
-                          alert("Message sent!");
+                          alert(_("Message sent!"));
                       $('input[type=submit]', form).prop('disabled', false);
 
                       // Stop loading animation

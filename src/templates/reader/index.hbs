@@ -4,19 +4,18 @@ javascripts:
 - lib/querystring.min.js
 - lib/path.min.js
 - lib/jquery.plist.js
-- js/dhtml.js
 - js/magazine.js
 theme: dark-bkg
 ---
 <div class="reader-container">
   <div class="reader-background"></div>
   <div class="headline">
-    <h4 class="text-center">{{title}}</h4>
+    <h4 class="text-center" localize>{{title}}</h4>
     <div class="upper-right-buttons">
       <button id="login-btn" type="button"
-              class="btn btn-success">Login</button>
+              class="btn btn-success" localize>Login</button>
       <button id="logout-btn" type="button"
-              class="btn btn-default">Logout</button>
+              class="btn btn-default" localize>Logout</button>
     </div>
   </div>
   <div class="reader-content container">
@@ -26,8 +25,10 @@ theme: dark-bkg
           <div class="mag-title" data-key="Title"></div>
           <div class="mag-subtitle" data-key="Subtitle"></div>
           <img class="mag-thumbnail" data-attr-keys="src=ThumbnailUrl" />
-          <a href="#" class="label label-default mag-read-btn" data-key="magazines.read_btn"></a>
-          <a href="#" class="label label-default mag-sample-btn mag-paid-type" data-key="magazines.sample_btn"></a>
+          <a href="#" class="label label-default mag-read-btn"
+             localize="'magazine_read_btn'">Read</a>
+          <a href="#" class="label label-default mag-sample-btn mag-paid-type"
+             localize="'magazine_sample_btn'">Sample</a>
         </div>
       </li>
     </ul>

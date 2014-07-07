@@ -541,13 +541,90 @@ module.exports = function (grunt) {
     // JS distribution task.
     grunt.registerTask('dist-js', ['concat', 'jshint', 'uglify']);
 
+
+    grunt.registerTask('compile-lang', 'Compiles all languages into json format',
+                       function()
+      {
+        var done = this.async(),
+        path = require('path'),
+        dest_to = {
+          reader: reader_assets_dist_dir + '/lang',
+          admin: admin_assets_dist_dir + '/lang'
+        },
+        qlen = 0, qdone = 0;
+        grunt.file.recurse(src_dir + '/language/', 
+                           function(abspath, rootdir, subdir, filename)
+          {
+            if(path.extname(filename) == '.po')
+            {
+              qlen++;
+              var basename = path.basename(filename, '.po'),
+              dest = dest_to[basename];
+              if(!dest)
+                return;
+              var copy_paths, dest_path;
+              if(typeof dest != 'string')
+              {
+                copy_paths = dest.slice(1);
+                dest_path = dest[0];
+              }
+              else
+               dest_path = dest;
+              grunt.file.mkdir(dest_path);
+              console.log('Converting ' + abspath);
+              po2json(rootdir, subdir, filename, dest_path, function(err)
+                {
+                  if(err)
+                  {
+                    console.log("Couldn't convert po file " + abspath);
+                    throw err;
+                    process.exit(1);
+                    return;
+                  }
+                  if(copy_paths)
+                    for(var c = 0, l = copy_paths.length; c < l; ++c)
+                    {
+                      var s = path.join(copy_paths[i], subdir);
+                      grunt.file.mkdir(path.dirname(s));
+                      grunt.file.copy(dest_path, s);
+                    }
+                  if(++qdone == qlen)
+                    done();
+                });
+            }
+          });
+        function po2json(rootdir, subdir, filename, dest, cb)
+        {
+          var spawn = require('child_process').spawn,
+          fs = require('fs'),
+          dest_fn = path.basename(filename, '.po') + '.json',
+          src = path.join(rootdir, subdir, filename),
+          cur_dest_path = path.join(rootdir, subdir, dest_fn),
+          po2json_p = spawn('./build/lptools/po2json.py', [ src ]),
+          stdout_data = '';
+          
+          po2json_p.stdout.on('data', function(data)
+            {
+              stdout_data += data;
+            });
+          po2json_p.on('close', function(code)
+            {
+              if(code == 0)
+                fs.rename(cur_dest_path, path.join(dest, subdir + '.json'), cb);
+              else
+                cb(new Error(stdout_data));
+            });
+          po2json_p.on('error', cb);
+        }
+      });
     
     // Full distribution task.
     grunt.registerTask('dist', ['clean', 'copy', 'less', 'dist-js']);
 
+
     // Default task.
     //grunt.registerTask('default', ['test', 'dist']);
 
-    grunt.registerTask('default', ['dist', 'assemble']);
+    grunt.registerTask('default', ['dist', 'assemble', 'compile-lang']);
 
 };

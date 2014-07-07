@@ -2,7 +2,7 @@
 <html lang="en">
     <head>
         <meta charset="UTF-8">
-        <title>{{ title }}</title>
+        <title localize>{{ title }}</title>
 	<!--Mobile first-->
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<!--IE Compatibility modes-->
@@ -45,8 +45,13 @@
         <script src="{{assets}}/lib/bootbox.min.js"></script>
 
         <script>
-          var config = {{ jsonStringify config }};
+          var config = {{ jsonStringify config }},
+          assets = '{{ assets }}';
         </script>
+        <script src="{{assets}}/js/dhtml.js"></script>
+        <script src="{{assets}}/lib/localeplanet/icu_{{config.locale}}.js"></script>
+        <script src="{{assets}}/lib/localeplanet/translate.js"></script>
+        <script src="{{assets}}/js/localize.js"></script>
         <script src="{{assets}}/js/main.min.js"></script>
 
     </head>
@@ -62,7 +67,7 @@
                     </div>
                     <!-- ."main-bar -->
                     <div class="main-bar">
-                        <h3><i class="{{ icon }}"></i>&nbsp; {{ title }}</h3>
+                        <h3><i class="{{ icon }}"></i>&nbsp; <span localize>{{ title }}</span></h3>
                     </div>
                     <!-- /.main-bar -->
                 </header>

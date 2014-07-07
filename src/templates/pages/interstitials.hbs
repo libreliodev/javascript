@@ -29,13 +29,13 @@ scripts: //$(function() { formWizard(); });
   <div class="col-lg-12">
     <div class="box">
       <div id="collapse4" class="body">
-        <p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn btn-primary" href="#adModal">New Ad</a></p>
+        <p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn btn-primary" href="#adModal" localize>New Ad</a></p>
         <table id="adsDataTable" class="table table-bordered table-condensed table-hover table-striped">
 		  <thead>
 			<tr>
-			  <th>Image</th>
-			  <th>Name</th>
-			  <th class="text-center" style="width: 80px;">Status</th>
+			  <th localize>Image</th>
+			  <th localize>Name</th>
+			  <th class="text-center" style="width: 80px;" localize>Status</th>
 			</tr>
 		  </thead>
 		  <tbody>
@@ -53,21 +53,21 @@ scripts: //$(function() { formWizard(); });
       <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
         <h4 class="modal-title">
-          <span class="ad-dlg-new">Create new ad</span>
-          <span class="ad-dlg-update">Update ad</span>
+          <span class="ad-dlg-new" localize>Create new ad</span>
+          <span class="ad-dlg-update" localize>Update ad</span>
         </h4>
       </div>
       <div class="modal-body">
         <form><!-- Ad Title -->
           <div class="form-group">
-            <label class="control-label col-lg-4">Title</label>
+            <label class="control-label col-lg-4" localize>Title</label>
             <div class="col-lg-3">
-              <input type="text" name="Title" placeholder="Title" class="form-control">
+              <input type="text" name="Title" placeholder="Title" class="form-control" localize="_.attr('placeholder','title_placeholder')">
             </div>
 		  </div>
           <div class="form-group">
             <button class="btn btn-primary set-title-btn">
-              <span>Set</span>
+              <span localize>Set</span>
             </button>
           </div>
         </form>
@@ -85,8 +85,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad~iphone.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad~iphone.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -102,8 +102,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad-568h@2x.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad-568h@2x.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -119,8 +119,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad-Portrait~ipad.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad-Portrait~ipad.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -136,8 +136,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad-Landscape~ipad.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad-Landscape~ipad.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -153,8 +153,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad-drawable-port.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad-drawable-port.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -170,8 +170,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad-drawable-normal-port.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad-drawable-normal-port.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -187,8 +187,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad-drawable-large-port.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad-drawable-large-port.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -204,8 +204,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad-drawable-large-land.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad-drawable-large-land.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -221,8 +221,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad-drawable-xlarge-port.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad-drawable-xlarge-port.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -238,8 +238,8 @@ scripts: //$(function() { formWizard(); });
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input accept="image/png" type="file" name="Ad-drawable-xlarge-land.png"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input accept="image/png" type="file" name="Ad-drawable-xlarge-land.png"></span>
+				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
                   </div>
@@ -247,15 +247,15 @@ scripts: //$(function() { formWizard(); });
               </li>
             </ul>
             <div class="form-group">
-              <label class="control-label col-lg-4">Link</label>
+              <label class="control-label col-lg-4" localize>Link</label>
               <div class="col-lg-3">
-                <input type="text" name="Link" placeholder="Link" class="form-control">
+                <input type="text" name="Link" placeholder="Link" class="form-control" localize="_.attr('placeholder','link_placeholder')">
               </div>
 		    </div>
             <div class="form-group">
-              <label class="control-label col-lg-4">Delay</label>
+              <label class="control-label col-lg-4" localize>Delay</label>
               <div class="col-lg-3">
-                <input type="text" name="Delay" placeholder="Delay" class="form-control">
+                <input type="text" name="Delay" placeholder="Delay" class="form-control" localize="_.attr('placeholder','delay_placeholder')">
               </div>
 		    </div>
 		    <div class="form-group">
@@ -264,8 +264,8 @@ scripts: //$(function() { formWizard(); });
               <div class="col-lg-8">
                 <button class="btn btn-primary ladda-button action-btn" data-style="slide-down">
                   <span class="ladda-label">
-                    <span class="ad-dlg-new">Create</span>
-                    <span class="ad-dlg-update">Update</span>
+                    <span class="ad-dlg-new" localize>Create</span>
+                    <span class="ad-dlg-update" localize>Update</span>
                   </span>
                 </button>
               </div>

@@ -60,16 +60,16 @@ scripts:
         <div class="box">
             <header>
                 <div class="icons"><i class="fa fa-table"></i></div>
-                <h5>Users </h5>
+                <h5 localize>Users</h5>
             </header>
             <div id="collapse4" class="body">
-            	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn  btn-primary" href="#userInfoModal">New user</a></p>
+            	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn  btn-primary" href="#userInfoModal" localize>New user</a></p>
                 <table id="usersDataTable" class="table table-bordered table-condensed table-hover table-striped">
 					<thead>
 					<tr>
-						<th>User Name</th>
-						<th>Password</th>
-						<th class="text-center" style="width: 80px;">Status</th>
+						<th localize>User Name</th>
+						<th localize>Password</th>
+						<th class="text-center" style="width: 80px;" localize>Status</th>
 					</tr>
 					</thead>
 					<tbody>
@@ -86,24 +86,24 @@ scripts:
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
             <h4 class="modal-title">
-              <span class="userdlg-new">Create new user</span>
-              <span class="userdlg-update">Update user</span>
+              <span class="userdlg-new" localize>Create new user</span>
+              <span class="userdlg-update" localize>Update user</span>
             </h4>
           </div>
           <div class="modal-body">
               <form class="form-horizontal">
                  <div class="form-group">
-                    <label for="id" class="control-label col-lg-4">User ID</label>
+                    <label for="id" class="control-label col-lg-4" localize>User ID</label>
 
                      <div class="col-lg-3">
-                        <input type="text" name="username" placeholder="ID" class="form-control">
+                        <input type="text" name="username" placeholder="ID" class="form-control" localize="_.attr('placeholder','username_placeholder')">
                     </div>
 		       	</div>
                  <div class="form-group">
-                    <label for="pswd" class="control-label col-lg-4">Password</label>
+                    <label for="pswd" class="control-label col-lg-4" localize>Password</label>
 
                      <div class="col-lg-3">
-                        <input type="text" name="password" placeholder="Password" class="form-control">
+                        <input type="text" name="password" placeholder="Password" class="form-control" localize="_.attr('placeholder','password_placeholder')">
                     </div>
 		       	</div>
 		       	 <div class="form-group">
@@ -112,8 +112,8 @@ scripts:
                     <div class="col-lg-8">
                         <button class="btn btn-primary ladda-button action-btn" data-style="slide-down">
                             <span class="ladda-label">
-                              <span class="userdlg-new">Create</span>
-                              <span class="userdlg-update">Update</span>
+                              <span class="userdlg-new" localize>Create</span>
+                              <span class="userdlg-update" localize>Update</span>
                             </span>
                         </button>
                     </div>

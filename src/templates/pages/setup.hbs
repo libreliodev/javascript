@@ -52,26 +52,26 @@ scripts:
   <div class="col-lg-12">
         <div class="box">
             <header>
-                <h5>General </h5>
+                <h5 localize>General</h5>
             </header>
             <div id="collapse4" class="body">
             <form class="form-horizontal">
                  <div class="form-group">
-                    <label for="longname" class="control-label col-lg-4">Long name</label>
+                    <label for="longname" class="control-label col-lg-4" localize>Long name</label>
 
                      <div class="col-lg-3">
-                        <input type="text" name="LongName" id="longname" placeholder="Long name" class="form-control">
+                        <input type="text" name="LongName" id="longname" placeholder="Long name" class="form-control" localize="_.attr('placeholder','longname_placeholder')">
                     </div>
 		       	</div>
                  <div class="form-group">
-                    <label for="shorname" class="control-label col-lg-4">Short name (<14 chars)</label>
+                    <label for="shorname" class="control-label col-lg-4" localize>Short name (<14 chars)</label>
 
                      <div class="col-lg-3">
-                        <input type="text" name="ShortName" id="shortname" placeholder="Short name" class="form-control">
+                        <input type="text" name="ShortName" id="shortname" placeholder="Short name" class="form-control" localize="_.attr('placeholder','shortname_placeholder')">
                     </div>
 		       	</div>
                 <div class="form-group">
-                    <label for="description" class="control-label col-lg-4">Description  for the stores</label>
+                    <label for="description" class="control-label col-lg-4" localize>Description  for the stores</label>
 
                     <div class="col-lg-8">
                         <textarea name="Description" id="description" class="autosize form-control"></textarea>
@@ -85,25 +85,25 @@ scripts:
   <div class="col-lg-12">
         <div class="box">
             <header>
-                <h5>Graphics </h5>
+                <h5 localize>Graphics</h5>
             </header>
             <div id="collapse4" class="body">
             	<form class="form-horizontal">
                     <div class="form-group">
-                        <label class="control-label col-lg-4">Logo</label>
+                        <label class="control-label col-lg-4" localize>Logo</label>
                         <div class="col-lg-8">
                             <div class="fileinput fileinput-new" data-provides="fileinput">
 				<div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
 				<div>
-				  <span class="btn btn-default btn-file"><span class="fileinput-new">Select image</span><span class="fileinput-exists fileinput-change">Change</span><input type="file" name="logo"></span>
-				  <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">Remove</a>
+				  <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="logo"></span>
+				  <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				</div>
 			      </div>
 
                         </div>
                     </div>
                      <div class="form-group">
-                        <label for="cp1" class="control-label col-lg-4">Background color</label>
+                        <label for="cp1" class="control-label col-lg-4" localize>Background color</label>
 
                         <div class="col-lg-3">
                             <input type="text" class="form-control" value="#8fff00" id="cp1" name="BackgroundColor">
@@ -118,29 +118,29 @@ scripts:
   <div class="col-lg-12">
         <div class="box">
             <header>
-                <h5>Navigation </h5>
+                <h5 localize>Navigation</h5>
             </header>
             <div id="collapse4" class="body">
             <form class="form-horizontal">
                  <div class="form-group">
-                    <label for="website" class="control-label col-lg-4">Web site</label>
+                    <label for="website" class="control-label col-lg-4" localize>Web site</label>
 
                      <div class="col-lg-6">
-                        <input type="text" name="WebSite" id="website" placeholder="URL" class="form-control">
+                        <input type="text" name="WebSite" id="website" placeholder="URL" class="form-control" localize="_.attr('placeholder','website_placeholder')">
                     </div>
 		       	</div>
                  <div class="form-group">
-                    <label for="facebook" class="control-label col-lg-4">Facebook page</label>
+                    <label for="facebook" class="control-label col-lg-4" localize>Facebook page</label>
 
                      <div class="col-lg-6">
-                        <input type="text" name="Facebook" id="facebook" placeholder="URL" class="form-control">
+                        <input type="text" name="Facebook" id="facebook" placeholder="URL" class="form-control"  localize="_.attr('placeholder','facebook_page_placeholder')">
                     </div>
 		       	</div>
                  <div class="form-group">
-                    <label for="rss" class="control-label col-lg-4">RSS feed</label>
+                    <label for="rss" class="control-label col-lg-4" localize>RSS feed</label>
 
                      <div class="col-lg-6">
-                        <input type="text" name="RSS" id="rss" placeholder="URL" class="form-control">
+                        <input type="text" name="RSS" id="rss" placeholder="URL" class="form-control" localize="_.attr('placeholder','rss_placeholder')">
                     </div>
 		       	</div>
              </form>
@@ -151,22 +151,22 @@ scripts:
 	 <div class="col-lg-12">
         <div class="box">
             <header>
-                <h5>Tracking </h5>
+                <h5 localize>Tracking</h5>
             </header>
             <div id="collapse4" class="body">
             <form class="form-horizontal">
                  <div class="form-group">
-                    <label for="ga" class="control-label col-lg-4">Google Analytics Code</label>
+                    <label for="ga" class="control-label col-lg-4" localize>Google Analytics Code</label>
 
                      <div class="col-lg-3">
-                        <input type="text" name="GACode" id="ga" placeholder="GA Code" class="form-control">
+                        <input type="text" name="GACode" id="ga" placeholder="GA Code" class="form-control" localize="_.attr('placeholder','ga_code_placeholder')">
                     </div>
 		       	</div>
                  <div class="form-group">
-                    <label for="la" class="control-label col-lg-4">Librelio Analytics Code</label>
+                    <label for="la" class="control-label col-lg-4" localize>Librelio Analytics Code</label>
 
                      <div class="col-lg-3">
-                        <input type="text" name="LACode" id="la" placeholder="LA Code" class="form-control">
+                        <input type="text" name="LACode" id="la" placeholder="LA Code" class="form-control" localize="_.attr('placeholder','la_code_placeholder')">
                     </div>
 		       	</div>
              </form>
@@ -182,16 +182,16 @@ scripts:
         <div class="modal-content">
           <div class="modal-header">
             <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-            <h4 class="modal-title">Create new app</h4>
+            <h4 class="modal-title" localize>Create new app</h4>
           </div>
           <div class="modal-body">
            <form class="form-horizontal" id="newapp-form">
 
                  <div class="form-group">
-                    <label for="autosize" class="control-label col-lg-4">Name of the app</label>
+                    <label for="autosize" class="control-label col-lg-4" localize>Name of the app</label>
 
                      <div class="col-lg-8">
-                        <input type="text" id="text1" placeholder="appname" class="form-control">
+                        <input type="text" id="text1" placeholder="appname" class="form-control" localize="_.attr('placeholder','appname_placeholder')">
                     </div>
                 </div> 
                   <div class="form-group">
@@ -199,7 +199,7 @@ scripts:
 
                     <div class="col-lg-8">
                         <button class="btn btn-primary ladda-button" data-style="slide-down">
-                            <span class="ladda-label">Create</span>
+                            <span class="ladda-label" localize>Create</span>
                         </button>
                     </div>
                 </div> 

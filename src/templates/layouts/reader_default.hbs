@@ -2,7 +2,7 @@
 <html lang="en">
   <head>
     <meta charset="UTF-8">
-    <title>{{ title }}</title>
+    <title localize>{{ title }}</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <!--IE Compatibility modes-->
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -22,17 +22,23 @@
         <script src="{{assets}}/lib/respond/respond.min.js"></script>
     <![endif]-->
 
+    <script>
+      var config = {{ jsonStringify config }},
+      assets = '{{ assets }}';
+    </script>
+
     <script src="{{assets}}/lib/jquery.min.js"></script>
     <script src="{{assets}}/lib/bootstrap/js/bootstrap.min.js"></script>
     <script src="{{assets}}/lib/bootbox.min.js"></script>
     <script src="{{assets}}/lib/fingerprint.js"></script>
     <script src="{{assets}}/lib/url.min.js"></script>
     <script src="{{assets}}/lib/sprintf.min.js"></script>
+    <script src="{{assets}}/js/dhtml.js"></script>
+    <script src="{{assets}}/lib/localeplanet/icu_{{config.locale}}.js"></script>
+    <script src="{{assets}}/lib/localeplanet/translate.js"></script>
+    <script src="{{assets}}/js/localize.js"></script>
     <script src="{{assets}}/js/main.js"></script>
 
-    <script>
-      var config = {{ jsonStringify config }};
-    </script>
     {{#if javascripts}}
     {{js javascripts}}
     {{/if}}

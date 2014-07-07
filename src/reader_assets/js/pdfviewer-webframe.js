@@ -92,11 +92,11 @@ $(function(){
       if($frame)
         $frame.attr('width', width)
         .attr('height', height);
-      if($close_btn)
+      /*if($close_btn)
         $close_btn.css({
           width: width,
           height: height
-        });
+        });*/
     }
     function toggleFullWindow(b)
     {
@@ -120,14 +120,9 @@ $(function(){
       
       if(data_wa.rect == 'full')
       {
-        $close_btn = $('<div/>')
+        $close_btn = $('<div/>').addClass('webframe-close-btn')
           .appendTo($frame_wrp)
-          .css({
-            position: 'absolute',
-            top: 0,
-            left: 0,
-            cursor: 'pointer'
-          });
+          .append('<span class="glyphicon glyphicon-remove"></span>');
         $close_btn.click(function()
           {
             switch_to_link();
