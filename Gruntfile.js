@@ -342,6 +342,14 @@ module.exports = function (grunt) {
                       src: 'formbuilder-min.*', 
                       dest: admin_assets_dist_dir + '/lib/formbuilder/'
                     },
+                    /* handsontable */
+                    {
+                        expand: true,
+                        cwd: 'bower_components/handsontable/dist/',
+                        src: [ './jquery.handsontable.full.css', 
+                               './jquery.handsontable.full.js' ],
+                        dest: admin_assets_dist_dir + '/lib/handsontable/'
+                    },
                     /* copy site assets */
                     {
                         expand: true,

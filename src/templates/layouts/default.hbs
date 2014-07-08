@@ -54,6 +54,20 @@
         <script src="{{assets}}/js/localize.js"></script>
         <script src="{{assets}}/js/main.min.js"></script>
 
+        {{#if cdnjs}}
+        {{cdn cdnjs}}
+        {{/if}}
+
+        {{#if javascripts}}
+        {{js javascripts}}
+        {{/if}}
+
+        {{#if scripts}}
+        <script>
+            {{scripts}}
+        </script>
+        {{/if}}
+        
     </head>
     <body {{#is title "Dashboard Alterne"}} class="three-columns" {{/is}}>
 {{#unless empty_page }}
@@ -187,22 +201,6 @@
 	</div><!-- /.modal -->        
         <!-- /#helpModal -->
 {{/unless}}
-
-
-        {{#if cdnjs}}
-        {{cdn cdnjs}}
-        {{/if}}
-
-        {{#if javascripts}}
-        {{js javascripts}}
-        {{/if}}
-
-        {{#if scripts}}
-        <script>
-            {{scripts}}
-        </script>
-        {{/if}}
-        
         
   
     </body>
