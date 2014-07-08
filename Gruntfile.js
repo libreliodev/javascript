@@ -260,8 +260,8 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'bower_components/jquery/dist',
-                        src: ['./**/jquery*'],
+                        cwd: 'bower_components/jquery/',
+                        src: ['./jquery*.js'],
                         dest: admin_assets_dist_dir + '/lib'
                     },
                     {
@@ -317,6 +317,30 @@ module.exports = function (grunt) {
                      cwd: 'node_modules/screenfull/dist/',
                      src: ['./**/*.*'],
                      dest: admin_assets_dist_dir + '/lib/screenfull/'
+                    },
+                    // formbuilder
+                    { expand:true, cwd:'bower_components/jquery-ui/ui/minified',
+                      src: [ "jquery.ui.core.min.js", "jquery.ui.widget.min.js",
+                             "jquery.ui.mouse.min.js", 
+                             "jquery.ui.draggable.min.js",
+                             "jquery.ui.droppable.min.js", 
+                             "jquery.ui.sortable.min.js" ],
+                      dest: admin_assets_dist_dir + '/lib/' },
+                    { src: 'bower_components/backbone-deep-model/distribution/deep-model.min.js',
+                      dest: admin_assets_dist_dir + '/lib/backbone/deep-model.min.js' },
+                    { src: 'bower_components/backbone/backbone.js',
+                      dest: admin_assets_dist_dir + '/lib/backbone/backbone.js' },
+                    { src: 'bower_components/rivets/dist/rivets.min.js',
+                      dest: admin_assets_dist_dir + '/lib/rivets.min.js' },
+                    { src: 'bower_components/jquery.scrollWindowTo/index.js',
+                      dest: admin_assets_dist_dir + '/lib/jquery.scrollWindowTo.js' },
+                    { src: 'bower_components/underscore/underscore-min.js',
+                      dest: admin_assets_dist_dir + '/lib/underscore-min.js' },
+                    { src: 'bower_components/underscore.mixin.deepExtend/index.js',
+                      dest: admin_assets_dist_dir + '/lib/underscore.mixin.deepExtend.js' },
+                    { expand: true, cwd: 'bower_components/formbuilder/dist/',
+                      src: 'formbuilder-min.*', 
+                      dest: admin_assets_dist_dir + '/lib/formbuilder/'
                     },
                     /* copy site assets */
                     {

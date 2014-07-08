@@ -1,0 +1,60 @@
+---
+title: Form Builder
+icon: fa fa-cogs
+stylesheets:
+- lib/formbuilder/formbuilder-min.css
+javascripts:
+- lib/jquery.ui.core.min.js
+- lib/jquery.ui.widget.min.js
+- lib/jquery.ui.mouse.min.js
+- lib/jquery.ui.draggable.min.js
+- lib/jquery.ui.droppable.min.js
+- lib/jquery.ui.sortable.min.js
+- lib/jquery.scrollWindowTo.js
+- lib/underscore-min.js
+- lib/underscore.mixin.deepExtend.js
+- lib/rivets.min.js
+- lib/backbone/backbone.js
+- lib/backbone/deep-model.min.js
+- lib/formbuilder/formbuilder-min.js
+empty_page: 1
+---
+  <style>
+  * {
+    box-sizing: border-box;
+  }
+
+  body {
+    background-color: #444;
+    font-family: sans-serif;
+  }
+
+  .fb-main {
+    background-color: #fff;
+    border-radius: 5px;
+    min-height: 600px;
+  }
+
+  input[type=text] {
+    height: 26px;
+    margin-bottom: 3px;
+  }
+
+  select {
+    margin-bottom: 5px;
+    font-size: 40px;
+  }
+  </style>
+  <div class='fb-main'></div>
+  <script>
+    $(function(){
+      fb = new Formbuilder({
+        selector: '.fb-main',
+        bootstrapData: [{"label":"Please enter your clearance number","field_type":"text","required":true,"field_options":{},"cid":"c6"},{"label":"Security personnel #82?","field_type":"radio","required":true,"field_options":{"options":[{"label":"Yes","checked":false},{"label":"No","checked":false}],"include_other_option":true},"cid":"c10"},{"label":"Medical history","field_type":"file","required":true,"field_options":{},"cid":"c14"}]
+      });
+
+      fb.on('save', function(payload){
+        console.log(payload);
+      })
+    });
+  </script>

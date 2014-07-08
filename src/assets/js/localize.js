@@ -1,9 +1,9 @@
-(function(window){
+(function(window, translate){
   var content_key = '_localize_content',
   attr_key_pref = '_localize_attr_';
   var localize = function(a)
   {
-    return _((a+'').trim());
+    return translate((a+'').trim());
   };
   function localize_content(v)
   {
@@ -37,9 +37,9 @@
   var localize_ctx = {
     _: localize
   };
-  function localize_eval_all()
+  function localize_eval_all(el)
   {
-    $('*').each(function()
+    $('*', el).each(function()
       {
         var val = this.getAttribute('localize');
         if(typeof val != 'string')
@@ -82,7 +82,8 @@
       success: function(res)
       {
         _.setTranslation(res);
-        localize_eval_all();
+        if(opts.update === undefined || opts.update)
+            localize_eval_all();
         cb && cb();
       },
       error: function(xhr, err_text)
@@ -94,6 +95,6 @@
   }
   window.localize = localize;
   // setlocale to default librelio locale
-  localize.setLocale(config.locale, {async:false,icu:false});
-  $(localize.eval_all);
-})(window);
+  localize.setLocale(config.locale, {async:false,icu:false,update:false});
+  $(function(){ localize.eval_all(); });
+})(window, translate || _);

@@ -82,5 +82,6 @@
 	};
 	
 	window._ = translate;
+  window.translate = translate;
 
 })();
