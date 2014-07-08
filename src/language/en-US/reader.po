@@ -1,14 +1,14 @@
 # English translations for Librelio package.
 # Copyright (C) 2014 THE Librelio'S COPYRIGHT HOLDER
 # This file is distributed under the same license as the Librelio package.
-# Hossein Amin <hossein@hosseins-macbook-air.local>, 2014.
+# Hossein Amin <info@serverfire.net>, 2014.
 #
 msgid ""
 msgstr ""
 "Project-Id-Version: Librelio Reader\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-05 18:31+0430\n"
-"PO-Revision-Date: 2014-07-07 16:40+0430\n"
+"PO-Revision-Date: 2014-07-08 17:02+0430\n"
 "Last-Translator: <info@serverfire.net>\n"
 "Language-Team: English\n"
 "Language: en_US\n"

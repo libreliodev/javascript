@@ -8,8 +8,8 @@ msgstr ""
 "Project-Id-Version: Librelio Console\n"
 "Report-Msgid-Bugs-To: \n"
 "POT-Creation-Date: 2014-07-07 15:10+0430\n"
-"PO-Revision-Date: 2014-07-07 17:00+0430\n"
-"Last-Translator: <info@serverfire.net>\n"
+"PO-Revision-Date: 2014-07-08 17:02+0430\n"
+"Last-Translator: Hossein Amin <info@serverfire.net>\n"
 "Language-Team: English\n"
 "Language: en_US\n"
 "MIME-Version: 1.0\n"
@@ -526,3 +526,7 @@ msgstr "Dashboard"
 #: templates/pages/index.hbs:2
 msgid "Librelio"
 msgstr "Librelio"
+
+#: templates/layouts/default.hbs:179
+msgid "2014 © Librelio Admin"
+msgstr "2014 © Librelio Admin"
