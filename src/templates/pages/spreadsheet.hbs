@@ -3,21 +3,21 @@ title: Spread Sheet
 icon: fa fa-cogs
 stylesheets:
 - lib/handsontable/jquery.handsontable.full.css
+- css/pages/spreadsheet.min.css
 javascripts:
 - lib/handsontable/jquery.handsontable.full.js
+- js/pages/spreadsheet.js
 empty_page: 1
 ---
-<div id="dataTable"></div>
-<script>
-  var data = [
-    ["", "Kia", "Nissan", "Toyota", "Honda"],
-    ["2008", 10, 11, 12, 13],
-    ["2009", 20, 11, 14, 13],
-    ["2010", 30, 15, 12, 13]
-  ];
-  $("#dataTable").handsontable({
-    data: data,
-    startRows: 6,
-    startCols: 8
-  });
-</script>
+<div class="btn-group">
+  <button id="clear-btn" type="button" class="btn btn-danger">Clear</button>
+  <button id="save-btn" type="button" class="btn btn-success">Save</button>
+  <button id="load-btn" type="button" class="btn btn-default">Load</button>
+</div>
+<div class="checkbox">
+  <label>
+    <input id="autosave_b" type="checkbox" checked> Autosave
+  </label>
+</div>
+<div id="status-msg"></div>
+<div id="spreadsheet"></div>

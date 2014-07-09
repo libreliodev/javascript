@@ -394,6 +394,14 @@ module.exports = function (grunt) {
                               'fonts/*'],
                         dest: admin_assets_dist_dir + '/lib/flexslider/'
                     },
+                    /* sprintf */
+                    {
+                        expand: true,
+                        cwd: 'bower_components/sprintf/dist/',
+                        src: 'sprintf.min.js',
+                        dest: admin_assets_dist_dir + '/lib/'
+                        
+                    },
                     /* copy site assets */
                     {
                         expand: true,

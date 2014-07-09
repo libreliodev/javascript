@@ -19,3 +19,12 @@ function notifyUserError(err)
     alert(err);
 }
 
+function get_publisher_dir()
+{
+  return s3AuthObj.rootDirectory;
+}
+function get_app_dir(app_name)
+{
+  return get_publisher_dir() + '/' + app_name + 
+    (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : '');
+}
