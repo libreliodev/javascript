@@ -1,0 +1,57 @@
+.pdfviewer {
+  .flexslider:hover .flex-next,
+  .flex-direction-nav .flex-next  {
+    right: 0px;
+  }
+  .flexslider:hover .flex-prev,
+  .flex-direction-nav .flex-prev {
+    left: 0px;
+  }
+  .flex-direction-nav a,
+  .flex-direction-nav a:before {
+    font-size: inherit;
+    line-height: 1;
+  }
+  .flex-pauseplay a:before {
+    font-size: inherit;
+  }
+  .flex-pauseplay a {
+    width: auto;
+    height: auto;
+    left: 2px;
+    bottom: 2px;
+  }
+
+  .flex-viewport {
+    height: 100%;
+  }
+  .slideshow-theme-black {
+    background-color: black;
+    border-color: black;
+    .flex-direction-nav a,
+    .flex-pauseplay a {
+      color: white;
+    }
+  }
+  .slideshow-theme-white {
+    background-color: white;
+    border-color: white;
+    .flex-direction-nav a,
+    .flex-pauseplay a {
+      color: black;
+    }
+  }
+  .slideshow {
+    position: absolute;
+    .slides {
+      height: 100%;
+      li {
+        overflow: hidden;
+      }
+      img {
+        width: 100%;
+      }
+    }
+  }
+
+}

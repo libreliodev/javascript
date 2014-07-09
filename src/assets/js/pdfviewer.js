@@ -9,7 +9,9 @@
     auto_select_display_mode: true,
     auto_resizable: true,
     moveable: true,
-    background: '#ffffff'
+    background: '#ffffff',
+    display_links: true,
+    keyboard_shortcut: true
   },
   dhtml_global = {
     screen_width: function()
@@ -32,6 +34,17 @@
   function newEl(a)
   {
     return document.createElement(a);
+  }
+  function $elements_has_target_to(els, target)
+  {
+    var ret = [];
+    for(var i = 0, l = els.length; i < l; ++i)
+    {
+      var el = els[0];
+      if($(el.getAttribute('data-target')).index(target) != -1)
+        ret.push(el);
+    }
+    return $(ret);
   }
   function copy_canvas(dest, src, dont_change_size)
   {
@@ -182,6 +195,7 @@
     var canvasOffset = $(canvas).offset(),
     annotDivOffset = $annotationLayerDiv.offset(),
     self = this,
+    o = self.data(pvobj_key),
     docPage = page.docPage;
 
     var promise = docPage.getAnnotations().then(function (annotationsData)
@@ -282,18 +296,23 @@
           {
             dests = res;
           });
-        for (var i = 0; i < annotationsData.length; i++) {
-          var data = annotationsData[i];
-          var annotation = PDFJS.Annotation.fromData(data);
-          if (!annotation || !annotation.hasHtml()) {
-            continue;
+
+        if(o.display_links)
+        {
+          // set links
+          for (var i = 0; i < annotationsData.length; i++) {
+            var data = annotationsData[i];
+            var annotation = PDFJS.Annotation.fromData(data);
+            if (!annotation || !annotation.hasHtml()) {
+              continue;
+            }
+            //var element = annotation.getHtmlElement(docPage.commonObjs);
+            data = annotation.getData();
+            if(data.subtype !== 'Link')
+              continue;
+            var element = createLink(data);
+            $annotationLayerDiv.append(element);
           }
-          //var element = annotation.getHtmlElement(docPage.commonObjs);
-          data = annotation.getData();
-          if(data.subtype !== 'Link')
-            continue;
-          var element = createLink(data);
-          $annotationLayerDiv.append(element);
         }
       });
     return promise;
@@ -471,9 +490,8 @@
         popts = $this.data(pvobj_key);
         if(popts && popts._initialized)
           throw new Error("PDF Viewer is already initialized!");
-        $this.data(pvobj_key, $.extend({ _initialized: true }, default_opts));
-        if(opts)
-          methods.setOptions.call($this, opts);
+        $this.data(pvobj_key, { _initialized: true });
+        methods.setOptions.call($this, $.extend({}, default_opts, opts));
         var o = $this.data(pvobj_key);
         $this.bind('curPages-changed', function()
           {
@@ -488,6 +506,7 @@
         methods.init_page_selector.call($this);
         methods.update_page_selector.call($this);
         methods.init_resize.call($this);
+        methods.update_for_theme.call($this);
       });
   },
   set_method_call_update = function(self, o, method)
@@ -499,6 +518,60 @@
       self.pdfviewer.apply(self, arraySlice.call(arguments, 2));
   }
   set_methods = {
+    keyboard_shortcut: function(b)
+    {
+      // keyboard bindings left/right/top/bottom -> prev-page/next-page/zoom-in/zoom-out
+      b = !!b;
+      var self = this,
+      o = self.data(pvobj_key),
+      releaser = o._keyboard_shortcut_releaser || [];
+      if(b == o.keyboard_shortcut)
+        return;
+      if(!b)
+      {
+        funcListCall(releaser);
+        o._keyboard_shortcut_releaser = undefined;
+        return;
+      }
+      function zoom_plus(v)
+      {
+        var cur_zoom = self.pdfviewer('get', 'zoom'),
+        zoom = cur_zoom + v,
+        el = self[0],
+        x = 0.5, y = 0.5;
+        if(zoom > 4)
+          zoom = 4;
+        else if(zoom < 1)
+          zoom = 1;
+        
+        if(cur_zoom > 1 && el)
+        {
+          x = (el.scrollLeft + self.width()/2) / el.scrollWidth;
+          y = (el.scrollTop + self.height()/2) / el.scrollHeight;
+        }
+
+        if(cur_zoom != zoom)
+          self.pdfviewer('zoomTo', zoom, x, y);
+      }
+      on($(document), releaser, 'keyup', function(ev)
+        {
+          switch(ev.keyCode)
+          {
+          case 38: // up arrow
+            zoom_plus(1.5);
+            break;
+          case 40: // down arrow
+            zoom_plus(-1.5);
+            break;
+          case 37: // left arrow
+            self.pdfviewer('pagecurl_to', 'previous');
+            break;
+          case 39: // right arrow
+            self.pdfviewer('pagecurl_to', 'next');
+            break;
+          }
+        });
+    },
     zoom: function(zoom)
     {
       var self = this,
@@ -633,6 +706,50 @@
   },
   singular_methods = viewer.singular_methods = [ 'get' ],
   methods = viewer.method = {
+    loadDocument: function(pdf_url, cb)
+    {
+      var self = this;      
+      PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler)
+        .then(function(pdf)
+        {
+          try {
+            self.on('render', function()
+              {
+                $elements_has_target_to($('.pdfviewer-loadingscreen'), self[0])
+                  .fadeOut();
+                self.off('render', arguments.callee);
+              });
+            self.pdfviewer('set', 'pdfDoc', pdf);
+            cb && cb();
+          }catch(e) {
+            console.error(e);
+            cb && cb(e);
+          }
+        })
+        .catch(function(err)
+        {
+          cb && cb(err);
+        });
+      function downloadProgressHandler(ev)
+      {
+        var $els = $elements_has_target_to($('.pdfviewer-progress'), self[0]);
+        if($els.data('fadingout'))
+          return;
+        $els.find('.progress-bar')
+          .css('width', (ev.loaded / ev.total * 100) + '%');
+        if(ev.loaded >= ev.total)
+          $els.fadeOut().data('fadingout', true);
+      }
+    },
+    update_for_theme: function()
+    {
+      var bkg_color;
+      if($('body').hasClass('dark-bkg'))
+        bkg_color = '#000000';
+      else
+        bkg_color = '#ffffff';
+      this.pdfviewer('set', 'background', bkg_color);
+    },
     init_pagecurl: function()
     {
       var self = this,
@@ -1344,7 +1461,6 @@
     {
       var o = this.data(pvobj_key);
       var funcs = o._collect_updates = [];
-
       for(var i in opts)
         methods.set.call(this, i, opts[i]);
 
@@ -1362,7 +1478,69 @@
     }
   };
   $.fn.pdfviewer = viewer;
+  function control_button_enable_toggle_visibility_on_hover($el, epx, epy)
+  {
+    show_$el(false, $el);
+    function show_$el(b, $el)
+    {
+      function end_action()
+      {
+        $(this).data('in-action', false);
+      }
+      if(b && !$el.data('in-action') && $el.data('visible') !== true)
+        $el.data('in-action', true).data('visible', true).fadeIn(end_action);
+      else if(!b && !$el.data('in-action') && $el.data('visible') !== false)
+        $el.data('in-action', true).data('visible', false).fadeOut(end_action);
+    }
+    $(document).on('mousemove', function(ev)
+      {
+        var tmp = $el.css('display');
+        $el.css('display', 'block');
+        var vb = true,
+        eloff = $el.offset(),
+        width = $el.width(),
+        height = $el.height();
+        $el.css('display', tmp);
+        if(epx && !isNaN(epx))
+          vb = vb && Math.abs(eloff.left + width/2 - ev.pageX) < epx;
+        if(epy && !isNaN(epy))
+          vb = vb && Math.abs(eloff.top + height/2 - ev.pageY) < epy;
+        show_$el(vb, $el);
+      });
+  }
+  $.fn.pdfviewer_controls = function()
+  {
+    var self = this;
+    $('.next-btn', self).click(function()
+      {
+        var target_str = $(this).data('target');
+        if(target_str)
+        {
+          $(target_str).pdfviewer('pagecurl_to', 'next');
+          return false;
+        }
+      });
+    $('.previous-btn', self).click(function()
+      {
+        var target_str = $(this).data('target');
+        if(target_str)
+        {
+          $(target_str).pdfviewer('pagecurl_to', 'previous');
+          return false;
+        }
+      });
+
+    // show pdfviewer left/right arrow when cursor is near it
+    $(' > *', self).each(function()
+      {
+        var $el = $(this),
+        epsilonX = 100;
+        if(typeof $el.attr('data-show-on-hover') !== 'undefined')
+          control_button_enable_toggle_visibility_on_hover($el, epsilonX, null)
+      });
+  }
   $(function(){
     $('.pdfviewer').pdfviewer();
-  })
+    $('.pdfviewer-controls').pdfviewer_controls();
+  });
 })(jQuery);

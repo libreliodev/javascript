@@ -350,6 +350,50 @@ module.exports = function (grunt) {
                                './jquery.handsontable.full.js' ],
                         dest: admin_assets_dist_dir + '/lib/handsontable/'
                     },
+                    /* pdfviewer dependencies */
+                    {
+                        expand: true,
+                        cwd: 'bower_components/path/',
+                        src: 'path*.js',
+                        dest: admin_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/querystring/',
+                        src: 'querystring*.js',
+                        dest: admin_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/tweenjs/build',
+                        src: 'tween.min.js',
+                        dest: admin_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/tweenjs/examples/js/',
+                        src: 'RequestAnimationFrame.js',
+                        dest: admin_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/videojs/dist/',
+                        src: 'video-js/**',
+                        dest: admin_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/js-url/',
+                        src: 'url.min.js',
+                        dest: admin_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/flexslider/',
+                        src: ['flexslider.css', 'jquery.flexslider-min.js',
+                              'fonts/*'],
+                        dest: admin_assets_dist_dir + '/lib/flexslider/'
+                    },
                     /* copy site assets */
                     {
                         expand: true,
@@ -377,8 +421,8 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'bower_components/jquery/dist',
-                        src: ['./**/jquery*'],
+                        cwd: 'bower_components/jquery/',
+                        src: ['./jquery*.js'],
                         dest: site_assets_dist_dir + '/lib'
                     },
                     {
@@ -420,8 +464,8 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'bower_components/jquery/dist',
-                        src: ['./**/jquery*'],
+                        cwd: 'bower_components/jquery/',
+                        src: ['./jquery*.js'],
                         dest: reader_assets_dist_dir + '/lib'
                     },
                     {
@@ -502,7 +546,6 @@ module.exports = function (grunt) {
                         src: ['flexslider.css', 'jquery.flexslider-min.js',
                               'fonts/*'],
                         dest: reader_assets_dist_dir + '/lib/flexslider/'
-                        
                     },
                     {
                         expand: true,

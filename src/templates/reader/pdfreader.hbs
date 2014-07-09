@@ -12,18 +12,18 @@ javascripts:
 - lib/flexslider/jquery.flexslider-min.js
 - js/pagecurl.js
 - js/pdfviewer.js
-- js/pdfviewer-main.js
 - js/pdfviewer-video-player.js
 - js/pdfviewer-slideshow.js
 - js/pdfviewer-webframe.js
+- js/pdfreader-main.js
 stylesheets:
 - lib/video-js/video-js.css
 - lib/flexslider/flexslider.css
 theme: dark-bkg
 ---
-<div class="controls">
-  <a class="previous-btn" href="#"><i class="glyphicon glyphicon-step-backward"></i></a>
-  <a class="next-btn" href="#"><i class="glyphicon glyphicon-step-forward"></i></a>
+<div class="pdfviewer-controls">
+  <a class="previous-btn" data-target=".pdfviewer" href="#" data-show-on-hover="1"><i class="glyphicon glyphicon-step-backward"></i></a>
+  <a class="next-btn" data-target=".pdfviewer" href="#" data-show-on-hover="1"><i class="glyphicon glyphicon-step-forward"></i></a>
 </div>
 <div class="pdfviewer"
      data-resize="mod_style('width',screen_width(),'height',screen_height())">
@@ -43,8 +43,8 @@ theme: dark-bkg
     </ul>
   </div>
 </div>
-<div class="progress pdfviewer-progress">
+<div class="progress pdfviewer-progress" data-target=".pdfviewer">
   <div class="progress-bar" role="progressbar" style="width:0%;"></div>
 </div>
-<div class="pdfviewer-loadingscreen"><span localize>Loading...</span></div>
+<div class="pdfviewer-loadingscreen" data-target=".pdfviewer"><span localize>Loading...</span></div>
 {{> purchase_dialog }}
