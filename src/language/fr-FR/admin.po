@@ -1,0 +1,531 @@
+# English translations for Librelio package.
+# Copyright (C) 2014 THE Librelio'S COPYRIGHT HOLDER
+# This file is distributed under the same license as the Librelio package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: Librelio Console\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2014-07-07 15:10+0430\n"
+"PO-Revision-Date: 2014-07-09 09:36+0200\n"
+"Last-Translator: Librelio <EMAIL@ADDRESS>\n"
+"Language-Team: English\n"
+"Language: fr_FR\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#: admin_assets/js/initS3Auth.js:4 admin_assets/js/login.js:63
+msgid "This app does not support your browser"
+msgstr "This app does not support your browser"
+
+#: admin_assets/js/login.js:17
+msgid "Root directory should not be empty"
+msgstr "Root directory should not be empty"
+
+#: admin_assets/js/login.js:52
+msgid "Couldn't connect to aws s3"
+msgstr "Couldn't connect to aws s3"
+
+#: admin_assets/js/login.js:58
+msgid "Invalid directory!"
+msgstr "Invalid directory!"
+
+#: admin_assets/js/login.js:258
+msgid "Couldn't get users info!"
+msgstr "Couldn't get users info!"
+
+#: admin_assets/js/pages/interstitials.js:122
+msgid "Ad has saved successfully!"
+msgstr "Ad has saved successfully!"
+
+#: admin_assets/js/pages/publications.js:113
+msgid "Unknown"
+msgstr "Unknown"
+
+#: admin_assets/js/pages/publications.js:312
+msgid "Invalid publication name!"
+msgstr "Invalid publication name!"
+
+#: admin_assets/js/pages/publications.js:338
+msgid "Folder exists!"
+msgstr "Folder exists!"
+
+#: admin_assets/js/pages/publications.js:461
+#: templates/pages/publications.hbs:116 templates/pages/publications.hbs:132
+msgid "Select file"
+msgstr "Select file"
+
+#: admin_assets/js/pages/publications.js:461
+#: templates/pages/interstitials.hbs:88 templates/pages/interstitials.hbs:105
+#: templates/pages/interstitials.hbs:122 templates/pages/interstitials.hbs:139
+#: templates/pages/interstitials.hbs:156 templates/pages/interstitials.hbs:173
+#: templates/pages/interstitials.hbs:190 templates/pages/interstitials.hbs:207
+#: templates/pages/interstitials.hbs:224 templates/pages/interstitials.hbs:241
+#: templates/pages/publications.hbs:116 templates/pages/publications.hbs:132
+#: templates/pages/publications.hbs:151 templates/pages/publications.hbs:168
+#: templates/pages/setup.hbs:98
+msgid "Change"
+msgstr "Change"
+
+#: admin_assets/js/pages/publications.js:462
+#: templates/pages/interstitials.hbs:89 templates/pages/interstitials.hbs:106
+#: templates/pages/interstitials.hbs:123 templates/pages/interstitials.hbs:140
+#: templates/pages/interstitials.hbs:157 templates/pages/interstitials.hbs:174
+#: templates/pages/interstitials.hbs:191 templates/pages/interstitials.hbs:208
+#: templates/pages/interstitials.hbs:225 templates/pages/interstitials.hbs:242
+#: templates/pages/publications.hbs:117 templates/pages/publications.hbs:133
+#: templates/pages/publications.hbs:152 templates/pages/publications.hbs:169
+#: templates/pages/setup.hbs:99
+msgid "Remove"
+msgstr "Remove"
+
+#: admin_assets/js/pages/publications.js:526
+#: admin_assets/js/pages/users.js:146 admin_assets/js/pages/users.js:180
+msgid "Inactive"
+msgstr "Inactive"
+
+#: admin_assets/js/pages/publications.js:554
+#: admin_assets/js/pages/users.js:146 admin_assets/js/pages/users.js:180
+msgid "Active"
+msgstr "Active"
+
+#: admin_assets/js/pages/publications.js:682
+#: templates/pages/interstitials.hbs:63 templates/pages/publications.hbs:53
+#: templates/pages/tracking.hbs:62
+msgid "Title"
+msgstr "Title"
+
+#: admin_assets/js/pages/publications.js:688
+#: templates/pages/publications.hbs:54
+msgid "Subtitle"
+msgstr "Subtitle"
+
+#: admin_assets/js/pages/push.js:13
+msgid "Are you sure you want to send this message?"
+msgstr "Are you sure you want to send this message?"
+
+#: admin_assets/js/pages/push.js:32
+msgid "Please select application before sending notification"
+msgstr "Please select application before sending notification"
+
+#: admin_assets/js/pages/push.js:36
+msgid "Message box is empty or is to long, it should be less or equal than 300"
+msgstr ""
+"Message box is empty or is to long, it should be less or equal than 300"
+
+#: admin_assets/js/pages/push.js:65
+msgid "Message sent!"
+msgstr "Message sent!"
+
+#: admin_assets/js/pages/setup.js:47
+msgid "Saving..."
+msgstr "Saving..."
+
+#: admin_assets/js/pages/users.js:56
+msgid "User info has been updated!"
+msgstr "User info has been updated!"
+
+#: admin_assets/js/pages/users.js:79
+msgid "User has been created successfully!"
+msgstr "User has been created successfully!"
+
+#: admin_assets/js/svgedit.js:12
+msgid "No file is select to edit!"
+msgstr "No file is select to edit!"
+
+#: admin_assets/js/svgedit.js:13
+msgid "Please wait.."
+msgstr "Please wait.."
+
+#: admin_assets/js/svgedit.js:167
+msgid "Open"
+msgstr "Open"
+
+#: admin_assets/js/svgedit.js:168
+msgid "Save"
+msgstr "Save"
+
+#: admin_assets/js/svgedit.js:169
+msgid "Import"
+msgstr "Import"
+
+#: admin_assets/js/utils.js:243 admin_assets/js/utils.js:244
+msgid "Uploading..."
+msgstr "Uploading..."
+
+#: templates/login/login.hbs:12
+msgid "Enter your AWS Access Key ID and password"
+msgstr "Enter your AWS Access Key ID and password"
+
+#: templates/login/login.hbs:14
+msgid "access_key_id_placeholder"
+msgstr "Access Key ID"
+
+#: templates/login/login.hbs:15
+msgid "secret_access_key_placeholder"
+msgstr "Secret Access Key"
+
+#: templates/login/login.hbs:16
+msgid "root_directory_placeholder"
+msgstr "Root Directory"
+
+#: templates/login/login.hbs:19
+msgid "Remember me on this computer"
+msgstr "Remember me on this computer"
+
+#: templates/login/login.hbs:23
+msgid "Login"
+msgstr "Login"
+
+#: templates/pages/index.hbs:8
+msgid "Welcome to the Librelio admin console"
+msgstr "Welcome to the Librelio admin console"
+
+#: templates/pages/interstitials.hbs:32
+msgid "New Ad"
+msgstr "New Ad"
+
+#: templates/pages/interstitials.hbs:36
+msgid "Image"
+msgstr "Image"
+
+#: templates/pages/interstitials.hbs:37
+msgid "Name"
+msgstr "Name"
+
+#: templates/pages/interstitials.hbs:38 templates/pages/publications.hbs:55
+#: templates/pages/users.hbs:72
+msgid "Status"
+msgstr "Status"
+
+#: templates/pages/interstitials.hbs:56
+msgid "Create new ad"
+msgstr "Create new ad"
+
+#: templates/pages/interstitials.hbs:57
+msgid "Update ad"
+msgstr "Update ad"
+
+#: templates/pages/interstitials.hbs:65
+msgid "title_placeholder"
+msgstr "Title"
+
+#: templates/pages/interstitials.hbs:70 templates/pages/publications.hbs:86
+msgid "Set"
+msgstr "Set"
+
+#: templates/pages/interstitials.hbs:88 templates/pages/interstitials.hbs:105
+#: templates/pages/interstitials.hbs:122 templates/pages/interstitials.hbs:139
+#: templates/pages/interstitials.hbs:156 templates/pages/interstitials.hbs:173
+#: templates/pages/interstitials.hbs:190 templates/pages/interstitials.hbs:207
+#: templates/pages/interstitials.hbs:224 templates/pages/interstitials.hbs:241
+#: templates/pages/publications.hbs:151 templates/pages/publications.hbs:168
+#: templates/pages/setup.hbs:98
+msgid "Select image"
+msgstr "Select image"
+
+#: templates/pages/interstitials.hbs:250
+msgid "Link"
+msgstr "Link"
+
+#: templates/pages/interstitials.hbs:252
+msgid "link_placeholder"
+msgstr "Link"
+
+#: templates/pages/interstitials.hbs:256
+msgid "Delay"
+msgstr "Delay"
+
+#: templates/pages/interstitials.hbs:258
+msgid "delay_placeholder"
+msgstr "Delay"
+
+#: templates/pages/interstitials.hbs:267 templates/pages/setup.hbs:202
+#: templates/pages/users.hbs:115
+msgid "Create"
+msgstr "Create"
+
+#: templates/pages/interstitials.hbs:268 templates/pages/users.hbs:116
+msgid "Update"
+msgstr "Update"
+
+#: templates/pages/publications.hbs:45 templates/pages/tracking.hbs:56
+#: templates/partials/left.hbs:26 templates/pages/publications.hbs:2
+msgid "Publications"
+msgstr "Publications"
+
+#: templates/pages/publications.hbs:48 templates/pages/publications.hbs:72
+msgid "New publication"
+msgstr "New publication"
+
+#: templates/pages/publications.hbs:52 templates/pages/publications.hbs:79
+msgid "Folder name"
+msgstr "Folder name"
+
+#: templates/pages/publications.hbs:73
+msgid "Update publication"
+msgstr "Update publication"
+
+#: templates/pages/publications.hbs:81
+msgid "foldername_placeholder"
+msgstr "Folder name"
+
+#: templates/pages/publications.hbs:97
+msgid "Free"
+msgstr "Free"
+
+#: templates/pages/publications.hbs:103
+msgid "Paid"
+msgstr "Paid"
+
+#: templates/pages/publications.hbs:111
+msgid "Free version"
+msgstr "Free version"
+
+#: templates/pages/publications.hbs:119
+msgid "Edit SVG"
+msgstr "Edit SVG"
+
+#: templates/pages/publications.hbs:127
+msgid "Paid version"
+msgstr "Paid version"
+
+#: templates/pages/publications.hbs:143
+msgid "Medium res cover"
+msgstr "Medium res cover"
+
+#: templates/pages/publications.hbs:160
+msgid "Low res cover"
+msgstr "Low res cover"
+
+#: templates/pages/publications.hbs:177
+msgid "Your browser doesn't have Flash, Silverlight or HTML5 support."
+msgstr "Your browser doesn't have Flash, Silverlight or HTML5 support."
+
+#: templates/pages/push.hbs:48
+msgid "New message"
+msgstr "New message"
+
+#: templates/pages/push.hbs:54
+msgid "Message text"
+msgstr "Message text"
+
+#: templates/pages/push.hbs:64
+msgid "Send"
+msgstr "Send"
+
+#. Table header
+#: templates/pages/push.hbs:79
+msgid "Messages sent"
+msgstr "Messages sent"
+
+#. Column header
+#: templates/pages/push.hbs:85
+msgid "Date sent"
+msgstr "Date sent"
+
+#. Column header
+#: templates/pages/push.hbs:86
+msgid "Message"
+msgstr "Message"
+
+#. Column header
+#: templates/pages/push.hbs:87
+msgid "Qty sent"
+msgstr "Qty sent"
+
+#. Page subheading
+#: templates/pages/setup.hbs:55
+msgid "General"
+msgstr "General"
+
+#. Input label
+#: templates/pages/setup.hbs:60
+msgid "Long name"
+msgstr "Long name"
+
+#: templates/pages/setup.hbs:63
+msgid "longname_placeholder"
+msgstr "Long name"
+
+#. Input label
+#: templates/pages/setup.hbs:67
+msgid "Short name (<14 chars)"
+msgstr "Short name (<14 chars)"
+
+#: templates/pages/setup.hbs:70
+msgid "shortname_placeholder"
+msgstr "Short name"
+
+#. Textarea label
+#: templates/pages/setup.hbs:74
+msgid "Description for the stores"
+msgstr "Description for the stores"
+
+#. Page subheading
+#: templates/pages/setup.hbs:88
+msgid "Graphics"
+msgstr "Graphics"
+
+#. Input label
+#: templates/pages/setup.hbs:93
+msgid "Logo"
+msgstr "Logo"
+
+#. Input label
+#: templates/pages/setup.hbs:106
+msgid "Background color"
+msgstr "Background color"
+
+#. Page subheading
+#: templates/pages/setup.hbs:121
+msgid "Navigation"
+msgstr "Navigation"
+
+#. Input label
+#: templates/pages/setup.hbs:126
+msgid "Web site"
+msgstr "Web site"
+
+#: templates/pages/setup.hbs:129
+msgid "website_placeholder"
+msgstr "Website"
+
+#. Input label
+#: templates/pages/setup.hbs:133
+msgid "Facebook page"
+msgstr "Facebook page"
+
+#: templates/pages/setup.hbs:136
+msgid "facebook_page_placeholder"
+msgstr "Facebook page URL"
+
+#. Input label
+#: templates/pages/setup.hbs:140
+msgid "RSS feed"
+msgstr "RSS feed"
+
+#: templates/pages/setup.hbs:143
+msgid "rss_placeholder"
+msgstr "RSS URL"
+
+#. Page subheading
+#: templates/pages/setup.hbs:154 templates/partials/left.hbs:42
+#: templates/pages/tracking.hbs:2
+msgid "Tracking"
+msgstr "Tracking"
+
+#: templates/pages/setup.hbs:159
+msgid "Google Analytics Code"
+msgstr "Google Analytics Code"
+
+#: templates/pages/setup.hbs:162
+msgid "ga_code_placeholder"
+msgstr "GA Code"
+
+#: templates/pages/setup.hbs:166:
+msgid "Librelio Analytics Code"
+msgstr "Librelio Analytics Code"
+
+#: templates/pages/setup.hbs:169
+msgid "la_code_placeholder"
+msgstr "LA Code"
+
+#: templates/pages/setup.hbs:185
+msgid "Create new app"
+msgstr "Create new app"
+
+#: templates/pages/setup.hbs:191
+msgid "Name of the app"
+msgstr "Name of the app"
+
+#: templates/pages/setup.hbs:194
+msgid "appname_placeholder"
+msgstr "App name"
+
+#: templates/pages/tracking.hbs:63
+msgid "Paid Downloads"
+msgstr "Paid Downloads"
+
+#: templates/pages/tracking.hbs:64
+msgid "Free Downloads"
+msgstr "Free Downloads"
+
+#: templates/pages/users.hbs:63 templates/partials/left.hbs:34
+#: templates/pages/users.hbs:2
+msgid "Users"
+msgstr "Users"
+
+#: templates/pages/users.hbs:66
+msgid "New user"
+msgstr "New user"
+
+#: templates/pages/users.hbs:70
+msgid "User Name"
+msgstr "User Name"
+
+#: templates/pages/users.hbs:71 templates/pages/users.hbs:103
+msgid "Password"
+msgstr "Password"
+
+#: templates/pages/users.hbs:89
+msgid "Create new user"
+msgstr "Create new user"
+
+#: templates/pages/users.hbs:90
+msgid "Update user"
+msgstr "Update user"
+
+#: templates/pages/users.hbs:96
+msgid "User ID"
+msgstr "User ID"
+
+#: templates/pages/users.hbs:99
+msgid "username_placeholder"
+msgstr "Username"
+
+#: templates/pages/users.hbs:106
+msgid "password_placeholder"
+msgstr "Password"
+
+#: templates/partials/left.hbs:10
+msgid "Publisher"
+msgstr "Publisher"
+
+#: templates/partials/left.hbs:19
+msgid "Menu"
+msgstr "Menu"
+
+#: templates/partials/left.hbs:22
+msgid "Setup"
+msgstr "Setup"
+
+#: templates/partials/left.hbs:30 templates/pages/interstitials.hbs:2
+msgid "Interstitials"
+msgstr "Interstitials"
+
+#: templates/partials/left.hbs:38 templates/pages/push.hbs:2
+msgid "Push"
+msgstr "Push"
+
+#: templates/partials/nav.hbs:6
+msgid "Toggle navigation"
+msgstr "Toggle navigation"
+
+#: templates/partials/nav.hbs:54
+msgid "Application"
+msgstr "Application"
+
+#: templates/pages/dashboard.hbs:3
+msgid "Dashboard"
+msgstr "Dashboard"
+
+#: templates/pages/index.hbs:2
+msgid "Librelio"
+msgstr "Librelio"
+
+#: templates/layouts/default.hbs:179
+msgid "2014 © Librelio Admin"
+msgstr "2014 © Librelio Admin"
