@@ -252,7 +252,7 @@ $(function(){
       }
 
       var path_host = url_till_hostname(url_str);
-      for(var i = start, l = end + 1; i < l; ++i)
+      for(var i = end; i>=start; i--)
       {
         var rel_path = path.join(file_dirname, 
                                  file_basename + '_' + i + file_ext),
