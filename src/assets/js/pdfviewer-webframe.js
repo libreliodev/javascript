@@ -11,7 +11,9 @@ $(function(){
   }
   function is_webframe(s)
   {
-    if(s === undefined || url_protocol(s) === null)
+    var protos = [ 'http:', 'https:' ],
+    proto = url_protocol(s);
+    if(s === undefined || proto === null || protos.indexOf(proto) == -1)
       return false;
     var query = querystring.parse(url_query2(s));
     for(var i in query)
@@ -136,8 +138,12 @@ $(function(){
     {
       if($frame_wrp[0]._link_el)
       {
+        // remove frame
+        // recreate it after clicking on link again
         var link_el = $frame_wrp[0]._link_el;
-        $element_toggle_visibility($frame_wrp, false);
+        link_el._frame_el = null;
+        $frame_wrp.remove();
+        //$element_toggle_visibility($frame_wrp, false);
         $element_toggle_visibility($(link_el), true);
         data.element = link_el;
       }
