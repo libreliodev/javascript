@@ -95,6 +95,12 @@
   }
   window.localize = localize;
   // setlocale to default librelio locale
-  localize.setLocale(config.locale, {async:false,icu:false,update:false});
+  var navLang = navigator && navigator.language ? navigator.language : null;
+  localize.setLocale(navLang || config.locale,
+                     {async:false,icu:false,update:false}, function(err)
+    {
+      if(err && navLang)
+        localize.setLocale(config.locale, {async:false,icu:false,update:false});
+    });
   $(function(){ localize.eval_all(); });
 })(window, translate || _);
