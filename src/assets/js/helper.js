@@ -62,7 +62,7 @@ function wrpFunc(func, thisarg, prepend_args, append_args)
     var args = arraySlice.call(arguments);
     return func.apply(thisarg || this, 
                  prepend_args ? prepend_args.concat(args, append_args) :
-                                args.concat(append_bargs));
+                                args.concat(append_args));
   }
 }
 function funcListCall(a)

@@ -1228,6 +1228,7 @@
       o = self.data(pvobj_key),
       $el = self.find('.page-selector'),
       releaser = o._page_selector_releaser,
+      releaser2 = [],
       pages_prev = $el.find('.pages-preview');
       pages_prev.dhtml('list_init');
       o._page_sel_height = $el.height();
@@ -1250,27 +1251,40 @@
       on(pages_prev, releaser, 'scroll', pages_prev_track_visibility)
       ('mousedown', function(ev)
         {
-          this._mousedown = true;
-          this._mousedown_data = { mX: ev.pageX, scrollX: this.scrollLeft };
-        })
-      ('mouseup', function()
-        {
           var self = this;
-          self._mousedown = false;
-          setTimeout(function()
-            {
-              self._scrolled = undefined;
-            }, 0);
+          self._mousedown = true;
+          self._mousedown_data = { mX: ev.pageX, scrollX: this.scrollLeft };
+          on($(window), releaser2, 'mouseup', wrpFunc(mouseup_handler, self))
+          ('mousemove', wrpFunc(mousemove_handler, self));
+          return false;
         })
-      ('mousemove', function(ev)
+      ('mouseup', mouseup_handler)
+      ('mousemove', mousemove_handler);
+      function mousemove_handler(ev)
+      {
+        var md_data = this._mousedown_data;
+        if(this._mousedown)
         {
-          var md_data = this._mousedown_data;
-          if(this._mousedown)
-          {
-            this.scrollLeft = md_data.scrollX - (ev.pageX - md_data.mX);
-            this._scrolled = true;
-          }
-        });
+          this.scrollLeft = md_data.scrollX - (ev.pageX - md_data.mX);
+          this._scrolled = true;
+        }
+        return false;
+      }
+       function mouseup_handler()
+       {
+         var self = this;
+         funcListCall(releaser2);
+         releaser2 = [];
+         if(self._mousedown)
+         {
+           self._mousedown = false;
+           setTimeout(function()
+             {
+               self._scrolled = undefined;
+             }, 0);
+           return false;
+         }
+       }
       on($el, releaser, 'visibility-changed', pages_prev_track_visibility);
       pages_prev_track_visibility()
       function pages_prev_track_visibility()
@@ -1303,22 +1317,9 @@
     bind_move: function()
     {
       var self = this,
-      o = self.data(pvobj_key);
-      on(self, null, 'mousemove', function(ev)
-        {
-          if(!o.moveable || self.css('overflow') == 'hidden')
-            return;
-          // scroll
-          var el = this,
-          md_data = el._mousedown_data;
-          if(el._mousedown)
-          {
-            el.scrollLeft = md_data.scrollX - (ev.pageX - md_data.mX);
-            el.scrollTop = md_data.scrollY - (ev.pageY - md_data.mY);
-            el._scrolled = true;
-          }
-        })
-      ('mousedown', function(ev)
+      o = self.data(pvobj_key),
+      releaser2 = [];
+      on(self, null, 'mousedown', function(ev)
         {
           if(!o.moveable)
             return;
@@ -1330,13 +1331,33 @@
             scrollX: el.scrollLeft,
             scrollY: el.scrollTop
           };
+          on($(window), releaser2, 'mouseup', wrpFunc(mouseup_handler, el))
+          ('mousemove', wrpFunc(mousemove_handler, el));
         })
-      ('mouseup', function()
+      ('mousemove', mousemove_handler)
+      ('mouseup', mouseup_handler);
+      function mousemove_handler(ev)
+      {
+        if(!o.moveable || self.css('overflow') == 'hidden')
+          return;
+        // scroll
+        var el = this,
+        md_data = el._mousedown_data;
+        if(el._mousedown)
         {
-          var el = this;
-          el._mousedown = false;
-          setTimeout(function() { el._scrolled = undefined; });
-        });
+          el.scrollLeft = md_data.scrollX - (ev.pageX - md_data.mX);
+          el.scrollTop = md_data.scrollY - (ev.pageY - md_data.mY);
+          el._scrolled = true;
+        }
+      }
+      function mouseup_handler()
+      {
+        var el = this;
+        funcListCall(releaser2);
+        releaser2 = [];
+        el._mousedown = false;
+        setTimeout(function() { el._scrolled = undefined; });
+      }
     },
     zoomTo: function(zoom, x, y)
     {
