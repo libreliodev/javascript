@@ -1,0 +1,53 @@
+---
+title: PDF Reader
+javascripts:
+- lib/querystring.min.js
+- lib/path.min.js
+- lib/url.min.js
+- lib/pdf.js/compatibility.js
+- lib/pdf.js/pdf.js
+- lib/async.js
+- lib/RequestAnimationFrame.js
+- lib/tween.min.js
+- lib/video-js/video.dev.js
+- lib/flexslider/jquery.flexslider-min.js
+- js/helper.js
+- js/pagecurl.js
+- js/pdfviewer.js
+- js/pages/pdfreader.js
+- js/pdfviewer-video-player.js
+- js/pdfviewer-slideshow.js
+- js/pdfviewer-webframe.js
+stylesheets:
+- lib/video-js/video-js.css
+- lib/flexslider/flexslider.css
+- css/pages/pdfreader.css
+theme: dark-bkg
+empty_page: 1
+---
+<div class="pdfviewer-controls">
+  <a class="previous-btn" data-target=".pdfviewer" href="#" data-show-on-hover="1"><i class="glyphicon glyphicon-step-backward"></i></a>
+  <a class="next-btn" data-target=".pdfviewer" href="#" data-show-on-hover="1"><i class="glyphicon glyphicon-step-forward"></i></a>
+</div>
+<div class="pdfviewer"
+     data-resize="mod_style('width',screen_width(),'height',screen_height())">
+  <div class="links-div">
+  </div>
+  <canvas class="pdfviewer-canvas" localize>
+    Could not initiate PDF Viewer. You should update your browser to see this page.
+  </canvas>
+  <div class="page-selector">
+    <ul class="pages-preview">
+      <li class="page-item" data-id="default">
+        <span class="page-num" data-key="page_number"></span>
+        <canvas class="page-thumbnail" 
+                data-attr-keys="width=canvas_width(),height=canvas_height()" 
+                data-onupdate="draw_page_when_visible('fit')"></canvas>
+      </li>
+    </ul>
+  </div>
+</div>
+<div class="progress pdfviewer-progress" data-target=".pdfviewer">
+  <div class="progress-bar" role="progressbar" style="width:0%;"></div>
+</div>
+<div class="pdfviewer-loadingscreen" data-target=".pdfviewer"><span localize>Loading...</span></div>

@@ -97,7 +97,7 @@ $(function(){
     releaser = [],
     player, exit_proc,
     is_cur_page;
-    $source.attr('src', librelio_resolve_url(src, pdf_url_dir));
+    $source.attr('src', src);
     if(type)
       $source.attr('type', type);
     $vid.attr('width', rect[2])

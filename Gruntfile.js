@@ -353,6 +353,12 @@ module.exports = function (grunt) {
                     /* pdfviewer dependencies */
                     {
                         expand: true,
+                        cwd: 'bower_components/async/lib',
+                        src: 'async.js',
+                        dest: admin_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
                         cwd: 'bower_components/path/',
                         src: 'path*.js',
                         dest: admin_assets_dist_dir + '/lib/'

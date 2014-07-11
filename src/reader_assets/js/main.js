@@ -7,14 +7,6 @@ function parse_url(url)
 {
   return $('<a/>').prop('href', url)[0].href;
 }
-function get_url_query(url)
-{
-  var idx = url.indexOf('?'),
-  idx2 = url.indexOf('#');
-  return idx == -1 ? '' : 
-    (idx2 == -1 ? url.substr(idx + 1) : url.substring(idx + 1, idx2));
-}
-
 function purchase_dialog_open(opts)
 {
   var type = opts.type,
@@ -193,50 +185,6 @@ $(function()
         return false;
       });
   });
-function librelio_resolve_url(s, relto)
-{
-  function relpath(s)
-  {
-    var query = url('?', s),
-    hash = url('#'),
-    path = url('path', s);
-    return (path[0] == '/' ? path.substr(1) : path) +
-      (query ? '?' + query : '') + (hash ? '#' + hash : '');
-  }
-  var hostname = url('hostname', s);
-  if(hostname == 'localhost' || !hostname)
-    return (relto ? relto + '/' : '') + relpath(s);
-  return s;
-}
-function url_protocol(s)
-{
-  var pttrn = /^(\w+:)\/\//,
-  match = pttrn.exec(s);
-  return match ? match[1] : (s.substr(0, 2) == '//' ? '' : null);
-}
-function url_till_hostname(s)
-{
-  var proto = url_protocol(s),
-  hostname = url('hostname', s),
-  auth = url('auth', s);
-  if(proto === null)
-    return '';
-  else
-    return proto + '//' + (auth ? auth + '@' : '') + url('hostname', s);
-}
-function url_dir(s)
-{
-  var url_str = url_till_hostname(s),
-  dirname = path.dirname(url_str === '' ? s : url('path', s));
-  return url_str + (dirname[0] == '/' ? '' : '/') + dirname;
-}
-function url_path_plus(url_str)
-{
-  var query_str = url('?', url_str),
-  hash_str = url('#', url_str);
-  return url('path', url_str) + (query_str ? '?' + query_str : '') + 
-    (hash_str ? '#' + hash_str : '');
-}
 function s3bucket_file_url(key)
 {
   return '//' + config.s3Bucket + '.s3.amazonaws.com' + 

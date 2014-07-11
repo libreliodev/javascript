@@ -1,0 +1,82 @@
+// pdfreader
+@import "../../../assets/less/pdfviewer";
+
+.pdfviewer-wrapper {
+  position: relative;
+  height: 0px; /* it's auto with javascript */
+  margin-left: 200px;
+  overflow: hidden;
+}
+.pdfviewer-wrapper .pdfviewer-controls .previous-btn {
+  left: 200px;
+}
+.pdfviewer-wrapper .page-selector {
+  width: 0px; /* it's auto with javascript */
+  left: 200px;
+}
+.annot-edit-sidebar {
+  background-color: lightgrey;
+  width: 200px;
+  height: 0px; /* it's auto with javascript */
+  float: left;
+  padding: 6px;
+}
+.annot-main-menu {
+  position: relative;
+  height: 35px;
+  background: white;
+  z-index: 4;
+  .dropdown-toggle {
+    border-color: transparent;
+  }
+}
+
+.editable-link {
+  position: absolute;
+  display: block;
+  background-color: rgba(125, 220, 220, .5);
+  border: 1px solid darkgrey;
+  cursor: pointer;
+}
+
+.resize-handle {
+  width: 8px;
+  height: 8px;
+  display: block;
+  position: absolute;
+  background-color: grey;
+  border: 1px solid black;
+  cursor: pointer;
+}
+.resize-handle-tl {
+  top: -5px;
+  left: -5px;
+}
+.resize-handle-tr {
+  top: -5px;
+  right: -5px;
+}
+.resize-handle-br {
+  bottom: -5px;
+  right: -5px;
+}
+.resize-handle-bl {
+  bottom: -5px;
+  left: -5px;
+}
+
+.links-div {
+  .selected {
+    border: 1px solid black;
+    .resize-handle {
+      display: block;
+    }
+  }
+  .resize-handle {
+    display: none;
+  }
+}
+
+.link-props {
+  display: none;
+}

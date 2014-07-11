@@ -70,7 +70,7 @@
         {{/if}}
         
     </head>
-    <body {{#is title "Dashboard Alterne"}} class="three-columns" {{/is}}>
+    <body{{#if theme}} class="{{theme}}"{{/if}}>
 {{#unless empty_page }}
         <div id="wrap">
 

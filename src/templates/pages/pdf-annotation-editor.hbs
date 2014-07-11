@@ -1,0 +1,116 @@
+---
+title: PDF Reader
+javascripts:
+- lib/querystring.min.js
+- lib/path.min.js
+- lib/url.min.js
+- lib/pdf.js/compatibility.js
+- lib/pdf.js/pdf.js
+- lib/async.js
+- lib/RequestAnimationFrame.js
+- lib/tween.min.js
+- js/helper.js
+- js/pagecurl.js
+- js/pdfviewer.js
+- js/pages/pdf-annotation-editor.js
+stylesheets:
+- css/pages/pdf-annotation-editor.css
+theme: dark-bkg
+empty_page: 1
+---
+<div class="annot-main-menu">
+  <div class="dropdown">
+    <button id="file-dropdown-btn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+      File
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="file-dropdown-btn">
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="load-btn">Load</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="save-btn">Save</a></li>
+      <li role="presentation" class="divider"></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="index.html">Back</a></li>
+    </ul>
+  </div>
+</div>
+<div class="annot-edit-sidebar">
+  <div class="new-elements">
+    <button id="new-link-btn" type="submit" class="btn btn-default">New Link</button>
+  </div>
+  <div class="link-props">
+    <div class="form-group">
+      <div class="radio">
+        <label>
+          <input type="radio" name="link-type" value="url" /> 
+          <span>URL</span>
+        </label>
+      </div>
+      <div class="radio">
+        <label>
+          <input type="radio" name="link-type" value="page" /> 
+          <span>Page</span>
+        </label>
+      </div>
+    </div>
+    <div class="form-group">
+      <input type="text" name="link" placeholder="Link" />
+    </div>
+    <div class="form-group">
+      <button id="remove-link-btn" type="submit" class="btn btn-default">Remove Selected Link</button>
+    </div>
+  </div>
+</div>
+<div class="pdfviewer-wrapper">
+  <div class="pdfviewer-controls">
+    <a class="previous-btn" data-target=".pdfviewer" href="#" data-show-on-hover="1"><i class="glyphicon glyphicon-step-backward"></i></a>
+    <a class="next-btn" data-target=".pdfviewer" href="#" data-show-on-hover="1"><i class="glyphicon glyphicon-step-forward"></i></a>
+  </div>
+  <div class="pdfviewer"
+       data-resize="mod_style('width',parent_width(),'height',parent_height())">
+    <div class="links-div">
+    </div>
+    <canvas class="pdfviewer-canvas" localize>
+      Could not initiate PDF Viewer. You should update your browser to see this page.
+    </canvas>
+    <div class="page-selector">
+      <ul class="pages-preview">
+        <li class="page-item" data-id="default">
+          <span class="page-num" data-key="page_number"></span>
+          <canvas class="page-thumbnail" 
+                  data-attr-keys="width=canvas_width(),height=canvas_height()" 
+                  data-onupdate="draw_page_when_visible('fit')"></canvas>
+        </li>
+      </ul>
+    </div>
+  </div>
+  <div class="progress pdfviewer-progress" data-target=".pdfviewer">
+    <div class="progress-bar" role="progressbar" style="width:0%;"></div>
+  </div>
+  <div class="pdfviewer-loadingscreen" data-target=".pdfviewer"><span localize>Loading...</span></div>
+</div>
+<!-- Open Publication Dialog -->
+<div id="librelio-open-publication-dlg" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <h5>
+          <span class="select-publication">Select a publication</span>
+          <span class="select-type">Select type of publication</span>
+        </h5>
+      </div>
+      <div class="modal-body">
+        <ul class="select-publication">
+          <li data-id="default">
+            <a href="#" data-key="publication"></a>
+          </li>
+        </ul>
+        <ul class="select-type">
+          <li data-id="default">
+            <a href="#" data-key="type_title"></a>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- End Section -->

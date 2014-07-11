@@ -262,7 +262,7 @@ $(function(){
         img[0]._li = li;
         li[0]._img = img;
         img.bind('load', image_loaded);
-        img.prop('src', librelio_resolve_url(s, pdf_url_dir));
+        img.prop('src', s);
         var $loading_el = $('<div>'+_('Loading...')+'</div>')
           .width(70).height(20);
         slide_align_child_center($slides_wrp, $loading_el);

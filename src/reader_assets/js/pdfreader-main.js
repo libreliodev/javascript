@@ -20,13 +20,13 @@ $(function(){
           notifyError(err);
       });
   }
-  pdf_viewer.bind('render-link', function(ev, data, page)
+  pdf_viewer.bind('new-link', function(ev, data, page)
      {
        if(data.url)
        {
          data.protocol = url('protocol', data.url);
          data.real_url = data.url;
-         data.url = librelio_resolve_url(data.url, pdf_url_dir);
+         data.url = librelio_pdf_resolve_url(data.url, pdf_url_dir);
        }
      });
   pdf_viewer.bind('openlink', function(ev, obj)

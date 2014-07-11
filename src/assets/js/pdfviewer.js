@@ -29,6 +29,14 @@
     canvas_height: function()
     {
       return this.height() || this.prop('height');
+    },
+    parent_width: function()
+    {
+      return this.parent().width();
+    },
+    parent_height: function()
+    {
+      return this.parent().height();
     }
   };
   function newEl(a)
@@ -189,7 +197,60 @@
         $this.toggleClass('active', pages.indexOf(idx) != -1);
       });  
   }
+  function docPageRectToPageRect(rect, docPage, prect)
+  {
+    var view = page.view;
+    rect = [
+      (rect[0] - view[0]) / (view[2] - view[0]) * prect[2],
+      prect[3] - (rect[3] - view[1]) / (view[3] - view[1]) * prect[3],
+      (rect[2] - view[0]) / (view[2] - view[0]) * prect[2],
+      prect[3] - (rect[1] - view[1]) / (view[3] - view[1]) * prect[3]
+    ];
+    // rect in [x y w h] format
+    return [
+      rect[0] + prect[0],
+      rect[1] + prect[1], 
+      rect[2] - rect[0],
+      rect[3] - rect[1]
+    ];
+  }
+  function docPageRectToPageRect(rect, docPage, prect)
+  {
+    var view = docPage.view;
+    rect = [
+      (rect[0] - view[0]) / (view[2] - view[0]) * prect[2],
+      prect[3] - (rect[3] - view[1]) / (view[3] - view[1]) * prect[3],
+      (rect[2] - view[0]) / (view[2] - view[0]) * prect[2],
+      prect[3] - (rect[1] - view[1]) / (view[3] - view[1]) * prect[3]
+    ];
+    // rect in [x y w h] format
+    return [
+      rect[0] + prect[0],
+      rect[1] + prect[1], 
+      rect[2] - rect[0],
+      rect[3] - rect[1]
+    ];
+  }
+  function pageRectToDocPageRect(rect, docPage, prect)
+  {
+    rect = rect.concat();
+    var view = docPage.view;
+    // conv rect to [x y x2 y2] format
+    rect[0] = rect[0] - prect[0];
+    rect[1] = rect[1] - prect[1];
+    rect[2] = rect[2] + rect[0];
+    rect[3] = rect[3] + rect[1];
+    var dw = view[2] - view[0],
+    dh = view[3] - view[1];
+    rect[0] = rect[0] / prect[2] * dw + view[0];
+    rect[2] = rect[2] / prect[2] * dw + view[0];
 
+    var tmp = rect[3];
+    rect[3] = (1 - rect[1] / prect[3]) * dh + view[1];
+    rect[1] = (1 - tmp / prect[3]) * dh + view[1];
+
+    return rect;
+  }
   function setupAnnotations(doc, page, prect, canvas, $annotationLayerDiv)
   {
     var canvasOffset = $(canvas).offset(),
@@ -203,21 +264,12 @@
         function createLink(data)
         {
           data = $.extend(true, {}, data);
-          var rect = data.rect,
-          view = docPage.view;
-          rect = [
-            (rect[0] - view[0]) / (view[2] - view[0]) * prect[2],
-            prect[3] - (rect[3] - view[1]) / (view[3] - view[1]) * prect[3],
-            (rect[2] - view[0]) / (view[2] - view[0]) * prect[2],
-            prect[3] - (rect[1] - view[1]) / (view[3] - view[1]) * prect[3]
-          ];
-          // rect in [x y w h] format
-          data.rect = rect = [
-            rect[0] + prect[0] +canvasOffset.left - annotDivOffset.left,
-            rect[1] + prect[1] + canvasOffset.top - annotDivOffset.top, 
-            rect[2] - rect[0],
-            rect[3] - rect[1]
-          ];
+          var rect = data.rect;
+          data.rect = rect = docPageRectToPageRect(rect, docPage, prect);
+
+          rect[0] += canvasOffset.left - annotDivOffset.left;
+          rect[1] += canvasOffset.top - annotDivOffset.top;
+          self.trigger('new-link', [ data, page ]);
           self.trigger('render-link', [ data, page ]);
           if(!data.element)
           {
@@ -516,7 +568,7 @@
                                 .concat(arraySlice.call(arguments, 2)));
     else
       self.pdfviewer.apply(self, arraySlice.call(arguments, 2));
-  }
+  },
   set_methods = {
     keyboard_shortcut: function(b)
     {
@@ -911,6 +963,7 @@
           copy_canvas(spare_canvas, canvas);
           self.trigger('curPages-changed', [ o.curPages ]);
           copy_canvas(canvas, spare_canvas, true);
+          self.trigger('render');
           pagecurl_destroy();
           pagecurl_start();
         }
@@ -1477,6 +1530,9 @@
       o._collect_updates = null;
     }
   };
+  
+  viewer.pageRectToDocPageRect = pageRectToDocPageRect;
+  viewer.docPageRectToPageRect = docPageRectToPageRect;
   $.fn.pdfviewer = viewer;
   function control_button_enable_toggle_visibility_on_hover($el, epx, epy)
   {
