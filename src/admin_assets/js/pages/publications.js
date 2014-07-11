@@ -1,3 +1,6 @@
+var appName = storage.getItem(config.storageAppNameKey),
+appDir = s3AuthObj.rootDirectory + '/' + appName + 
+  (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : '');
 $(function() {
     function workOnAwsS3()
     {
@@ -6,10 +9,7 @@ $(function() {
         updatePubTable();
     }
 
-    var appName = storage.getItem(config.storageAppNameKey),
-    appDir = s3AuthObj.rootDirectory + '/' + appName + 
-        (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : ''),
-    $pubTable = $(".publicationDataTable"),
+    var $pubTable = $(".publicationDataTable"),
     publicationsTable = $pubTable.dataTable({
         "aaSorting": [[ 0, "desc" ]]
     }),
@@ -272,7 +272,7 @@ $(function() {
     $pubDlg.on('hidden.bs.modal', function()
          {
              var pub = $pubDlg.data('pubObj');
-             if(!pub && pubDlgUpdated)
+             if(pubDlgUpdated)
              {
                  location.reload();
                  return;

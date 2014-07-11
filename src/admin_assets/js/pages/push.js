@@ -81,13 +81,13 @@ $(function(){
             ResponseContentEncoding: 'utf8'
         }, function(err, res)
            {
-               if(err/* && err.code != 'NoSuchKey'*/)
+               if(err && err.code != 'NoSuchKey')
                {
                    handleAWSS3Error(err)
                    return;
                }
-               var tsvContent = res.Body.toString(),
-               tsv = d3.tsv.parse(tsvContent);
+               var tsvContent = res ? res.Body.toString() : '',
+               tsv = tsvContent ? d3.tsv.parse(tsvContent) : [];
                
                if(!tsv)
                {
