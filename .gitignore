@@ -4,4 +4,5 @@ nbproject/
 bower_components/
 dist/
 src/assets/submodule/
+build/lptools/polib.pyc
 

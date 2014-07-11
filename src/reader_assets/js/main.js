@@ -185,11 +185,6 @@ $(function()
         return false;
       });
   });
-function s3bucket_file_url(key)
-{
-  return '//' + config.s3Bucket + '.s3.amazonaws.com' + 
-    (key[0] == '/' ? '' : '/') + key;
-}
 
 function magazine_name_free2paid(fn, noext)
 {

@@ -1,3 +1,8 @@
+function s3bucket_file_url(key)
+{
+  return '//' + config.s3Bucket + '.s3.amazonaws.com' + 
+    (key[0] == '/' ? '' : '/') + key;
+}
 function librelio_pdf_resolve_url(s, relto)
 {
   function relpath(s)
