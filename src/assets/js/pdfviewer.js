@@ -391,8 +391,7 @@
               continue;
             if(page.extra_links)
             {
-              var annot = getAnnotsById(data.id, page.extra_links);
-              if(annot && annot.remove)
+              if(getAnnotsById(data.id, page.extra_links))
                 continue;
             }
             var element = createLink(data);
