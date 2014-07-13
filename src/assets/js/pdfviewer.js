@@ -370,6 +370,12 @@
           {
             dests = res;
           });
+        function getAnnotsById(id, annots)
+        {
+          for(var i = 0, l = annots.length; i < l; ++i)
+            if(annots[i].id == id)
+              return annots[i];
+        }
         if(o.display_links)
         {
           // set links
@@ -383,6 +389,12 @@
             data = annotation.getData();
             if(data.subtype !== 'Link')
               continue;
+            if(page.extra_links)
+            {
+              var annot = getAnnotsById(data.id, page.extra_links);
+              if(annot && annot.remove)
+                continue;
+            }
             var element = createLink(data);
             $annotationLayerDiv.append(element);
           }
@@ -390,7 +402,11 @@
           {
             var extra_links = page.extra_links;
             for(var i = 0, l = extra_links.length; i < l; ++i)
-              $annotationLayerDiv.append(createLink(extra_links[i]));
+            {
+              var annot = extra_links[i];
+              if(!annot.remove)
+                $annotationLayerDiv.append(createLink(annot));
+            }
           }
         }
       });

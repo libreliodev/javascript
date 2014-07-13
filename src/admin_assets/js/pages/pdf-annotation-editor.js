@@ -23,6 +23,26 @@ $(function(){
     setTimeout(function()
       {
         annots_key = pdf_url + '.annots.json';
+        var saved_data = localStorage.getItem(annots_key);
+        if(saved_data)
+        {
+          try {
+            annotations = JSON.parse(saved_data);
+            for(var i = 0, l = annotations.length; i < l; ++i)
+            {
+              var annots = annotations[i];
+              for(var c = 0, cl = annots.length; c < cl; ++c)
+              {
+                var annot = annots[c];
+                annot.page_index = i + 1;
+                annotation_init(annot);
+              }
+            }
+          } catch(e) {
+            console.log(e);
+          }
+        }
+
         if(external_b)
         {
           pdf_url_dir = url_dir(pdf_url);
@@ -41,25 +61,6 @@ $(function(){
                  return notifyUserError(err);
                pdf_url = url_str;
                pdf_url_dir = url_dir(pdf_url);
-               var saved_data = localStorage.getItem(annots_key);
-               if(saved_data)
-               {
-                 try {
-                   annotations = JSON.parse(saved_data);
-                   for(var i = 0, l = annotations.length; i < l; ++i)
-                   {
-                     var annots = annotations[i];
-                     for(var c = 0, cl = annots.length; c < cl; ++c)
-                     {
-                       var annot = annots[c];
-                       annot.page_index = i + 1;
-                       annotation_init(annot);
-                     }
-                   }
-                 } catch(e) {
-                   console.log(e);
-                 }
-               }
                load_doc();
              });
         }
@@ -192,7 +193,7 @@ $(function(){
     localStorage.setItem(annots_key, annotations_as_json_string());
   }
   var annots_changed_timeout,
-  annots_save_every = 2000;
+  annots_save_every = 1000;
   function annotationsHasChanged()
   {
     if(annots_changed_timeout !== undefined)
@@ -261,7 +262,15 @@ $(function(){
             rect: data.rect
           };
           if(data.id)
+          {
             annot.id = data.id;
+            if(data.remove)
+            {
+              annot.remove = data.remove;
+              ret.push(annot);
+              continue;
+            }
+          }
           switch(data.subtype)
           {
           case 'Link':
@@ -315,6 +324,8 @@ $(function(){
             for(var c = 0, cl = annots.length; c < cl; ++c)
             {
               var annot = annots[c];
+              if(annot.remove)
+                continue;
               if(annot.subtype == 'Link')
                 $links_div.append(
                   annot.element = annot_editor_link_create(annot, page));
@@ -375,7 +386,7 @@ $(function(){
       }
       else
       {
-        var value = data.value = data.value || data.url;
+        var value = data.value = data.value || data.url || '';
         data.url = value;
         var query_str = librelio_url_query(value);
         data.value_query = querystring.parse(query_str) || {};
@@ -454,10 +465,15 @@ $(function(){
       if(selected_annot)
       {
         // remove from annotations
-        var annots = annotations[selected_annot.page_index - 1],
-        idx = annots.indexOf(selected_annot);
-        if(idx != -1)
-          annots.splice(idx, 1);
+        if(selected_annot.id)
+          selected_annot.remove = true;
+        else
+        {
+          var annots = annotations[selected_annot.page_index - 1],
+          idx = annots.indexOf(selected_annot);
+          if(idx != -1)
+            annots.splice(idx, 1);
+        }
         if(selected_annot.element)
           selected_annot.element.remove();
         annotation_select(null);
@@ -524,7 +540,7 @@ $(function(){
     {
       if(selected_annot)
       {
-        selected_annot.value = this.value;
+        selected_annot.value_link = this.value;
         link_annot_update(selected_annot);
       }
       annotationsHasChanged();
