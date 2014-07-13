@@ -309,7 +309,10 @@ root.awsExpireReverse = function(s)
     now = Math.floor(now.getTime() / 1000) - 
         now.getTimezoneOffset() * 60;
     s = s * 3600;
-    return s - (now % s);
+    s = s - (now % s);
+    if(s < 3600)
+      s == 3600;
+    return s;
 }
 
 // gets input elements of forms and puts them and their values in a object

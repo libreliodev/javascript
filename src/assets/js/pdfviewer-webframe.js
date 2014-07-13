@@ -1,9 +1,4 @@
 $(function(){
-  function url_query2(s)
-  {
-    var idx = (s+'').lastIndexOf('?');
-    return idx == -1 ? '' : s.substr(idx+1);
-  }
   function webframe_url(s)
   {
     var idx = (s+'').lastIndexOf('?');
@@ -15,11 +10,13 @@ $(function(){
     proto = url_protocol(s);
     if(s === undefined || proto === null || protos.indexOf(proto) == -1)
       return false;
-    var query = querystring.parse(url_query2(s));
+    return true;
+/*
+    var query = querystring.parse(librelio_url_query(s));
     for(var i in query)
       if(i.indexOf('wa') === 0)
         return true;
-    return false;
+    return false;*/
   }
   function $element_toggle_visibility($el, b)
   {
@@ -37,7 +34,8 @@ $(function(){
   pdf_viewer.bind('render-link', function(ev, data, page)
      {
        var url_str = data.url,
-       query = querystring.parse(url_query2(url_str));
+       query = querystring.parse(librelio_url_query(url_str));
+
        if(is_webframe(url_str) && !data.element)
        {
          var data_wa = data.wa = {};
@@ -102,9 +100,13 @@ $(function(){
     }
     function toggleFullWindow(b)
     {
+      b = typeof b == 'undefined' ? !$frame_wrp.hasClass('fullscreen-view') : b;
       $('body').toggleClass('in-fullscreen-view', b);
       $frame_wrp.toggleClass('fullscreen-view', b);
-      update_frame_size();
+      setTimeout(function()
+        {
+          update_frame_size();
+        });
     }
     function init_frame()
     {
@@ -129,6 +131,7 @@ $(function(){
           {
             switch_to_link();
             toggleFullWindow(false);
+            $close_btn.remove();
           });
       }
       update_frame_size();

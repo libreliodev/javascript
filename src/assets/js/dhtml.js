@@ -28,22 +28,24 @@
   function list_init()
   {
     // initialize list-items by data-id
-    var self = this,
-    lis = {},
-    first_li;
-    self.find(' > li').each(function()
+    return this.each(function()
       {
-        var $this = $(this),
-        id = $this.data('id') || 'default';
-        if(!first_li)
-          first_li = id;
-        lis[id] = $this;
-        $this.remove();
-      })
-      self.data('list-items', lis);
-    if(!self.data('default-list-item'))
-      self.attr('data-default-list-item', first_li);
-    return self;
+        var self = $(this),
+        lis = {},
+        first_li;
+        self.find(' > *').each(function()
+          {
+            var $this = $(this),
+            id = $this.data('id') || 'default';
+            if(!first_li)
+              first_li = id;
+            lis[id] = $this;
+            $this.remove();
+          });
+        self.data('list-items', lis);
+        if(!self.data('default-list-item'))
+          self.attr('data-default-list-item', first_li);
+      });
   }
 
   var m_parse_keys = {
@@ -211,8 +213,6 @@
   function m_eval(s, contexts, thisarg)
   {
     var exprs = m_parse(s);
-    if(!exprs)
-      return;
     return m_eval_subrout(exprs, contexts, thisarg)[0];
   }
   function m_eval_subrout(exprs, contexts, thisarg)
@@ -296,7 +296,21 @@
   }
   function list_items_update(contexts)
   {
+    this.dhtml('item_update', contexts);
     this.find('*').dhtml('item_update', contexts);
+  }
+  function eq_list(s, cb)
+  {
+    var akeys = s.split(',');
+    $.each(akeys, function(i, k)
+      {
+        var idx = k.indexOf('='),
+        key = idx == -1 ? k : k.substr(0, idx),
+        val = idx == -1 ? k : k.substr(idx + 1);
+        if(!key || !val)
+          return;
+        cb(key, val);
+      });
   }
   function item_update(contexts)
   {
@@ -312,17 +326,31 @@
         val = m_eval($el.data('key') || '', contexts, $el);
         if(val || val === '')
           $el.text(val+'');
-        var akeys = ($el.data('attr-keys') || '').split(',');
-        $.each(akeys, function(i, k)
+        eq_list(($el.data('attr-keys') || ''), function(attr, val)
           {
-            var idx = k.indexOf('='),
-            attr = idx == -1 ? k : k.substr(0, idx),
-            key = idx == -1 ? k : k.substr(idx + 1);
-            if(!attr || !key)
-              return;
-            var val = m_eval(key+'', contexts, $el);
+            var val = m_eval(val, contexts, $el);
             if(val !== null || val !== undefined)
               $el.attr(attr, val+'');
+          });
+        eq_list(($el.data('bind') || ''), function(key, val_str)
+          {
+            var exprs = m_parse(val_str);
+            if(exprs.length == 1 && exprs[0].type == 'var' && !exprs[0].call)
+            {
+              var val = m_eval_subrout(exprs, contexts, $el)[0];
+              if(typeof val != 'function')
+                throw new Error("Couldn't bind on " + key + ", `" + val_str + 
+                                "` is not a function");
+              $el.bind(key, val);
+            }
+            else
+            {
+              $el.bind(key, function()
+                {
+                  var res = m_eval_subrout(exprs, contexts, $el);
+                  return res[res.length - 1];
+                });
+            }
           });
       });
   }

@@ -31,7 +31,8 @@ $(function(){
      });
   pdf_viewer.bind('openlink', function(ev, obj)
      {
-       var data = obj.data;
+       var data = obj.data,
+       path_str = url('path', data.url);
        
        // buy:// protocol
        if(data.protocol == 'buy')

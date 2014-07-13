@@ -1,5 +1,8 @@
 // pdfreader
 @import "../../../assets/less/pdfviewer";
+@import "../../../assets/less/pdfviewer-slideshow";
+@import "../../../assets/less/pdfviewer-video-player";
+@import "../../../assets/less/pdfviewer-webframe";
 
 .pdfviewer-wrapper {
   position: relative;
@@ -26,8 +29,12 @@
   height: 35px;
   background: white;
   z-index: 4;
-  .dropdown-toggle {
+  white-space: nowrap;
+  .dropdown-toggle, button {
     border-color: transparent;
+  }
+  > * {
+    display: inline-block;
   }
 }
 

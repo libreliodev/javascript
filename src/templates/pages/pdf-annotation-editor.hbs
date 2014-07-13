@@ -9,11 +9,18 @@ javascripts:
 - lib/async.js
 - lib/RequestAnimationFrame.js
 - lib/tween.min.js
+- lib/video-js/video.dev.js
+- lib/flexslider/jquery.flexslider-min.js
 - js/helper.js
 - js/pagecurl.js
 - js/pdfviewer.js
 - js/pages/pdf-annotation-editor.js
+- js/pdfviewer-video-player.js
+- js/pdfviewer-slideshow.js
+- js/pdfviewer-webframe.js
 stylesheets:
+- lib/video-js/video-js.css
+- lib/flexslider/flexslider.css
 - css/pages/pdf-annotation-editor.css
 theme: dark-bkg
 empty_page: 1
@@ -25,12 +32,13 @@ empty_page: 1
       <span class="caret"></span>
     </button>
     <ul class="dropdown-menu" role="menu" aria-labelledby="file-dropdown-btn">
-      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="load-btn">Load</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="open-btn">Open</a></li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="save-btn">Save</a></li>
       <li role="presentation" class="divider"></li>
       <li role="presentation"><a role="menuitem" tabindex="-1" href="index.html">Back</a></li>
     </ul>
   </div>
+  <button id="preview-btn" class="btn btn-default" type="button">Preview</button>
 </div>
 <div class="annot-edit-sidebar">
   <div class="new-elements">
@@ -53,6 +61,23 @@ empty_page: 1
     </div>
     <div class="form-group">
       <input type="text" name="link" placeholder="Link" />
+    </div>
+    <div class="form-group">
+      <label>Rect:</label>
+      <label class="radio-inline">
+        <input type="radio" name="warect" value="self" /> 
+        <span>Self</span>
+      </label>
+      <label class="radio-inline">
+        <input type="radio" name="warect" value="full" /> 
+        <span>Full</span>
+      </label>
+    </div>
+    <div class="form-group">
+      <label class="checkbox-inline">
+        <input type="checkbox" name="waplay" value="auto" /> 
+        <span>Autoplay</span>
+      </label>
     </div>
     <div class="form-group">
       <button id="remove-link-btn" type="submit" class="btn btn-default">Remove Selected Link</button>
@@ -87,30 +112,4 @@ empty_page: 1
   </div>
   <div class="pdfviewer-loadingscreen" data-target=".pdfviewer"><span localize>Loading...</span></div>
 </div>
-<!-- Open Publication Dialog -->
-<div id="librelio-open-publication-dlg" class="modal fade">
-  <div class="modal-dialog">
-    <div class="modal-content">
-      <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-        <h5>
-          <span class="select-publication">Select a publication</span>
-          <span class="select-type">Select type of publication</span>
-        </h5>
-      </div>
-      <div class="modal-body">
-        <ul class="select-publication">
-          <li data-id="default">
-            <a href="#" data-key="publication"></a>
-          </li>
-        </ul>
-        <ul class="select-type">
-          <li data-id="default">
-            <a href="#" data-key="type_title"></a>
-          </li>
-        </ul>
-      </div>
-    </div>
-  </div>
-</div>
-<!-- End Section -->
+{{> open_publication_dialog }}

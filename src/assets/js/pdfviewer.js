@@ -271,6 +271,7 @@
           rect[1] += canvasOffset.top - annotDivOffset.top;
           self.trigger('new-link', [ data, page ]);
           self.trigger('render-link', [ data, page ]);
+          
           if(!data.element)
           {
             var click_b = true,
@@ -327,16 +328,37 @@
                   {
                     if(!click_b)
                       return false;
-                    try {
-                      var dest = typeof data.dest == 'string' ? 
-                        dests[data.dest][0] : data.dest[0];
-                      doc.getPageIndex(dest).then(function(index)
-                        {
-                          self.pdfviewer('openPage', index + 1);
-                        });
-                    }catch(e) {
+                    var obj = {
+                      data: data
+                    };
+                    self.trigger('openlink', [ obj, page ]);
+                    if(obj.return_value !== false)
+                    {
+                      try {
+                        var dest = typeof data.dest == 'string' ? 
+                          dests[data.dest][0] : data.dest[0];
+                        doc.getPageIndex(dest).then(function(index)
+                          {
+                            self.pdfviewer('openPage', index + 1);
+                          });
+                      }catch(e) {
+                      }
                     }
                     return false;
+                  });
+            }
+            else
+            {
+              element.attr('href', '#')
+                .click(function()
+                  {
+                    if(!click_b)
+                      return false;
+                    var obj = {
+                      data: data
+                    };
+                    self.trigger('openlink', [ obj, page ]);
+                    return obj.return_value;
                   });
             }
             data.element = element[0];
@@ -348,7 +370,6 @@
           {
             dests = res;
           });
-
         if(o.display_links)
         {
           // set links
@@ -364,6 +385,12 @@
               continue;
             var element = createLink(data);
             $annotationLayerDiv.append(element);
+          }
+          if(page.extra_links)
+          {
+            var extra_links = page.extra_links;
+            for(var i = 0, l = extra_links.length; i < l; ++i)
+              $annotationLayerDiv.append(createLink(extra_links[i]));
           }
         }
       });
@@ -411,6 +438,8 @@
             operation_complete(next, err, pages);
             if(!o.silent)
               self.trigger('curPages-changed', [ pages ]);
+            typeof o._onCurPagesChange == 'function' && 
+              o._onCurPagesChange(pages);
           });
       },
       function(pages, next)
@@ -479,7 +508,17 @@
                       function callback(err)
                       {
                         if(!err)
+                        {
+                          rect[2] += rect[0] > 0 ? 0 : rect[0];
+                          rect[3] += rect[0] > 0 ? 0 : rect[0];
+                          rect[0] = rect[0] < 0 ? 0 : rect[0];
+                          rect[1] = rect[1] < 0 ? 0 : rect[1];
+                          if(rect[2] + rect[0] > canvas.width)
+                            rect[2] = canvas.width - rect[0];
+                          if(rect[3] + rect[1] > canvas.height)
+                            rect[3] = canvas.height - rect[1];
                           ctx.drawImage(spare_canvas, rect[0], rect[1]);
+                        }
                         cb(err);
                       }
                     },
@@ -867,7 +906,11 @@
           links_div: o.links_div ? $(o.links_div).clone()[0] : null,
           zoom: o.zoom,
           silent: true,
-          book_mode_fist_page_odd: o.book_mode_fist_page_odd
+          book_mode_fist_page_odd: o.book_mode_fist_page_odd,
+          _onCurPagesChange: function(pages)
+          {
+            self.trigger('pagecurl-curPages-changed', [ pages ]);
+          }
         };
         $(ev_box).bind('clear', cancelRender);
         update_canvas_object.call(self, o.pdfDoc, spare_canvas, p_opts,
@@ -897,10 +940,10 @@
         pc_default_opts = {
           canvas: canvas,
           grabbable: true,
-          corner_epsilon_x: corner_offset,
-          corner_epsilon_y: corner_offset
         },
-        rendering;
+        rendering,
+        corner_epsilon_x = 100,
+        corner_epsilon_y = 100;
         copy_canvas(spare_canvas, canvas);
         on($(ev_box), releaser, 'clear', destroy);
         pagecurl_data.curlpage = function(pagecurl, cb)
@@ -1002,7 +1045,8 @@
             rect = curPage.rect,
             page_data = i === 0 ? prev_page_data : next_page_data;
             var pages = page_data ? page_data.curPages : null, 
-            rect0 = null, rect1 = null;
+            rect0 = null, rect1 = null,
+            scale = curPage.viewport ? curPage.viewport.scale : 1;
             if(pages)
             {
               rect0 = i === 0 ? pages[0].rect : pages[1].rect;
@@ -1024,7 +1068,9 @@
                   image: spare_canvas,
                   src_rect: rect
                 },
-                grabbable: !!pages
+                grabbable: !!pages,
+                corner_epsilon_x: corner_epsilon_x * scale,
+                corner_epsilon_y: corner_epsilon_y * scale
               }));
             if(i === 0)
               pagecurl_data.previous = pagecurl;
@@ -1066,7 +1112,8 @@
           var page_data = i === 0 ? prev_page_data : next_page_data;
           if(!page_data || !page_data.curPages)
             continue;
-          var other_page = page_data.curPages[0];
+          var other_page = page_data.curPages[0],
+          scale = curPage.viewport ? curPage.viewport.scale : 1,
           pagecurl = new PageCurl(
             $.extend({}, pages_opts[i], pc_default_opts,{
               page_data: page_data,
@@ -1080,7 +1127,9 @@
                 image: spare_canvas,
                 src_rect: rect
               },
-              grabbable: true
+              grabbable: true,
+              corner_epsilon_x: corner_epsilon_x * scale,
+              corner_epsilon_y: corner_epsilon_y * scale
             }));
           if(i === 0)
             pagecurl_data.previous = pagecurl;
@@ -1490,6 +1539,13 @@
       o._page_sel_height = $el.height();
       if(!v)
         $el.hide();
+    },
+    update: function()
+    {
+      var self = this,
+      o = self.data(pvobj_key);
+      if(o.canvas && o.pdfDoc)
+        this.pdfviewer('update_canvas_object', o.pdfDoc, o.canvas);
     },
     reupdate_canvas_object: function(doc, canvas, cb)
     {
