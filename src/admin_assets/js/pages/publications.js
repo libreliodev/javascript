@@ -40,6 +40,20 @@ $(function() {
                   return false;
               }
           });
+  $pubDlg.find('.pdfannotedit-btn').bind('click', function()
+          {
+              var pub = $pubDlg.find('input[name=FolderName]').val(),
+              filename = pubDlgEvalAttr($(this).data('filename'));
+              if(filename)
+              {
+                  window.open('pdf-annotation-editor.html?' + 
+                              path.stringifyQuery({
+                                waurl: appDir + '/' + pub + '/' + filename
+                              }), '_blank');
+                  return false;
+              }
+          });
+
 
     $("#asset-uploader").pluploadQueue({
         // General settings
@@ -201,8 +215,13 @@ $(function() {
         $upload.find('input[type=file]').each(function()
             {
                 var file = uploadElEvalFilename(this),
-                is_svg = (path.fileExtension(file) == '.svg');
-                $upload.toggleClass('fileinput-svg', is_svg);
+                extensions = [ 'pdf', 'svg' ];
+                for(var i = 0, l = extensions.length; i < l; ++i)
+                {
+                  var ext = extensions[i];
+                  $upload.toggleClass('fileinput-' + ext, 
+                                      (path.fileExtension(file) == '.' + ext));
+                }
             });
     }
     function uploadFileUpdateExtension(inp)
