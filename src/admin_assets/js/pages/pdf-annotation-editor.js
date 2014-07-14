@@ -98,7 +98,7 @@ $(function(){
          data.real_url = data.url;
          data.url = librelio_pdf_resolve_url(data.url, pdf_url_dir);
        }
-     })
+     });
 
 
   // File menu callbacks
@@ -132,8 +132,8 @@ $(function(){
            progdlg.modal('hide');
            if(err)
              return notifyUserError(err);
-           else
-             localStorage.setItem(annots_key, '');
+           
+           localStorage.setItem(annots_key, '');
          });
     });
   $('#preview-btn').click(function()
@@ -502,30 +502,58 @@ $(function(){
       }
       annotationsHasChanged();
     });
-  links_props.find('input[name=warect],input[name=waplay]').change(function(ev)
+  links_props.find('.link-query').each(function()
     {
-      if(!selected_annot)
-        return;
-      if(!selected_annot.value_query)
+      var type = this.type;
+      switch(type)
       {
-        this.checked = false;
-        return false;
+      case 'checkbox':
+      case 'radio':
+        $(this).change(function()
+          {
+            if(!selected_annot)
+              return;
+            if(!selected_annot.value_query)
+            {
+              this.checked = false;
+              return false;
+            }
+            if(this.checked)
+            {
+              selected_annot.value_query[this.name] = this.value;
+              link_annot_update(selected_annot);
+            }
+            else
+            {
+              var value = selected_annot.value_query[this.name];
+              if(value == this.value)
+              {
+                delete selected_annot.value_query[this.name];
+                link_annot_update(selected_annot);
+              }
+            }
+            annotationsHasChanged();
+          });
+        break;
+      case 'select-one':
+      case 'text':
+      default:
+        $(this).bind(type == 'select-one' ? 'change' : 'input', function(e)
+          {
+            if(!selected_annot)
+              return;
+            if(!selected_annot.value_query)
+              return false;
+            var value = this.value;
+            if(value != '')
+              selected_annot.value_query[this.name] = value;
+            else
+              delete selected_annot.value_query[this.name];
+            link_annot_update(selected_annot);
+            annotationsHasChanged();
+          });
+        break;
       }
-      if(this.checked)
-      {
-        selected_annot.value_query[this.name] = this.value;
-        link_annot_update(selected_annot);
-      }
-      else
-      {
-        var value = selected_annot.value_query[this.name];
-        if(value == this.value)
-        {
-          delete selected_annot.value_query[this.name];
-          link_annot_update(selected_annot);
-        }
-      }
-      annotationsHasChanged();
     });
   function link_annot_update(annot)
   {
@@ -542,9 +570,46 @@ $(function(){
       {
         selected_annot.value_link = this.value;
         link_annot_update(selected_annot);
+        if(selected_annot.linktype == 'url')
+        {
+          switch_url_type(selected_annot,
+           $.fn.pdfviewer.is_slideshow(selected_annot.value_link) ? 'img' : '');
+        }
       }
       annotationsHasChanged();
     });
+  function switch_url_type(data, type)
+  {
+    links_props.toggleClass('img-link-props', type == 'img');
+    var changed;
+    links_props.find('.img-prop .link-query').each(function()
+      {
+        if(type == 'img')
+        {
+          switch(this.type)
+          {
+          case 'checkbox':
+          case 'radio':
+          case 'select-one':
+            $(this).trigger('change');
+            break;
+          case 'text':
+          default:
+            $(this).trigger('input');
+          }
+        }
+        else
+        {
+          if(data.value_query[this.name])
+          {
+            delete data.value_query[this.name];
+            changed = true;
+          }
+        }
+      });
+    if(changed)
+      link_annot_update(data);
+  }
   function annotation_select(data, $el)
   {
     var $links_div = $(pdf_viewer.pdfviewer('get', 'links_div'));
@@ -561,14 +626,36 @@ $(function(){
         {
           this.checked = this.value == data.linktype;
         });
-      links_props.find('input[name=warect],input[name=waplay]').each(function()
+      links_props.find('.link-query').each(function()
         {
-          this.checked = data.value_query && 
-            this.value == data.value_query[this.name];
+          if(!data.value_query)
+            return;
+          update_input_element_with_annot(this, data);
         });
       links_props.find('input[name=link]').val(
         (data.linktype == 'url' ? data.value_link : data.value) || '');
+      if(data.linktype == 'url')
+      {
+        switch_url_type(data,
+           $.fn.pdfviewer.is_slideshow(selected_annot.value_link) ? 'img' : '');
+      }
       break;
+    }
+  }
+  function update_input_element_with_annot(el, data)
+  {
+    switch(el.type)
+    {
+    case 'checkbox':
+    case 'radio':
+      el.checked = el.value == data.value_query[el.name];
+      break;
+    case 'select-one':
+      $(el).val(data.value_query[el.name]||'');
+      break;
+    case 'text':
+    default:
+      el.value = data.value_query[el.name]||'';
     }
   }
   function annot_editor_link_create(data, page)

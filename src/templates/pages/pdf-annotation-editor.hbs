@@ -65,19 +65,37 @@ empty_page: 1
     <div class="form-group">
       <label>Rect:</label>
       <label class="radio-inline">
-        <input type="radio" name="warect" value="self" /> 
+        <input type="radio" class="link-query" name="warect" value="self" /> 
         <span>Self</span>
       </label>
       <label class="radio-inline">
-        <input type="radio" name="warect" value="full" /> 
+        <input type="radio" class="link-query" name="warect" value="full" /> 
         <span>Full</span>
       </label>
     </div>
     <div class="form-group">
       <label class="checkbox-inline">
-        <input type="checkbox" name="waplay" value="auto" /> 
+        <input type="checkbox" class="link-query" name="waplay" value="auto" /> 
         <span>Autoplay</span>
       </label>
+    </div>
+    <div class="form-group img-prop">
+      <label>Delay</label>
+      <input type="number" class="link-query" name="wadelay" placeholder="Delay (ms)" />
+    </div>
+    <div class="form-group img-prop">
+      <label>Transition</label>
+      <select class="link-query" name="watransition">
+        <option value="">Slide</option>
+        <option value="none">None</option>
+      </select>
+    </div>
+    <div class="form-group img-prop">
+      <label>Background Color</label>
+      <select class="link-query" name="wabgcolor">
+        <option value=""></option>
+        <option value="white">White</option>
+      </select>
     </div>
     <div class="form-group">
       <button id="remove-link-btn" type="submit" class="btn btn-default">Remove Selected Link</button>
