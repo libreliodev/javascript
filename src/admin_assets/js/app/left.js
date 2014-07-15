@@ -21,7 +21,7 @@ function leftStatusBarUpdate()
         awsS3.getSignedUrl('getObject', {
             Bucket: config.s3Bucket,
             Key:  s3AuthObj.rootDirectory + "/" + app_name +
-                "/APP/SOURCES/iOS/Icon.png"
+                "/APP_/Uploads/logo"
         }, function(err, url)
            {
                if(err)
