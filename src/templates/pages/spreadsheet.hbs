@@ -5,19 +5,28 @@ stylesheets:
 - lib/handsontable/jquery.handsontable.full.css
 - css/pages/spreadsheet.min.css
 javascripts:
+- lib/querystring.min.js
+- lib/path.min.js
+- lib/url.min.js
+- js/helper.js
 - lib/handsontable/jquery.handsontable.full.js
 - js/pages/spreadsheet.js
 empty_page: 1
 ---
-<div class="btn-group">
-  <button id="clear-btn" type="button" class="btn btn-danger">Clear</button>
-  <button id="save-btn" type="button" class="btn btn-success">Save</button>
-  <button id="load-btn" type="button" class="btn btn-default">Load</button>
-</div>
-<div class="checkbox">
-  <label>
-    <input id="autosave_b" type="checkbox" checked> Autosave
-  </label>
+<div class="editor-main-menu">
+  <div class="dropdown">
+    <button id="file-dropdown-btn" class="btn btn-default dropdown-toggle" type="button" data-toggle="dropdown">
+      File
+      <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="file-dropdown-btn">
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="open-btn">Open</a></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="#" id="save-btn">Save</a></li>
+      <li role="presentation" class="divider"></li>
+      <li role="presentation"><a role="menuitem" tabindex="-1" href="index.html">Back</a></li>
+    </ul>
+  </div>
 </div>
 <div id="status-msg"></div>
 <div id="spreadsheet"></div>
+{{> open_publication_dialog }}
