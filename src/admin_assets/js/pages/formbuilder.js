@@ -35,7 +35,7 @@ $(function(){
     {
       openPublicationDialog({
         app_dir: app_dir,
-        extension: '.fb.json'
+        extension: '.form.json'
       }, function(err, res)
          {
            if(err)
