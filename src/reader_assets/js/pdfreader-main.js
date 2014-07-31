@@ -1,23 +1,29 @@
 var doc_query = querystring.parse(get_url_query(document.location+'')),
 pdf_url = doc_query ? doc_query.waurl : null,
 external_b = doc_query ? typeof doc_query.external != 'undefined' : null,
-pdf_url_dir;
+pdf_url_dir, pdf_url_lquery, pdf_target_page;
 if(pdf_url)
 {
   if(!external_b)
     pdf_url = s3bucket_file_url(pdf_url);
   pdf_url_dir = url_dir(pdf_url);
+  pdf_url_lquery = querystring.parse(librelio_url_query(pdf_url));
+  pdf_target_page = parseInt(url('#', document.location+'') || 
+                             pdf_url_lquery.wapage);
 }
+
 
 $(function(){
   var pdf_viewer = $('.pdfviewer');
   if(pdf_url)
   {
     PDFJS.disableRange = false;
+    if(!isNaN(pdf_target_page))
+       pdf_viewer.pdfviewer('set', 'curPageIndex', pdf_target_page);
     pdf_viewer.pdfviewer('loadDocument', pdf_url, function(err)
       {
         if(err)
-          notifyError(err);
+          return notifyError(err);
       });
   }
   pdf_viewer.bind('new-link', function(ev, data, page)
