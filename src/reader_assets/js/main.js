@@ -134,12 +134,19 @@ function purchase_dialog_submit(opts, cb)
         }
         else if(opts.type == 'code')
           auth_obj.code = query.code;
-        localStorage.setItem('reader-auth', JSON.stringify(auth_obj));
+         localStorage.setItem('reader-auth', JSON.stringify(auth_obj));
         if(!opts.urlstring)
           show_login_result();
         else
+        {
+          var path_str = url_path_plus(url_str),
+          prefix = opts.client + '/' + opts.app + '/',
+          pidx = path_str.indexOf(prefix);
+          if(pidx > -1 && ((pidx == 1 && path_str[0] == '/') || pidx === 0 ))
+            path_str = path_str.substr(pidx + prefix.length);
           document.location = 'pdfreader.html?waurl=' + 
-            encodeURIComponent(url_path_plus(url_str));
+            encodeURIComponent('/' + path_str);
+        }
         cb && cb(true);
       }
       else
@@ -191,4 +198,21 @@ function magazine_name_free2paid(fn, noext)
   var ext = path.extname(fn),
   bn = path.join(path.dirname(fn), path.basename(fn, ext));
   return bn + '_'  + (noext ? '' : ext);
+}
+
+function application_info_load(cb)
+{
+  var app_url = 'application_.json'
+  $.ajax(app_url, {
+    dataType: 'json',
+    success: function(app_data)
+    {
+      cb(undefined, app_data);
+    },
+    error: function(xhr, err_text)
+    {
+      cb(sprintf(_("Couldn't load `%s`: %s"), app_url,
+                 textStatus));
+    }
+  });
 }

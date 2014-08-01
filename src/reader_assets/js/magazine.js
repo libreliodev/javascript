@@ -4,13 +4,14 @@ $(function(){
   app_data,
   MAG_TYPE_FREE = 'Free',
   MAG_TYPE_PAID = 'Paid',
-  refresh_timeout,
-  url_str = 'application_.json';
+  refresh_timeout;
+
   magazines_init(magazines_list);
-  $.ajax(url_str, {
-    dataType: 'json'
-  }).done(function(data)
+
+  application_info_load(function(err, data)
      {
+       if(err)
+         return notifyError(err);
        // get update rate it's in minutes
        var q = querystring.parse(get_url_query(data.root_view)) || {},
        update_every = parseFloat(q.waupdate);
@@ -22,12 +23,7 @@ $(function(){
        if(data.background)
          $('.reader-background').css('backgroundImage', 
                   'url("' + magazine_file_url(data, data.background) +'")');
-     })
-  .fail(function(jqXHR, textStatus, err)
-     {
-       notifyError(sprintf(_("Couldn't load `%s`: %s"), url_str,
-                           textStatus));
-     })
+     });
   function magazines_loaded_handle(err)
   {
     notifyIfError(err);
@@ -72,7 +68,8 @@ $(function(){
         {
           if(ext == '.pdf')
             url = 'pdfreader.html?waurl=' + 
-            encodeURIComponent(magazine_file_key(app_data, fn));
+            encodeURIComponent('/' + fn); // using leading slash it will load
+                                          // file from application's storage
           else
             url = magazine_file_url(app_data, fn);
         
