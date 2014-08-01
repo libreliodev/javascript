@@ -701,6 +701,8 @@
       set_method_call_update(self, o, 'update_page_selector');
       if(o.canvas)
       {
+        if(o.curPageIndex <= 0 || o.curPageIndex > doc.numPages)
+          o.curPageIndex = 1;
         set_method_call_update(self, o, 'set_canvas_size', null);
         set_method_call_update(self, o, 'update_canvas_object', doc, o.canvas);
       }

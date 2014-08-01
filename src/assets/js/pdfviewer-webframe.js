@@ -36,7 +36,7 @@ $(function(){
        var url_str = data.url,
        query = querystring.parse(librelio_url_query(url_str));
 
-       if(is_webframe(url_str) && !data.element)
+       if(url_str && is_webframe(url_str) && !data.element)
        {
          var data_wa = data.wa = {};
          for(var i in query)
@@ -58,7 +58,7 @@ $(function(){
      {
        var data = obj.data,
        url_str = data.url;
-       if(is_webframe(url_str) && obj.return_value !== false)
+       if(url_str && is_webframe(url_str) && obj.return_value !== false)
        {
          var el = data.element._frame_el || $('<div/>')[0];
          el._link_el = data.element;
