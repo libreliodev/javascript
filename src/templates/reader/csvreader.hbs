@@ -1,0 +1,20 @@
+---
+title: CSV Reader
+javascripts:
+- lib/querystring.min.js
+- lib/path.min.js
+- lib/async.js
+- lib/d3.min.js
+- js/csvreader.js
+stylesheets:
+theme: light-bkg
+---
+<div id="csvreader">
+  <table id="csvtable">
+    <tbody>
+      <tr data-foreach="rows as row">
+        <td data-foreach="row as col" data-content="col"></td>
+      </tr>
+    </tbody>
+  </table>
+</div>

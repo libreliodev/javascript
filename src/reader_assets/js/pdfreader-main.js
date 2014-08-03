@@ -1,42 +1,21 @@
-var doc_query = querystring.parse(get_url_query(document.location+'')),
-pdf_url = doc_query ? doc_query.waurl : null,
-external_b = doc_query ? typeof doc_query.external != 'undefined' : null,
-app_data,
-pdf_url_dir, pdf_url_lquery, pdf_target_page;
-
-$(function(){
+var pdf_url_lquery, pdf_target_page;
+initialize_reader(function(app_data, pdf_url, pdf_url_dir, 
+                           external_b, doc_query) {
   if(!pdf_url)
     return;
   var pdf_viewer = $('.pdfviewer');
-  application_info_load(function(err, data)
+  pdf_url_lquery = querystring.parse(librelio_url_query(pdf_url));
+  pdf_target_page = parseInt(url('#', document.location+'') || 
+                             pdf_url_lquery.wapage);
+
+
+  PDFJS.disableRange = true;
+  if(!isNaN(pdf_target_page))
+    pdf_viewer.pdfviewer('set', 'curPageIndex', pdf_target_page);
+  pdf_viewer.pdfviewer('loadDocument', pdf_url, function(err)
     {
       if(err)
         return notifyError(err);
-      app_data = data;
-
-
-      // pdf_url is special formed path
-      // if it has leading slash it's a file from application storage
-      // otherwise treat it as it's a external link
-      if(!external_b && pdf_url[0] == '/')
-        pdf_url = s3bucket_file_url(data.client_name + '/' + 
-                                    data.magazine_name + pdf_url);
-      else
-        external_b = true;
-      pdf_url_dir = url_dir(pdf_url);
-      pdf_url_lquery = querystring.parse(librelio_url_query(pdf_url));
-      pdf_target_page = parseInt(url('#', document.location+'') || 
-                                 pdf_url_lquery.wapage);
-
-
-      PDFJS.disableRange = false;
-      if(!isNaN(pdf_target_page))
-        pdf_viewer.pdfviewer('set', 'curPageIndex', pdf_target_page);
-      pdf_viewer.pdfviewer('loadDocument', pdf_url, function(err)
-        {
-          if(err)
-            return notifyError(err);
-        });
     });
   pdf_viewer.bind('new-link', function(ev, data, page)
      {

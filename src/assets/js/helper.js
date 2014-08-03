@@ -50,7 +50,7 @@ function url_dir(s)
 {
   var url_str = url_till_hostname(s),
   dirname = path.dirname(url_str === '' ? s : url('path', s));
-  return url_str + (dirname[0] == '/' ? '' : '/') + dirname;
+  return url_str + (!url_str || dirname[0] == '/' ? '' : '/') + dirname;
 }
 function url_path_plus(url_str)
 {

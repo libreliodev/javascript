@@ -581,6 +581,12 @@ module.exports = function (grunt) {
                         src: ['*.js'],
                         dest: reader_assets_dist_dir + '/js/'
                     },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/d3',
+                        src: ['d3.min.js'],
+                        dest: reader_assets_dist_dir + '/lib'
+                    },
                   
                 ]
             }

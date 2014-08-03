@@ -1,0 +1,25 @@
+<style>
+.tmpl-year {
+  color: blue;
+}
+#csvtable tbody td {
+  padding: 3px 0px;
+}
+#csvtable th {
+  text-align: center;
+}
+</style>
+<table id="csvtable">
+  <thead>
+    <tr>
+      <th style="width:70px" class="tmpl-year">Year</th>
+      <th>Name</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr data-foreach="rows as row">
+      <td class="tmpl-year" data-content="row.0"></td>
+      <td data-content="row.1" style="color:darkred;"></td>
+    </tr>
+  </tbody>
+</table>

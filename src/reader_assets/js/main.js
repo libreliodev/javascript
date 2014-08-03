@@ -216,3 +216,32 @@ function application_info_load(cb)
     }
   });
 }
+
+function initialize_reader(cb)
+{
+  var doc_query = querystring.parse(get_url_query(document.location+'')),
+  url_str = doc_query ? doc_query.waurl : null,
+  external_b = doc_query ? typeof doc_query.external != 'undefined' : null,
+  url_str_dir;
+
+  $(function(){
+    application_info_load(function(err, data)
+      {
+        if(err)
+          return notifyError(err);
+        if(url_str)
+        {
+          // url_str is special formed path
+          // if it has leading slash it's a file from application storage
+          // otherwise treat it as it's a external link
+          if(!external_b && url_str[0] == '/')
+            url_str = s3bucket_file_url(data.client_name + '/' + 
+                                        data.magazine_name + url_str);
+          else
+            external_b = true;
+          url_str_dir = url_dir(url_str);
+        }
+        cb(data, url_str, url_str_dir, external_b, doc_query);
+      });
+  });
+}
