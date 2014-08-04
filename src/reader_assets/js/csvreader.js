@@ -14,16 +14,65 @@ initialize_reader(function()
       {
         if(err)
           return notifyError(err);
-gcsv =csv;
-        var cols_info = get_columns_info();
-        initiate_filters(csv, cols_info);
+        initiate_filters(csv);
+        initiate_sortable_columns(csv);
         update_csvreader(csv);
       });
   });
-function initiate_filters(csv, cols_info)
+function initiate_sortable_columns(csv)
+{
+  var cols_info = csv.columns_info;
+
+  $(cols_info).bind('update-elements', function()
+    {
+      // insert sortable extra elements (icons)
+      for(var i in cols_info)
+        update_th(cols_info[i]);
+    });
+  function update_th(col)
+  {
+    var $th = col.$th,
+    sort_info = col.sort_info,
+    sort_b = col.key && csv.sorted_key === col.key;
+    if(col.sortable)
+    {
+      $th.toggleClass('sortable', true)
+        .toggleClass('sorted', sort_b)
+        .click(function()
+          {
+            var order = sort_info.SortOrder;
+            sort_info.SortOrder = order == 'desc' ? null :
+              (order == 'asec' ? 'desc' : 'asec');
+            var pcol = cols_info[csv.sorted_key];
+            if(pcol && pcol !== col)
+              pcol.SortOrder = null;
+            if(sort_info.SortOrder)
+            {
+              csv.sorted_key = col.key;
+              csv.order = col.key + ' ' + sort_info.SortOrder;
+            }
+            else
+            {
+              csv.sorted_key = undefined;
+              csv.order = undefined;
+            }
+            update_csvreader(csv);
+            return false;
+          });
+    }
+    if(sort_b)
+    {
+      $th.append('<i class="sort-icon glyphicon ' +  
+              (sort_info.SortOrder == 'asec' ? 
+               'glyphicon-chevron-up' : 'glyphicon-chevron-down') + '"></i>');
+    }
+  }
+}
+function initiate_filters(csv)
 {
   csvfilters.html('');
-  var items = [];
+  var cols_info = csv.columns_info,
+  items = [];
   for(var key in cols_info)
   {
     var col_info = cols_info[key],
@@ -196,7 +245,9 @@ function load_csv(csv_url, csv_url_dir, cb)
         }
       }
       ret.rowsDB = TAFFY(dbrows);
-      
+
+      ret.columns_info = get_columns_info();
+
       cb(undefined, ret);
     });
 }
@@ -213,15 +264,34 @@ function update_csvreader(csv)
 {
   // insert template
   csvreader.html(csv.template);
-  var query = csv.rowsDB();
+  var cols_info = csv.columns_info,
+  query = csv.rowsDB();
   if(csv.rowFilters)
     for(var i = 0, l = csv.rowFilters.length; i < l; ++i)
       query = query.filter(csv.rowFilters[i])
+  if(csv.order)
+    query = query.order(csv.order);
   var ctx = {
     columns: csv.columns,
     rows: query.get().map(function(a) { return a.__row; })
   };
   csvreader.dhtml('item_init', ctx, { recursive: true });
+  
+  update_csvreader_columns_element(cols_info)
+}
+
+function update_csvreader_columns_element(cols_info)
+{
+  var $ths = $('#csvtable thead th');
+  for(var i = 0, l = $ths.length; i < l; ++i)
+  {
+    var $th = $ths.eq(i),
+    key = $th.data('key') || i+'',
+    col = cols_info[key];
+    if(col)
+      col.$th = $th;
+  }
+  $(cols_info).trigger('update-elements');
 }
 
 function get_columns_info()
@@ -234,20 +304,28 @@ function get_columns_info()
     key = $th.data('key') || i+'',
     col;
     ret[key] = col = {
+      key: key,
       name: $th.data('name'),
       filterable: typeof $th.data('filterable') == 'string',
       sortable: typeof $th.data('sortable') == 'string',
       $th: $th
     };
-    try {
-      if(col.filterable)
-        col.filter_info = $.plist('parse', $th.find('.filter-info'));
-    } catch(e) {
+    if(col.filterable)
+    {
+      try {
+        col.filter_info = $.plist('parse', $th.find('.filter-info')) || {};
+      } catch(e) {
+        col.filter_info = {};
+      }
     }
-    try {
-      if(col.sortable)
-        col.sort_info = $.plist('parse', $th.find('.sort-info'));
-    } catch(e2) {
+    if(col.sortable)
+    {
+      try {
+        if(col.sortable)
+          col.sort_info = $.plist('parse', $th.find('.sort-info')) || {};
+      } catch(e2) {
+        col.sort_info = {};
+      }
     }
   }
   return ret;
