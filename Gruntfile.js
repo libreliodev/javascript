@@ -587,6 +587,12 @@ module.exports = function (grunt) {
                         src: ['d3.min.js'],
                         dest: reader_assets_dist_dir + '/lib'
                     },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/taffydb/',
+                        src: ['taffy-min.js'],
+                        dest: reader_assets_dist_dir + '/lib'
+                    },
                   
                 ]
             }

@@ -308,7 +308,7 @@
   }
   function eq_list(s, cb)
   {
-    var akeys = s.split(',');
+    var akeys = s.split(';');
     $.each(akeys, function(i, k)
       {
         var idx = k.indexOf('='),
@@ -489,8 +489,10 @@
         for(var key in exprs.attrs)
         {
           tmp = m_eval_expr(exprs.attrs[key], contexts, $el)[0];
-          if(tmp !== null || tmp !== undefined)
+          if(tmp !== null && tmp !== undefined && tmp !== '')
             $el.attr(key, tmp+'');
+          else
+            $el.removeAttr(key);
         }
         
         for(var key in exprs.bind)

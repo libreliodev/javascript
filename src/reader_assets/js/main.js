@@ -217,7 +217,7 @@ function application_info_load(cb)
   });
 }
 
-function initialize_reader(cb)
+function initialize_reader(cb, cb2)
 {
   var doc_query = querystring.parse(get_url_query(document.location+'')),
   url_str = doc_query ? doc_query.waurl : null,
@@ -225,6 +225,7 @@ function initialize_reader(cb)
   url_str_dir;
 
   $(function(){
+    cb2 && cb && cb();
     application_info_load(function(err, data)
       {
         if(err)
@@ -241,6 +242,7 @@ function initialize_reader(cb)
             external_b = true;
           url_str_dir = url_dir(url_str);
         }
+        cb = cb2 ? cb2 : cb;
         cb(data, url_str, url_str_dir, external_b, doc_query);
       });
   });

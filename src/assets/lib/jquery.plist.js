@@ -1,5 +1,11 @@
 (function($) {
-	
+	var newEl = function(el) { document.createElement(el); },
+  // create new plist elements
+  // it maybe used in html
+  tags = [ 'string', 'real', 'true', 'false', 'date', 'data', 'array', 'dict' ];
+  for(var i = 0; i < tags.length; ++i)
+    newEl(tags[i]);
+  
 	var DATE_RE = /(\d\d\d\d)-(\d\d)-(\d\d)(?:T|\s+)(\d\d):(\d\d):(\d\d)\s*(?:Z|([-+])([0-9]{2}):?([0-9]{2}))?/;
 	
 	function parseDate(str) {
@@ -31,8 +37,8 @@
 			    valueNode = nodes[i + 1];
 			
 			// sanity check to make sure this is actually a key
-			if (keyNode.tagName != 'key')
-				throw 'expected <key> but found <' + keyNode.tagName + '>';
+			if (keyNode.tagName.toLowerCase() != 'key')
+				throw 'expected <key> but found <' + keyNode.tagName.toLowerCase() + '>';
 			
 			dict[keyNode.textContent] = parse($(valueNode));
 		}
@@ -48,7 +54,7 @@
 	}
 	
 	function parse(node) {
-		switch ( node[0].tagName ) {
+		switch ( node[0].tagName.toLowerCase() ) {
 			case 'dict'   : return parseDict(node.children());
 			case 'array'  : return parseArray(node.children());
 			case 'string' : return node.text();
@@ -59,7 +65,7 @@
 			case 'true'   : return true;
 			case 'false'  : return false;
 			default:
-				throw "Unable to deserialize " + node[0].tagName;
+				throw "Unable to deserialize " + node[0].tagName.toLowerCase();
 		}
 	}
 
@@ -166,6 +172,10 @@
                 '<plist version="1.0">\n' +
                 plistElementsToString(obj, opts, 1) +
                 '\n</plist>';
+        },
+        parse: function(el)
+        {
+          return parse($(el));
         }
     };
     
