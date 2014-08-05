@@ -1,4 +1,4 @@
-var default_template, csvreader, csvfilters, gcsv;
+var default_template, csvreader, csvfilters, csv_ctx;
 initialize_reader(function()
   {
     csvfilters = $('#csvfilters').dhtml('list_init');
@@ -19,6 +19,40 @@ initialize_reader(function()
         update_csvreader(csv);
       });
   });
+function eval_page(sel, ctx)
+{
+  var $page = $(sel),
+  $tpage = $page.data('template') || $page,
+  $pagei = $tpage.clone();
+
+  $pagei.data('template', $tpage);
+  $page.replaceWith($pagei);
+
+  $pagei.dhtml('item_update', [ ctx, csv_ctx ], { recursive: true });
+
+  return $pagei;
+}
+function open_closeable_page(sel, ctx)
+{
+  var $page = eval_page(sel, ctx);
+  $page.addClass('csv-closeable-page').fadeIn(200);
+  var $close_btn = $('<a/>').addClass('csvpage-close-btn').attr('href', '#'),
+  icon = $('<i/>').addClass('glyphicon glyphicon-remove-circle')
+    .appendTo($close_btn);
+  $page.append($close_btn);
+
+  $close_btn.click(function()
+    {
+      close_page(sel);
+      return false;
+    });
+  
+  return false;
+}
+function close_page(sel)
+{
+  $(sel).fadeOut(200);
+}
 function initiate_sortable_columns(csv)
 {
   var cols_info = csv.columns_info;
@@ -271,11 +305,12 @@ function update_csvreader(csv)
       query = query.filter(csv.rowFilters[i])
   if(csv.order)
     query = query.order(csv.order);
-  var ctx = {
+  csv_ctx = {
+    open_closeable_page: open_closeable_page,
     columns: csv.columns,
     rows: query.get().map(function(a) { return a.__row; })
   };
-  csvreader.dhtml('item_init', ctx, { recursive: true });
+  $('#csvtable').dhtml('item_init', csv_ctx, { recursive: true });
   
   update_csvreader_columns_element(cols_info)
 }

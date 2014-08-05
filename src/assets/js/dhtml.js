@@ -286,6 +286,13 @@
     get: function(a, p)
     {
       return a[p];
+    },
+    Object: function()
+    {
+      var ret = {};
+      for(var i = 0; i < arguments.length; i += 2)
+        ret[arguments[i]] = arguments[i + 1];
+      return ret;
     }
   };
   function list_new_item(id, contexts)
@@ -338,7 +345,7 @@
     if(!$.isArray(contexts))
       contexts = [ contexts ];
     contexts.push(global_ctx);
-    var expr_vars =  ['onupdate', 'content', 'content_html'],
+    var expr_vars =  ['onupdate', 'content', 'content-html'],
     list_expr_vars = ['attrs', 'bind'],
     exprs = parse_exprs(this);
     clean(this);
@@ -432,9 +439,7 @@
         // eval for | it will be applied to its children
         if(exprs.foreach)
         {
-          var sctx = {},
-          sctxs = ([ sctx ]).concat(contexts),
-          foreach_expr = exprs.foreach,
+          var foreach_expr = exprs.foreach,
           key_var = foreach_expr.key_var, 
           value_var = foreach_expr.value_var,
           forexpr = foreach_expr.forexpr,
@@ -447,7 +452,10 @@
           {
             foreach(tmp, function(value, key)
               {
-                var $nel = $el.clone();
+                var $nel = $el.clone(),
+                sctxs = contexts.concat(),
+                sctx = {};
+                sctxs.unshift(sctx);
                 if(key_var)
                   sctx[key_var] = key;
                 if(value_var)
@@ -476,7 +484,7 @@
               if(tmp || tmp === '')
                 $el.text(tmp+'');
               break;
-            case 'content_html':
+            case 'content-html':
               if(tmp || tmp === '')
                 $el.html(tmp+'');
               break;

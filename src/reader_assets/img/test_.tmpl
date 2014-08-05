@@ -8,6 +8,9 @@
 #csvtable th {
   text-align: center;
 }
+#csvtable tbody tr {
+  cursor: pointer;
+}
 </style>
 <table id="csvtable">
   <thead>
@@ -50,10 +53,15 @@
     </tr>
   </thead>
   <tbody>
-    <tr data-foreach="rows as row">
+    <tr data-foreach="rows as row" data-bind="click=open_closeable_page('#detailpage',Object('row',row))">
       <td class="tmpl-year" data-content="row.0"></td>
       <td data-content="row.1" style="color:darkred;"></td>
       <td data-content="row.9"></td>
     </tr>
   </tbody>
 </table>
+<div id="detailpage" class="csvpage">
+  <h3 data-content="row.1"></h3>
+  <img data-attrs="src=row.8" height="100" />
+  <div data-content-html="row.2"></div>
+</div>
