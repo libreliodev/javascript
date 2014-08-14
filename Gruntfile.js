@@ -7,12 +7,16 @@ module.exports = function (grunt) {
     site_dist_dir = dist_dir + '/www',
     site_assets_dist_dir = site_dist_dir + '/assets',
     reader_dist_dir = dist_dir + '/reader',
-    reader_assets_dist_dir = reader_dist_dir + '/assets';
-    
+    reader_assets_dist_dir = reader_dist_dir + '/assets',
+    webviews_dist_dir = dist_dir + '/webviews',
+    webviews_assets_dist_dir = webviews_dist_dir + '/assets';
+
     var src_dir = 'src',
     shared_assets = src_dir + '/assets',
+    pdfreader_assets = src_dir + '/pdfreader_assets',
     reader_assets_src_dir = src_dir + '/reader_assets',
-    admin_assets_src_dir = src_dir + '/admin_assets';
+    admin_assets_src_dir = src_dir + '/admin_assets',
+    webviews_assets_src_dir = src_dir + '/webviews_assets';
   
     // Project configuration.
     grunt.initConfig({
@@ -75,6 +79,10 @@ module.exports = function (grunt) {
                     {
                         src: [reader_assets_src_dir + '/less/main.less'],
                         dest: reader_assets_dist_dir + '/css/main.min.css'
+                    },
+                    {
+                        src: [webviews_assets_src_dir + '/less/main.less'],
+                        dest: webviews_assets_dist_dir + '/css/main.min.css'
                     }
                 ]
             }
@@ -104,6 +112,7 @@ module.exports = function (grunt) {
                 flatten: true,   // remove all unnecessary nesting
                 ext: '.min.js'   // replace .js to .min.js
             },
+          /*
             readerJSDir: {
                 src: reader_assets_src_dir + '/js/*.js',
                 dest: reader_assets_dist_dir + '/js/',
@@ -111,6 +120,7 @@ module.exports = function (grunt) {
                 flatten: true,   // remove all unnecessary nesting
                 ext: '.min.js'   // replace .js to .min.js
             }
+          */
         },
         jshint: {
             options: {
@@ -144,6 +154,17 @@ module.exports = function (grunt) {
                 },
                 files: [
                     {expand: true, cwd: 'src/templates/reader', src: ['*.hbs'], dest: reader_dist_dir}
+                ]
+            },
+            // webviews
+            webviews: {
+                // Target-level options
+                options: {
+                    layout: 'webviews_default.hbs',
+                    assets: webviews_assets_dist_dir
+                },
+                files: [
+                    {expand: true, cwd: 'src/templates/reader', src: ['csvreader.hbs'], dest: webviews_dist_dir}
                 ]
             },
             // site librelio.com
@@ -215,6 +236,23 @@ module.exports = function (grunt) {
                         cwd: shared_assets, src: ['lib/**','img/**','js/**'],
                         dest: reader_assets_dist_dir + '/'
                     },
+                    {
+                        expand: true,
+                        cwd: shared_assets, src: ['lib/**','img/**','js/**'],
+                        dest: webviews_assets_dist_dir + '/'
+                    },
+                  /* copy pdfreader assets to reader & admin */
+                    {
+                        expand: true,
+                        cwd: pdfreader_assets, src: ['lib/**','js/**'],
+                        dest: reader_assets_dist_dir + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: pdfreader_assets, src: ['lib/**','js/**'],
+                        dest: admin_assets_dist_dir + '/'
+                    },
+                  /* admin assets */
                     {
                         expand: true,
                         cwd: admin_assets_src_dir + '/css',
@@ -593,7 +631,99 @@ module.exports = function (grunt) {
                         src: ['taffy-min.js'],
                         dest: reader_assets_dist_dir + '/lib'
                     },
-                  
+                    /* webviews */
+                    {
+                        expand: true,
+                        cwd: webviews_assets_src_dir + '/template',
+                        src: './**/*',
+                        dest: webviews_assets_dist_dir + '/template'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/jquery/',
+                        src: ['./jquery*.js'],
+                        dest: webviews_assets_dist_dir + '/lib'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/js-url/',
+                        src: 'url.min.js',
+                        dest: webviews_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/bootstrap/dist/',
+                        src: ['./**/*.*'],
+                        dest: webviews_assets_dist_dir + '/lib/bootstrap'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/font-awesome/',
+                        src: ['./css/*.*', './fonts/*.*'],
+                        dest: webviews_assets_dist_dir + '/lib/Font-Awesome'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/sprintf/dist/',
+                        src: 'sprintf.min.js',
+                        dest: webviews_assets_dist_dir + '/lib/'
+                        
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/sprintf/dist/',
+                        src: 'sprintf.min.js',
+                        dest: webviews_assets_dist_dir + '/lib/'
+                        
+                    },
+                    {
+                        expand: true,
+                        cwd: reader_assets_src_dir + '/js',
+                        src: ['main.js','csvreader.js'],
+                        dest: webviews_assets_dist_dir + '/js/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/async/lib',
+                        src: 'async.js',
+                        dest: webviews_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/path/',
+                        src: 'path*.js',
+                        dest: webviews_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/querystring/',
+                        src: 'querystring*.js',
+                        dest: webviews_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/d3',
+                        src: ['d3.min.js'],
+                        dest: webviews_assets_dist_dir + '/lib'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/taffydb/',
+                        src: ['taffy-min.js'],
+                        dest: webviews_assets_dist_dir + '/lib'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'src/templates/reader',
+                        src: './application_.json',
+                        dest: webviews_dist_dir + '/'
+                    },
+                    { // for development
+                        expand: true,
+                        cwd: 'src/reader_assets/img',
+                        src: ['./test_.csv'],
+                        dest: webviews_assets_dist_dir + '/img'
+                    },
                 ]
             }
         },

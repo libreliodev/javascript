@@ -217,6 +217,33 @@
     var exprs = m_parse(s);
     return m_eval_expr(exprs, contexts, thisarg)[0];
   }
+  var special_vars = {
+    'int': function(expr)
+    {
+      return parseInt(expr.call[0].value[0]);
+    },
+    'float': function(expr)
+    {
+      return parseFloat(expr.call[0].value[0].join('.'));
+    },
+    'if': function(expr, contexts, thisarg)
+    {
+      var call = expr.call;
+      if(!call)
+        throw new Error('if statement cannot be used as a variable');
+      
+      if(m_eval_expr([ expr.call[0] ], contexts, thisarg)[0])
+      {
+        if(expr.call[1])
+          return m_eval_expr([ expr.call[1] ], contexts, thisarg)[0];
+      }
+      else
+      {
+        if(expr.call[2])
+          return m_eval_expr([ expr.call[1] ], contexts, thisarg)[0];
+      }
+    }
+  };
   function m_eval_expr(exprs, contexts, thisarg)
   {
     var ret = [];
@@ -229,6 +256,18 @@
       {
       case 'var':
         var val = undefined;
+        if(special_vars[expr.value[0]])
+        {
+          ret.push(special_vars[expr.value[0]](expr, contexts, thisarg));
+          break;
+        }
+        if(expr.value[0] == 'this')
+        {
+          if(expr.value.length > 1)
+            val = m_eval_get_var(thisarg, expr.value.slice(1));
+          else
+            val = thisarg;
+        }
         for(var c = 0, cl = contexts.length; val === undefined && c < cl; ++c)
         {
           try {
@@ -293,7 +332,27 @@
       for(var i = 0; i < arguments.length; i += 2)
         ret[arguments[i]] = arguments[i + 1];
       return ret;
-    }
+    },
+    concat: function()
+    {
+      if($.isArray(arguments[0]))
+        return Array.prototype.concat(arguments[0], 
+                                      arraySlice.call(arguments, 1))
+      var ret = '';
+      for(var i = 0; i < arguments.length; ++i)
+        ret += arguments[i];
+      return ret;
+    },
+    // logical functions
+    not: function(a) { return !a; },
+    eqci: function(a, b) { return (a+'').toLowerCase() == (b+'').toLowerCase(); },
+    eq: function(a, b) { return (a+'') == (b+''); },
+    eeq: function(a, b) { return a == b; },
+    eeeq: function(a, b) { return a === b; },
+    gt: function(a, b) { return parseFloat(a) > parseFloat(b); },
+    gte: function(a, b) { return parseFloat(a) <= parseFloat(b); },
+    lt: function(a, b) { return parseFloat(a) < parseFloat(b); },
+    lte: function(a, b) { return parseFloat(a) <= parseFloat(b); }
   };
   function list_new_item(id, contexts)
   {
@@ -345,11 +404,16 @@
     if(!$.isArray(contexts))
       contexts = [ contexts ];
     contexts.push(global_ctx);
-    var expr_vars =  ['onupdate', 'content', 'content-html'],
+    //DEPRECATED:: onupdate attribute is deprecated
+    var expr_vars =  ['init', 'onupdate', 'content', 'content-html'],
     list_expr_vars = ['attrs', 'bind'],
+    foreach_cache_get = opts.foreach_cache_get,
+    foreach_cache_set = opts.foreach_cache_set,
     exprs = parse_exprs(this);
     clean(this);
-    item_init_subrout(this, exprs, contexts, opts);
+    item_init_subrout(this, exprs, contexts, opts, {
+      foreach_counter: 0
+    });
     function clean($els)
     {
       var total_vars = ([ 'foreach' ]).concat(expr_vars, list_expr_vars),
@@ -421,7 +485,7 @@
       }
       return ret;
     }
-    function item_init_subrout($els, $els_exprs, contexts)
+    function item_init_subrout($els, $els_exprs, contexts, stat)
     {
       function bind_expr($el, key, expr)
       {
@@ -452,6 +516,14 @@
           {
             foreach(tmp, function(value, key)
               {
+                var cache_v;
+                if(foreach_cache_get && 
+                   (cache_v = foreach_cache_get(forexpr, key, value, 
+                                                stat.foreach_counter)))
+                {
+                  $(cache_v).insertBefore($el);
+                  return;
+                }
                 var $nel = $el.clone(),
                 sctxs = contexts.concat(),
                 sctx = {};
@@ -461,9 +533,13 @@
                 if(value_var)
                   sctx[value_var] = value;
                 $nel.insertBefore($el);
-                item_init_subrout($nel, exprsi, sctxs);
+                item_init_subrout($nel, exprsi, sctxs, stat);
+                if(foreach_cache_set)
+                  foreach_cache_set(forexpr, key, value, 
+                                    stat.foreach_counter, $nel[0]);
               });
             
+            stat.foreach_counter++;
             $el.remove();
             return;
           }
@@ -489,6 +565,7 @@
                 $el.html(tmp+'');
               break;
             case 'onupdate':
+            case 'init':
               break;
             }
           }
@@ -518,7 +595,7 @@
             bind_expr($el, key, expr)
         }
         if(opts.recursive && exprs.childNodes && exprs.childNodes.length > 0)
-          item_init_subrout($el.find(' > *'), exprs.childNodes, contexts);
+          item_init_subrout($el.find(' > *'), exprs.childNodes, contexts, stat);
       }
     }
   }

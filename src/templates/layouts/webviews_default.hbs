@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+    <title localize>{{ title }}</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <!--IE Compatibility modes-->
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <!-- Bootstrap -->
+    <link rel="stylesheet" href="{{assets}}/lib/bootstrap/css/bootstrap.min.css">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="{{assets}}/lib/Font-Awesome/css/font-awesome.min.css">
+    <link rel="stylesheet" href="{{assets}}/css/main.min.css">
+    {{#if stylesheets}}
+    {{css stylesheets}}
+    {{/if}}
+
+    <script>
+      var config = {{ jsonStringify config }},
+      assets = '{{ assets }}';
+    </script>
+
+    <script src="{{assets}}/lib/jquery.min.js"></script>
+    <script src="{{assets}}/lib/bootstrap/js/bootstrap.min.js"></script>
+    <script src="{{assets}}/lib/url.min.js"></script>
+    <script src="{{assets}}/lib/sprintf.min.js"></script>
+    <script src="{{assets}}/js/dhtml.js"></script>
+    <script src="{{assets}}/lib/localeplanet/icu_{{config.locale}}.js"></script>
+    <script src="{{assets}}/lib/localeplanet/translate.js"></script>
+    <script src="{{assets}}/js/localize.js"></script>
+    <script src="{{assets}}/js/helper.js"></script>
+    <script src="{{assets}}/js/main.js"></script>
+
+    {{#if javascripts}}
+    {{js javascripts}}
+    {{/if}}
+
+    {{#if scripts}}
+    <script>
+      {{scripts}}
+    </script>
+    {{/if}}
+
+  </head>
+  <body{{#if theme}} class="{{theme}}"{{/if}}>
+<!-- main-content -->
+{{> body }}
+<!-- #main-content -->
+  </body>
+</html>

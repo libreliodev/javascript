@@ -99,7 +99,7 @@
   localize.setLocale(navLang || config.locale,
                      {async:false,icu:false,update:false}, function(err)
     {
-      if(err && navLang)
+      if(err && navLang && navLang != config.locale)
         localize.setLocale(config.locale, {async:false,icu:false,update:false});
     });
   $(function(){ localize.eval_all(); });

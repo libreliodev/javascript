@@ -1,0 +1,397 @@
+<style>
+#csvtable .csvcolumn {
+  display: none;
+}
+#csvtable .csvcolumn[data-sortable] {
+  display: block;
+  cursor: pointer;
+}
+</style>
+<link class="csvinit" rel="stylesheet" data-attrs="href=tmplrelpath('default.css')" data-init="ready_after_load()" />
+<div id="csvtable">
+  <div class="sort-list">
+    <label>Tri par:</label>
+    <div class="btn-group">
+      <button type="button" class="btn btn-default csvcolumn" data-name="Marque" data-key="9" data-sortable data-filterable>
+        Marque
+        <dict class="filter-info">
+          <key>Type</key>
+          <string>MultipleChoice</string>
+          <key>AllChoice</key>
+          <string>All</string>
+          <key>Options</key>
+          <array>
+            <string>Apo</string>
+            <string>Armada</string>
+            <string>Atomic</string>
+            <string>Black Crows</string>
+            <string>Black Diamond</string>
+            <string>Blizzard</string>
+            <string>Coreupt</string>
+            <string>DPS</string>
+            <string>Dupraz</string>
+            <string>Dynafit</string>
+            <string>Dynastar</string>
+            <string>Elan</string>
+            <string>Extrem</string>
+            <string>Faction</string>
+            <string>Fischer</string>
+            <string>Hagan</string>
+            <string>Head</string>
+            <string>K2 Skis</string>
+            <string>Kästle</string>
+            <string>La Sportiva</string>
+            <string>Line</string>
+            <string>Majesty</string>
+            <string>Movement</string>
+            <string>Nordica</string>
+            <string>Rossignol</string>
+            <string>Salomon</string>
+            <string>Scott</string>
+            <string>Ski Logic</string>
+            <string>Stöckli</string>
+            <string>Trab</string>
+            <string>Volant</string>
+            <string>Völkl</string>
+            <string>Wed’ze</string>
+            <string>White Doctor</string>
+            <string>White Dot</string>
+            <string>Zag</string>
+          </array>
+        </dict>
+      </button>
+      <button type="button" class="btn btn-default csvcolumn" data-name="Gamme" data-key="5" data-sortable>Gamme</button>
+      <button type="button" class="btn btn-default csvcolumn" data-name="Prix" data-key="14" data-sortable data-filterable>
+        Prix
+        <!-- plist dict tag -->
+        <dict class="sort-info">
+          <key>DataType</key>
+          <string>real</string>
+        </dict>
+        <dict class="filter-info">
+          <key>Type</key>
+          <string>Range</string>
+        </dict>
+      </button>
+      <div class="csvcolumn" data-name="Genre" data-key="6" data-filterable>
+        <dict class="filter-info">
+          <key>Type</key>
+          <string>MultipleChoice</string>
+          <key>Options</key>
+          <dict>
+            <key>2</key>
+            <string>Femme</string>
+            <key>1</key>
+            <string>Homme</string>
+          </dict>
+          <key>Order</key>
+          <integer>0</integer>
+        </dict>
+      </div>
+    </div>
+  </div>
+  <ul class="items-list">
+    <li data-foreach="rows as row" data-bind="click=open_closeable_page('#detailpage',Object('row',row))">
+      <div class="item-icons">
+        <!-- thumbnail -->
+        <span class="item-thumbnail">
+          <img data-attrs="src=row.8" />
+        </span>
+        <!-- icon for men -->
+        <img class="item-icon" data-init="if(not(eq(row.6,'1')),this.remove())" data-attrs="src=tmplrelpath('Homme.png')" />
+        <!-- icon for women -->
+        <img class="item-icon" data-init="if(not(eq(row.6,'2')),this.remove())" data-attrs="src=tmplrelpath('Femme.png')" />
+        <!-- icon -->
+        <img class="item-icon" data-init="if(not(eq(row.3,'1')),this.remove())" data-attrs="src=tmplrelpath('TesterChoice.png')" />
+      </div>
+      <h3 class="item-title" data-content="row.9"></h3>
+      <dl class="item-pair-list">
+        <dt>Modèle:</dt>
+        <dd data-content="row.10"></dd>
+        <dt>Gamme:</dt>
+        <dd data-content="row.5"></dd>
+        <dt>Budget:</dt>
+        <dd class="item-budget" data-init="replace('%d',decimalFormat(int(2),row.14))">%d &#8364;</dd>
+      </dl>
+    </li>
+  </ul>
+</div>
+<div id="detailpage" class="csvpage">
+  <div class="csvpage-nav">
+    <a class="csvpage-close-btn" href="#"><i class="glyphicon glyphicon-remove-circle"></i></a>
+  </div>
+  <div class="csvpage-content">
+    <style>
+	  #detailpage p
+	  {
+		  margin: 0px;
+		  padding: 0px;
+	  }
+	  
+    #detailpage
+    {
+      font-family: "Helvetica neue";
+      background-color: #ffffff;
+      margin: 0px;
+      padding: 0px;  
+      height: 100%;
+      padding-bottom: 20px;
+    }
+    
+    #detailpage span
+    {
+      margin: 0px;
+      padding: 10px 10px 10px 10px;
+    }
+    
+    #detailpage span.title
+    {
+      color: #ffffff;
+      text-transform: uppercase;
+      font-size: 18px;
+      font-weight: bold;
+		  margin-left: 15px;
+		  padding-left: 0px;
+		  padding-bottom: 0px;
+    }
+    #detailpage table.top_table
+    {
+      width:100%;
+      height:40px; 
+      border:0; 
+      padding:0;
+      background-color:#32aac3;
+    }
+    #detailpage table.caracteristics
+    {
+      width:100%;
+      border:0; 
+      padding:0;
+    }
+    #detailpage table.caracteristics td
+    {
+      vertical-align: top;
+      font-size:12px;
+    }
+    #detailpage p.Test_baseline
+    {
+      text-transform: uppercase;
+      font-weight: bold;
+		  font-size: 14px;
+      margin-top: 15px;
+    }
+    
+    #detailpage p.Description_Test
+    {
+      font-size: 14px; 
+      text-align: justify;                
+    }
+	  
+    #detailpage span.modele
+    {
+      color: #000000;
+      font-size: 14px;
+      font-weight: bold;
+		  margin-left: 15px;
+		  padding-left: 0px;
+		  padding-top: 0px;
+    }
+    #detailpage span.budget
+    {
+      color: #ffffff;
+      text-transform: uppercase;
+      font-size: 24px;
+      text-align: right;
+      width: 100%;
+      font-weight: bold;
+		  padding-bottom: 0px;
+    }
+    #detailpage div.main
+    {
+      margin: 0px;
+		  padding-top: 5px;
+      padding-bottom: 0px;
+		  padding-left: 15px;
+		  padding-right: 15px;
+    }
+    
+    #detailpage div.main table.caracteristics img
+    {
+      margin: 2px;
+    }
+    
+    #detailpage div.tableview
+    {
+      width: 100%;
+      margin: 0px;
+      padding: 0px;
+		  font-size: 12px;
+    }
+    #detailpage div.tableview table
+    {
+      width: 100%;
+      border-collapse: collapse;
+      border-style: solid;
+      border-width: 4px;
+      border-color: black;
+		  
+    }
+    #detailpage div.tableview table th
+    {
+      background-color: white;
+      color: gray;
+      text-transform: uppercase;
+      border-collapse: collapse;
+      border-style: solid;
+      border-width: 2px;
+      border-color: black;
+      text-align: center;
+    }
+    #detailpage div.tableview table td
+    {
+      background-color: white;
+      border-collapse: collapse;
+      border-style: solid;
+      border-width: 2px;
+      border-color: black;
+      text-align: center;
+	  }
+    
+    #detailpage div.ski_preview
+    {
+      padding: 1px 1px 1px 1px;
+      background-color: white;
+      display: block; 
+      margin-left:auto; 
+      margin-right: auto;
+      border-bottom-color: gray;
+      border-style: solid;
+      border-width: 1px;
+      -webkit-border-radius: 4px;
+    }
+    #detailpage div.ski_preview img
+    {
+      width: 100%;
+      margin: 0px;
+    }
+	  #detailpage .np {
+      padding: 0px;
+    }
+	  #detailpage div.badges_placeholder img
+	  {
+		  margin-right: 3px;
+	  }
+    #detailpage .caracteristics-wrp {
+        margin-top: 6px;
+    }
+    #detailpage .top_table_fc {
+      width: 60%;
+    }
+    @media (min-width:601px) {
+      #detailpage .top_table_fc {
+        width: 75%;
+      }
+      #detailpage .top_table_fc div {
+        display: inline;
+      }
+      #detailpage .caracteristics-wrp {
+        float:left;
+      }
+      #detailpage .badges_placeholder {
+        margin-top: 6px;
+        float: right;
+      }
+      span.title
+      {
+        color: #ffffff;
+        text-transform: uppercase;
+        font-size: 24px;
+        font-weight: bold;
+				padding-left: 15px;
+        padding-right: 0px;
+        padding-top: 0px;
+      }
+      p.Test_baseline
+      {
+        text-transform: uppercase;
+        font-weight: bold;
+				margin-bottom: 10px;
+      }
+			
+      span.modele
+      {
+        color: #000000;
+        font-size: 18px;
+        font-weight: bold;
+				margin-left: 10px;
+        padding-right: 0px;
+        padding-bottom: 0px;
+      }
+      span.budget
+      {
+        color: #ffffff;
+        text-transform: uppercase;
+        font-size: 24px;
+        text-align: right;
+        width: 100%;
+        font-weight: bold;
+				padding-right: 15px;
+      }
+
+    }
+    </style>
+    <table class="top_table">
+      <tr>	
+        <td class="top_table_fc">
+				  <div>
+					  <span class="title" data-content="row.9"></span>
+				  </div>
+				  <div>
+					  <span class="modele" data-content="row.10"></span>
+				  </div>
+			  </td>
+        <td align="right" valign="bottom" style="padding-bottom: 0px;">
+          <span class="budget" data-init="replace('%d',decimalFormat(int(2),row.14))">%d &#8364;</span>
+        </td>
+      </tr>
+    </table>
+    
+    <div class="main">
+      <div class="ski_preview">
+        <img id="imagePreview" data-attrs="src=row.8" />
+      </div>
+      <div class="caracteristics-wrp">
+        <table class="caracteristics">
+          <tr>	
+            <td>
+              <p><b>GAMME :</b> <span class="np" data-content="row.5"></span></p>
+              <p><b>NIVEAU REQUIS :</b> <span class="np" data-content="row.12"></span></p>
+              <p><b>TAILLE TESTÉE :</b> <span class="np" data-content="row.18"></span></p>
+            </td>     
+          </tr>
+        </table>
+      </div>
+		  
+      <div class="badges_placeholder">
+        <!-- icon for men -->
+        <img class="item-icon" data-init="if(not(eq(row.6,'1')),this.remove())" data-attrs="src=tmplrelpath('Homme.png')" />
+        <!-- icon for women -->
+        <img class="item-icon" data-init="if(not(eq(row.6,'2')),this.remove())" data-attrs="src=tmplrelpath('Femme.png')" />
+        <!-- icon -->
+        <img class="item-icon" data-init="if(not(eq(row.3,'1')),this.remove())" data-attrs="src=tmplrelpath('TesterChoice.png')" />
+      </div>
+      <div class="clearb"></div>
+      <p class="Test_baseline" data-content="row.1"></p>
+		  <p class="Description_Test" data-content="row.20"></p>
+      <p><br/></p>
+      
+      <p style="margin: 0px; font-size: 12px; text-transform: uppercase;">
+			  <img data-attrs="src=tmplrelpath('plus_F2.png')" style="vertical-align: middle; margin-right: 3px; height: 30px; width: 30px; "/><span class="np" data-content="row.13"></span>
+		  </p>
+      <p style="margin-bottom: 20px; margin-top: 0px; font-size: 12px; text-transform: uppercase;">
+			  <img data-attrs="src=tmplrelpath('moins_G2.png')" style="vertical-align: middle; margin-right: 3px; height: 30px; width: 30px; "/><span class="np" data-content="row.11"></span>
+		  </p>
+		  <div class="tableview" data-content-html="row.2"></div>
+    </div>
+  </div>
+</div>

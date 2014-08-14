@@ -11,25 +11,28 @@ javascripts:
 stylesheets:
 theme: light-bkg
 ---
-<div id="csvfilters" role="form">
-  <fieldset data-id="Range">
-    <label data-content="name"></label>
-    <div class="form-group">
-      <label>From</label>
-      <input type="number" class="form-control" placeholder="From" name="From" data-attrs="value=From" />
-    </div>
-    <div class="form-group">
-      <label>To</label>
-      <input type="number" class="form-control" placeholder="To" name="To" data-attrs="value=To" />
-    </div>
-  </fieldset>
-  <fieldset data-id="MultipleChoice">
-    <label data-content="name"></label>
-    <select multiple class="form-control">
-      <option data-foreach="options as option" data-attrs="value=option;selected=get(checked_options,option)" data-content="option"></option>
-    </select>
-  </fieldset>
+<div id="csvfilters-wrp">
+  <div id="csvfilters" role="form">
+    <fieldset data-id="Range">
+      <label data-content="name"></label>
+      <div class="form-group">
+        <label>From</label>
+        <input type="number" class="form-control" placeholder="From" name="From" data-attrs="value=From" />
+      </div>
+      <div class="form-group">
+        <label>To</label>
+        <input type="number" class="form-control" placeholder="To" name="To" data-attrs="value=To" />
+      </div>
+    </fieldset>
+    <fieldset data-id="MultipleChoice">
+      <label data-content="name"></label>
+      <select multiple class="form-control">
+        <option data-foreach="options as i=>option" data-attrs="value=option;selected=get(checked_options,option)" data-content="get(option_values,i)"></option>
+      </select>
+    </fieldset>
+  </div>
 </div>
+<a href="#" class="filterstoggle"><i class="glyphicon glyphicon-list"></i></a>
 <div id="csvreader">
   <table id="csvtable">
     <tbody>
