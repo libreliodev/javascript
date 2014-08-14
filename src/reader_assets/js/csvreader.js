@@ -1,6 +1,5 @@
-var default_template, csvreader, csvfilters, csv, csv_urldir, tmpl_urldir,
+var default_template, csvreader, csvfilters, csv_urldir, tmpl_urldir,
 global_ctx = {
-  open_row_page: open_row_page,
   path: path,
   url: url,
   relpath: function()
@@ -27,7 +26,7 @@ initialize_reader(function()
     csvreader = $('#csvreader');
     default_template = csvreader.html();
     csvreader.html('');
-    $('.filterstoggle')
+    $('.sidebartoggle')
       .bind('touchstart touchmove touchend', function(ev)
       {
         ev.stopPropagation();
@@ -38,8 +37,8 @@ initialize_reader(function()
         $('body').css('overflow', b ? 'hidden' : '')
         setTimeout(function()
           {
-            $('#csvfilters-wrp').toggleClass('showfilters', b);
-            $('.filterstoggle').toggleClass('active', b);
+            $('#sidebar').toggleClass('showsidebar', b);
+            $('.sidebartoggle').toggleClass('active', b);
           }, 10);
         return false;
       });
@@ -54,14 +53,20 @@ initialize_reader(function()
                                           external_b, doc_query);
     csv_urldir = global_ctx.urldir = csv_url_dir;
     tmpl_urldir = global_ctx.tmpl_urldir = url_dir(tmpl_url);
-    load_csv(csv_url, tmpl_url, function(err, _csv)
+    load_csv(csv_url, tmpl_url, function(err, csv)
       {
         if(err)
           return notifyError(err);
-        csv = _csv;
         initiate_filters(csv);
         initiate_sortable_columns(csv);
         update_csvreader(csv);
+        $('.favorites-toggle-btn').click(function()
+          {
+            csv.fav_filter = !csv.fav_filter;
+            $('.favorites-toggle-btn').toggleClass('enabled', csv.fav_filter);
+            update_filters(csv);
+            return false;
+          });
       });
   });
 function zoomable_img_init()
@@ -219,7 +224,7 @@ function eval_page(sel, ctx)
 
   return $pagei;
 }
-function open_row_page(sel, index, row, noanim)
+function open_row_page(csv, sel, index, row, noanim)
 {
   var ctx = {
     index: index,
@@ -252,7 +257,7 @@ function open_row_page(sel, index, row, noanim)
       rows = csv && csv.ctx ? csv.ctx.rows : null;
       if(!rows || goto_row_index >= rows.length || goto_row_index < 0)
         return false;
-      open_row_page(sel, goto_row_index, rows[goto_row_index], true);
+      open_row_page(csv, sel, goto_row_index, rows[goto_row_index], true);
       return false;
     });
   $page.find('.close-btn').click(function()
@@ -260,7 +265,14 @@ function open_row_page(sel, index, row, noanim)
       close_page(sel);
       return false;
     });
-  
+  $page.find('.row-fav-toggle-btn')
+    .toggleClass('enabled', !!row.__infav)
+    .click(function()
+      {
+        row.__infav = !row.__infav;
+        $page.find('.row-fav-toggle-btn').toggleClass('enabled', row.__infav);
+        return false;
+      });
   return false;
 }
 function close_page(sel)
@@ -361,6 +373,7 @@ function initiate_filters(csv)
     filter_info = col_info.filter_info,
     type = filter_info.Type,
     deflt = filter_info.Default;
+
     try {
       var item = csvfilters.dhtml('list_new_item', type),
       ctx = {
@@ -421,57 +434,76 @@ function initiate_filters(csv)
         break;
       }
       item.dhtml('item_update', [ ctx, global_ctx ], { recursive: true });
-      item.find('select').change(update_filters);
-      item.find('input').bind('input', update_filters);
+      item.find('select').change(_update_filters);
+      item.find('input').bind('input', _update_filters);
       items.push(item);
     } catch(err) {
       console.log(err);
     }
   }
-  csv.rowFilters = get_filters();
-  function update_filters()
+  csv.filterElements = items;
+  csv.rowFilters = get_filters(csv);
+  function _update_filters()
   {
-    csv.rowFilters = get_filters();
-    update_csvreader(csv);
+    update_filters(csv);
   }
-  function get_filters()
-  {
-    var filters = [];
-    for(var i = 0, l = items.length; i < l; ++i)
-    {
-      var item = items[i],
-      type = item.data('id'),
-      key = item.data('key');
-      switch(type)
-      {
-      case 'Range':
-        var from = parseFloat(item.find('input[name=From]').val()),
-        to = parseFloat(item.find('input[name=To]').val());
-        if(!isNaN(from))
-        {
-          var obj = {};
-          obj[key] = { gte: from };
-          filters.push(obj);
-        }
-        if(!isNaN(to))
-        {
-          var obj = {};
-          obj[key] = { lte: to };
-          filters.push(obj);
-        }
-        break;
-      case 'MultipleChoice':
-        var opts = item.find('select').val(),
-        filter_info = cols_info[key].filter_info;
-        if(opts && opts.indexOf(filter_info.AllChoice) == -1)
-          filters.push(filter_create_isin(key, opts));
-        break;
-      }
-    }
-    if(filters.length === 0)
-      return;
+}
+
+function update_filters(csv)
+{
+  csv.rowFilters = get_filters(csv);
+  update_csvreader(csv);
+}
+function get_filters(csv)
+{
+  var cols_info = csv.columns_info,
+  items = csv.filterElements,
+  filters = [];
+  if(!items)
     return filters;
+  if(csv.fav_filter)
+    filters.push(function()
+      {
+        try {
+          return this.__row.__infav;
+        } catch(e) {
+          return false;
+        }
+      });
+  for(var i = 0, l = items.length; i < l; ++i)
+  {
+    var item = items[i],
+    type = item.data('id'),
+    key = item.data('key');
+    switch(type)
+    {
+    case 'Range':
+      var from = parseFloat(item.find('input[name=From]').val()),
+      to = parseFloat(item.find('input[name=To]').val());
+      if(!isNaN(from))
+      {
+        var obj = {};
+        obj[key] = { gte: from };
+        filters.push(obj);
+      }
+      if(!isNaN(to))
+      {
+        var obj = {};
+        obj[key] = { lte: to };
+        filters.push(obj);
+      }
+      break;
+    case 'MultipleChoice':
+      var opts = item.find('select').val(),
+      filter_info = cols_info[key].filter_info;
+      if(opts && opts.indexOf(filter_info.AllChoice) == -1)
+        filters.push(filter_create_isin(key, opts));
+      break;
+    }
   }
+  if(filters.length === 0)
+    return;
+  return filters;
 }
 function load_csv(csv_url, tmpl_url, cb)
 {
@@ -615,6 +647,7 @@ function update_csvreader(csv)
   if(csv.order)
     query = query.order(csv.order);
   var csv_ctx = {
+    open_row_page: function(a, b, c) { open_row_page(csv, a, b, c); },
     columns: csv.columns,
     rows: query.get().map(function(a) { return a.__row; })
   };

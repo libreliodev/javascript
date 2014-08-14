@@ -2,7 +2,7 @@
   display: none;
 }
 
-#csvfilters {
+#sidebar {
   display: block;
   float: left;
   width: 150px;
@@ -11,7 +11,7 @@
   padding-right: 8px;
 }
 #csvreader {
-  margin-left: 170px;
+  margin-left: 150px;
 }
 
 .sortable {
@@ -99,21 +99,22 @@
   .csvpage {
     background-color: black;
   }
-  #csvfilters {
+  #sidebar-content {
     background-color: black;
   }
 }
 
-.filterstoggle {
+.sidebartoggle {
   display: none;
 }
 @media (max-width:600px) {
   #csvreader {
     margin-left: 0px;
   }
-  #csvfilters-wrp {
+  #sidebar {
     top: 0px;
     left: 0px;
+    padding: 0px;
     width: 0%;
     height: 100%;
     position: fixed;
@@ -122,8 +123,9 @@
     transition: width 0.5s ease-in-out;
   }
 
-  #csvfilters {
+  #sidebar-content {
     position: absolute;
+    padding-top: 40px;
     left: 0px;
     top: 0px;
     width: 100%;
@@ -131,16 +133,15 @@
     background: white;
     overflow-y: scroll;
     -webkit-overflow-scrolling: touch;
-    padding-top: 40px;
   }
 
-  #csvfilters-wrp.showfilters {
+  #sidebar.showsidebar {
     width: 100%;
   }
 
-  .filterstoggle {
+  .sidebartoggle {
     display: block;
-    font-size: 24px;
+    font-size: 22px;
     position: absolute;
     left: 0px;
     top: 0px;
@@ -148,7 +149,31 @@
     color: black;
     z-index: 2;
   }
-  .filterstoggle.active {
+  .sidebartoggle.active {
     color: rgb(88, 155, 222);
   }
+}
+
+.row-fav-toggle-btn {
+  position: absolute;
+  top: 3px;
+  right: 5px;
+}
+
+.row-fav-toggle-btn.enabled .is-disabled,
+.row-fav-toggle-btn .is-enabled {
+  display: none;
+}
+.row-fav-toggle-btn .is-disabled,
+.row-fav-toggle-btn.enabled .is-enabled {
+  display: block;
+}
+
+.favorites-toggle-btn.enabled .is-disabled,
+.favorites-toggle-btn .is-enabled {
+  display: none;
+}
+.favorites-toggle-btn .is-disabled,
+.favorites-toggle-btn.enabled .is-enabled {
+  display: block;
 }
