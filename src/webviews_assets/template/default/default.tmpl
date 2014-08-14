@@ -91,7 +91,7 @@
     </div>
   </div>
   <ul class="items-list">
-    <li data-foreach="rows as row" data-bind="click=open_closeable_page('#detailpage',Object('row',row))">
+    <li data-foreach="rows as i=>row" data-bind="click=open_row_page('#detailpage',i,row)">
       <div class="item-icons">
         <!-- thumbnail -->
         <span class="item-thumbnail">
@@ -117,8 +117,12 @@
   </ul>
 </div>
 <div id="detailpage" class="csvpage">
-  <div class="csvpage-nav">
-    <a class="csvpage-close-btn" href="#"><i class="glyphicon glyphicon-remove-circle"></i></a>
+  <div class="csvpage-navbar">
+    <a class="close-btn" href="#"><i class="glyphicon glyphicon-remove-circle"></i></a>
+    <div class="btn-group nav-btns">
+      <button type="button" class="previous-btn btn btn-default"><i class="glyphicon glyphicon-chevron-left"></i></button>
+      <button type="button" class="next-btn btn btn-default"><i class="glyphicon glyphicon-chevron-right"></i></button>
+    </div>
   </div>
   <div class="csvpage-content">
     <style>

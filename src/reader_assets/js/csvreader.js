@@ -1,6 +1,6 @@
-var default_template, csvreader, csvfilters, csv_ctx, csv_urldir, tmpl_urldir,
+var default_template, csvreader, csvfilters, csv, csv_urldir, tmpl_urldir,
 global_ctx = {
-  open_closeable_page: open_closeable_page,
+  open_row_page: open_row_page,
   path: path,
   url: url,
   relpath: function()
@@ -53,10 +53,11 @@ initialize_reader(function()
                                           external_b, doc_query);
     csv_urldir = global_ctx.urldir = csv_url_dir;
     tmpl_urldir = global_ctx.tmpl_urldir = url_dir(tmpl_url);
-    load_csv(csv_url, tmpl_url, function(err, csv)
+    load_csv(csv_url, tmpl_url, function(err, _csv)
       {
         if(err)
           return notifyError(err);
+        csv = _csv;
         initiate_filters(csv);
         initiate_sortable_columns(csv);
         update_csvreader(csv);
@@ -86,9 +87,13 @@ function eval_page(sel, ctx)
 
   return $pagei;
 }
-function open_closeable_page(sel, ctx)
+function open_row_page(sel, index, row, noanim)
 {
-  var $page = eval_page(sel, ctx),
+  var ctx = {
+    index: index,
+    row: row
+  },
+  $page = eval_page(sel, ctx),
   page_el = $page[0];
   if(!page_el)
     return;
@@ -96,20 +101,33 @@ function open_closeable_page(sel, ctx)
     {
       ev.stopPropagation();
     });
-  $page.addClass('csv-closeable-page')
-    .toggleClass('openstart', true);
   $('body').css('overflow','hidden');
-  setTimeout(function()
+  if(!noanim)
+  {
+    $page.toggleClass('openstart', true);
+    setTimeout(function()
+      {
+        $page.toggleClass('open', true);
+        page_el._open_end_timeout = setTimeout(function()
+          {
+            $page.toggleClass('openstart', false)
+            page_el._open_end_timeout = undefined;
+          }, parseInt($page.data('open-delay')) || 500);
+      }, 10);
+  }
+  else
+    $page.toggleClass('open', true);
+  $page.find('.nav-btns button').click(function()
     {
-      $page.toggleClass('open', true);
-      page_el._open_end_timeout = setTimeout(function()
-        {
-          $page.toggleClass('openstart', false)
-          page_el._open_end_timeout = undefined;
-        }, parseInt($page.data('open-delay')) || 500);
-    }, 10);
-
-  $page.find('.csvpage-close-btn').click(function()
+      var $btn = $(this),
+      goto_row_index = $btn.hasClass('next-btn') ? index +  1 : index - 1,
+      rows = csv && csv.ctx ? csv.ctx.rows : null;
+      if(!rows || goto_row_index >= rows.length || goto_row_index < 0)
+        return false;
+      open_row_page(sel, goto_row_index, rows[goto_row_index], true);
+      return false;
+    });
+  $page.find('.close-btn').click(function()
     {
       close_page(sel);
       return false;
@@ -468,7 +486,7 @@ function update_csvreader(csv)
       query = query.filter(csv.rowFilters[i])
   if(csv.order)
     query = query.order(csv.order);
-  csv_ctx = {
+  var csv_ctx = {
     columns: csv.columns,
     rows: query.get().map(function(a) { return a.__row; })
   };
