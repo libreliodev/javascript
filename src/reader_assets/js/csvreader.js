@@ -43,6 +43,7 @@ initialize_reader(function()
           }, 10);
         return false;
       });
+    zoomable_img_init();
   },
                   function(app_data, csv_url, csv_url_dir, 
                            external_b, doc_query)
@@ -63,7 +64,138 @@ initialize_reader(function()
         update_csvreader(csv);
       });
   });
+function zoomable_img_init()
+{
+  function event_mouse_position(ev)
+  {
+    if(ev.originalEvent.touches)
+    {
+      var touches = ev.originalEvent.touches;
+      return [ touches[0].pageX, touches[0].pageY ];
+    }
+    return [ ev.pageX, ev.pageY ];
+  }
+  function init_image(_img, cb)
+  {
+    img = _img;
+    zoomed_img = $('<img/>').attr('src', img.prop('src'))
+      .css('position', 'absolute');
 
+    zoomed_img_wrp.html('')
+      .append(zoomed_img)
+      .show();
+    zoomed_img.bind('load', function()
+      {
+        if(!img)
+          return;
+        // offset.top must be greater that zero
+        var width = this.width,
+        height = this.height,
+        offset = {
+          left: img[0].offsetLeft,
+          top: img[0].offsetTop
+        },
+        zoom_ratio = parseFloat(img.data('zoomable-zoom')),
+        zoom_max = img.data('zoomable-max');
+        if(!isNaN(zoom_ratio))
+        {
+          var nw = img.width() * zoom_ratio,
+          nh = img.height() * zoom_ratio;
+          if(zoom_max == 'original' && (nw > width || nh > height))
+          {
+            nw = width;
+            nh = height;
+          }
+          zoomed_img.width(nw);
+          zoomed_img.height(nh);
+          width = nw;
+          height = nh;
+        }
+        // place zoom wrp on screen
+        zoomed_img_wrp.css({
+          position: 'fixed',
+          left: 0,
+          top:  0,
+          width: '100%',
+          height: offset.top,
+          zIndex: 10
+        });
+        var hits_ceiling = offset.top - height <= 0;
+        if(!hits_ceiling)
+        {
+          zoomed_img_wrp.css({
+            top: offset.top - height,
+            height: height
+          });
+        }
+        cb();
+      });
+  }
+  function pan(mpos)
+  {
+    var offset = img.offset(),
+    width = zoomed_img_wrp.width(),
+    height = zoomed_img_wrp.height(),
+    zoomed_img_width = zoomed_img.width(),
+    zoomed_img_height = zoomed_img.height(),
+    pos = [
+      (mpos[0] - offset.left) / img.width() * zoomed_img_width - width / 2,
+      (mpos[1] - offset.top) / img.height() * zoomed_img_height - height / 2
+    ];
+    // limit img boundary
+    if(pos[0] < 0)
+      pos[0] = 0;
+    if(pos[1] < 0)
+      pos[1] = 0;
+    if(pos[0] + width > zoomed_img_width)
+      pos[0] = zoomed_img_width - width;
+    if(pos[1] + height > zoomed_img_height)
+      pos[1] = zoomed_img_height - height;
+    zoomed_img.css({
+      left: -pos[0],
+      top: -pos[1]
+    });
+  }
+  function clear_image()
+  {
+    zoomed_img_wrp.hide();
+    img = null;
+    zoomed_img = null;
+  }
+  var zoomed_img_wrp = $('<div/>').hide().css('overflow', 'hidden')
+    .appendTo($('body')),
+  img, zoomed_img;
+  $(document).on('mousedown touchstart', '.zoomable-img',
+                 function(ev)
+    {
+      ev.preventDefault();
+      init_image($(this), function()
+        {
+          pan(event_mouse_position(ev));
+        });
+    })
+    .on('mousemove touchmove', '.zoomable-img', function(ev)
+    {
+      if(img)
+      {
+        ev.preventDefault();
+        pan(event_mouse_position(ev));
+      }
+    })
+    .on('mouseup touchend', '.zoomable-img', function(ev)
+    {
+      if(img)
+      {
+        ev.preventDefault();
+        clear_image();
+      }
+    })
+    .on('mouseup touchend', function(ev)
+    {
+      if(img)
+        clear_image();
+    });
+}
 function csvreader_template_url(app_data, csv_url, csv_url_dir, external_b,
                                 doc_query)
 {
@@ -97,10 +229,6 @@ function open_row_page(sel, index, row, noanim)
   page_el = $page[0];
   if(!page_el)
     return;
-  $page.bind('touchstart touchmove touchend', function(ev)
-    {
-      ev.stopPropagation();
-    });
   $('body').css('overflow','hidden');
   if(!noanim)
   {
