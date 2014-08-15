@@ -67,6 +67,11 @@ initialize_reader(function()
             update_filters(csv);
             return false;
           });
+        $('#search-inp').bind('input', function()
+          {
+            csv.search_query = this.value;
+            update_filters(csv);
+          });
       });
   });
 function zoomable_img_init()
@@ -454,13 +459,31 @@ function update_filters(csv)
   csv.rowFilters = get_filters(csv);
   update_csvreader(csv);
 }
+function escapeRegExp(str) {
+  return str.replace(/[\-\[\]\/\{\}\(\)\*\+\?\.\\\^\$\|]/g, "\\$&");
+}
 function get_filters(csv)
 {
   var cols_info = csv.columns_info,
   items = csv.filterElements,
-  filters = [];
+  filters = [],
+  cols_info_arr = [];
+  for(var i in cols_info)
+    cols_info_arr.push(cols_info[i]);
+  var searchable_fields = cols_info_arr
+    .filter(function(a) { return a.searchable; })
+    .map(function(a) { return a.key; });
   if(!items)
     return filters;
+  if(csv.search_query && searchable_fields.length > 0)
+    filters.push(function()
+      {
+        var regexp = new RegExp(escapeRegExp(csv.search_query), 'i');
+        for(var i = 0, l = searchable_fields.length; i < l; ++i)
+          if(regexp.test(this[searchable_fields[i]]))
+            return true;
+        return false;
+      });
   if(csv.fav_filter)
     filters.push(function()
       {
@@ -706,6 +729,7 @@ function get_columns_info()
       name: $th.data('name'),
       filterable: typeof $th.data('filterable') == 'string',
       sortable: typeof $th.data('sortable') == 'string',
+      searchable: typeof $th.data('searchable') == 'string',
       $th: $th
     };
     if(col.filterable)
