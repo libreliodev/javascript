@@ -16,22 +16,11 @@
   list-style: none;
   position: relative;
   width: 100%;
-  height: 90px;
   border-bottom: 1px solid darkgrey;
-}
-.item-icons {
-  position: absolute;
-  top: 0px;
-  right: 0px;
-  padding-right: 40px;
-  overflow: hidden;
-  height: 80px;
+  padding-bottom: 4px;
 }
 .item-icons .item-icon {
-  float: right;
-  width: 40px;
-  hieght: 40px;
-  margin-left: 4px;
+  margin-right: 4px;
 }
 .item-thumbnail {
   transform-origin: 0 0 0;

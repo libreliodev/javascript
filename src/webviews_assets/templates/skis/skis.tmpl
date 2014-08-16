@@ -1,3 +1,4 @@
+<link class="csvinit" rel="stylesheet" data-attrs="href=tmplrelpath('../default.css')" data-init="ready_after_load()" />
 <style>
 #csvtable .csvcolumn {
   display: none;
@@ -6,8 +7,31 @@
   display: block;
   cursor: pointer;
 }
+
+.item-icons {
+  position: absolute;
+  top: 0px;
+  right: 0px;
+  padding-right: 40px;
+  overflow: hidden;
+  height: 80px;
+}
+.item-icons .item-icon {
+  float: right;
+  width: 40px;
+  hieght: 40px;
+  margin-right: 0px;
+  margin-left: 0px;
+}
 </style>
-<link class="csvinit" rel="stylesheet" data-attrs="href=tmplrelpath('default.css')" data-init="ready_after_load()" />
+<div data-init-block="row-icons">
+  <!-- icon for men -->
+  <img class="item-icon" data-init="if(not(eq(row.6,'1')),this.remove())" data-attrs="src=tmplrelpath('Homme.png')" />
+  <!-- icon for women -->
+  <img class="item-icon" data-init="if(not(eq(row.6,'2')),this.remove())" data-attrs="src=tmplrelpath('Femme.png')" />
+  <!-- icon -->
+  <img class="item-icon" data-init="if(not(eq(row.3,'1')),this.remove())" data-attrs="src=tmplrelpath('TesterChoice.png')" />
+</div>
 <div id="csvtable">
   <div class="sort-list">
     <label>Tri par:</label>
@@ -99,12 +123,7 @@
         <span class="item-thumbnail">
           <img data-attrs="src=row.8" />
         </span>
-        <!-- icon for men -->
-        <img class="item-icon" data-init="if(not(eq(row.6,'1')),this.remove())" data-attrs="src=tmplrelpath('Homme.png')" />
-        <!-- icon for women -->
-        <img class="item-icon" data-init="if(not(eq(row.6,'2')),this.remove())" data-attrs="src=tmplrelpath('Femme.png')" />
-        <!-- icon -->
-        <img class="item-icon" data-init="if(not(eq(row.3,'1')),this.remove())" data-attrs="src=tmplrelpath('TesterChoice.png')" />
+        <span data-block="row-icons"></span>
       </div>
       <h3 class="item-title" data-content="row.9"></h3>
       <dl class="item-pair-list">
@@ -126,19 +145,19 @@
       <button type="button" class="next-btn btn btn-default"><i class="glyphicon glyphicon-chevron-right"></i></button>
     </div>
     <button type="button" class="row-fav-toggle-btn btn btn-default">
-      <span class="np is-enabled"><i class="glyphicon glyphicon-star"></i></span>
-      <span class="np is-disabled"><i class="glyphicon glyphicon-star-empty"></i></span>
+      <span class="is-enabled"><i class="glyphicon glyphicon-star"></i></span>
+      <span class="is-disabled"><i class="glyphicon glyphicon-star-empty"></i></span>
     </button>
   </div>
-  <div class="csvpage-content">
+  <div id="detailpagec" class="csvpage-content">
     <style>
-	  #detailpage p
+	  #detailpagec p
 	  {
 		  margin: 0px;
 		  padding: 0px;
 	  }
 	  
-    #detailpage
+    #detailpagec
     {
       font-family: "Helvetica neue";
       background-color: #ffffff;
@@ -148,13 +167,13 @@
       padding-bottom: 20px;
     }
     
-    #detailpage span
+    #detailpagec span
     {
       margin: 0px;
       padding: 10px 10px 10px 10px;
     }
     
-    #detailpage span.title
+    #detailpagec span.title
     {
       color: #ffffff;
       text-transform: uppercase;
@@ -164,7 +183,7 @@
 		  padding-left: 0px;
 		  padding-bottom: 0px;
     }
-    #detailpage table.top_table
+    #detailpagec table.top_table
     {
       width:100%;
       height:40px; 
@@ -172,18 +191,18 @@
       padding:0;
       background-color:#32aac3;
     }
-    #detailpage table.caracteristics
+    #detailpagec table.caracteristics
     {
       width:100%;
       border:0; 
       padding:0;
     }
-    #detailpage table.caracteristics td
+    #detailpagec table.caracteristics td
     {
       vertical-align: top;
       font-size:12px;
     }
-    #detailpage p.Test_baseline
+    #detailpagec p.Test_baseline
     {
       text-transform: uppercase;
       font-weight: bold;
@@ -191,13 +210,13 @@
       margin-top: 15px;
     }
     
-    #detailpage p.Description_Test
+    #detailpagec p.Description_Test
     {
       font-size: 14px; 
       text-align: justify;                
     }
 	  
-    #detailpage span.modele
+    #detailpagec span.modele
     {
       color: #000000;
       font-size: 14px;
@@ -206,7 +225,7 @@
 		  padding-left: 0px;
 		  padding-top: 0px;
     }
-    #detailpage span.budget
+    #detailpagec span.budget
     {
       color: #ffffff;
       text-transform: uppercase;
@@ -216,7 +235,7 @@
       font-weight: bold;
 		  padding-bottom: 0px;
     }
-    #detailpage div.main
+    #detailpagec div.main
     {
       margin: 0px;
 		  padding-top: 5px;
@@ -225,19 +244,19 @@
 		  padding-right: 15px;
     }
     
-    #detailpage div.main table.caracteristics img
+    #detailpagec div.main table.caracteristics img
     {
       margin: 2px;
     }
     
-    #detailpage div.tableview
+    #detailpagec div.tableview
     {
       width: 100%;
       margin: 0px;
       padding: 0px;
 		  font-size: 12px;
     }
-    #detailpage div.tableview table
+    #detailpagec div.tableview table
     {
       width: 100%;
       border-collapse: collapse;
@@ -246,7 +265,7 @@
       border-color: black;
 		  
     }
-    #detailpage div.tableview table th
+    #detailpagec div.tableview table th
     {
       background-color: white;
       color: gray;
@@ -257,7 +276,7 @@
       border-color: black;
       text-align: center;
     }
-    #detailpage div.tableview table td
+    #detailpagec div.tableview table td
     {
       background-color: white;
       border-collapse: collapse;
@@ -267,7 +286,7 @@
       text-align: center;
 	  }
     
-    #detailpage div.ski_preview
+    #detailpagec div.ski_preview
     {
       padding: 1px 1px 1px 1px;
       background-color: white;
@@ -279,39 +298,39 @@
       border-width: 1px;
       -webkit-border-radius: 4px;
     }
-    #detailpage div.ski_preview img
+    #detailpagec div.ski_preview img
     {
       width: 100%;
       margin: 0px;
     }
-	  #detailpage .np {
+	  #detailpagec .np {
       padding: 0px;
     }
-	  #detailpage div.badges_placeholder img
+	  #detailpagec div.badges_placeholder img
 	  {
 		  margin-right: 3px;
 	  }
-    #detailpage .caracteristics-wrp {
+    #detailpagec .caracteristics-wrp {
         margin-top: 6px;
     }
-    #detailpage .top_table_fc {
+    #detailpagec .top_table_fc {
       width: 60%;
     }
     @media (min-width:601px) {
-      #detailpage .top_table_fc {
+      #detailpagec .top_table_fc {
         width: 75%;
       }
-      #detailpage .top_table_fc div {
+      #detailpagec .top_table_fc div {
         display: inline;
       }
-      #detailpage .caracteristics-wrp {
+      #detailpagec .caracteristics-wrp {
         float:left;
       }
-      #detailpage .badges_placeholder {
+      #detailpagec .badges_placeholder {
         margin-top: 6px;
         float: right;
       }
-      span.title
+      #detailpagec span.title
       {
         color: #ffffff;
         text-transform: uppercase;
@@ -321,14 +340,14 @@
         padding-right: 0px;
         padding-top: 0px;
       }
-      p.Test_baseline
+      #detailpagec p.Test_baseline
       {
         text-transform: uppercase;
         font-weight: bold;
 				margin-bottom: 10px;
       }
 			
-      span.modele
+      #detailpagec span.modele
       {
         color: #000000;
         font-size: 18px;
@@ -337,7 +356,7 @@
         padding-right: 0px;
         padding-bottom: 0px;
       }
-      span.budget
+      #detailpagec span.budget
       {
         color: #ffffff;
         text-transform: uppercase;
@@ -347,7 +366,6 @@
         font-weight: bold;
 				padding-right: 15px;
       }
-
     }
     </style>
     <table class="top_table">
@@ -382,14 +400,7 @@
         </table>
       </div>
 		  
-      <div class="badges_placeholder">
-        <!-- icon for men -->
-        <img class="item-icon" data-init="if(not(eq(row.6,'1')),this.remove())" data-attrs="src=tmplrelpath('Homme.png')" />
-        <!-- icon for women -->
-        <img class="item-icon" data-init="if(not(eq(row.6,'2')),this.remove())" data-attrs="src=tmplrelpath('Femme.png')" />
-        <!-- icon -->
-        <img class="item-icon" data-init="if(not(eq(row.3,'1')),this.remove())" data-attrs="src=tmplrelpath('TesterChoice.png')" />
-      </div>
+      <div class="badges_placeholder" data-block="row-icons"></div>
       <div class="clearb"></div>
       <p class="Test_baseline" data-content="row.1"></p>
 		  <p class="Description_Test" data-content="row.20"></p>

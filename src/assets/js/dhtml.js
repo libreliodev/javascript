@@ -200,6 +200,7 @@
   }
   function m_eval_get_var(ctx, _var)
   {
+    var parent;
     for(var i = 0, l = _var.length; i < l; ++i)
     {
       if(ctx === undefined)
@@ -208,9 +209,16 @@
         err.code = 'undefined_var';
         throw err;
       }
+      if(i > 0)
+        parent = ctx;
       ctx = ctx[_var[i]];
     }
-    return ctx;
+    if(ctx === undefined || ctx === null)
+      return;
+    return {
+      parent: parent,
+      value: ctx
+    };
   }
   function m_eval(s, contexts, thisarg)
   {
@@ -279,16 +287,19 @@
         }
         if(expr.call)
         {
+          var parent = val.parent;
+          val = val.value;
           if(!val)
             throw new Error("'" + expr.value.join('.') + 
                             "' is undefined");
           if(typeof val != funcStr)
             throw new Error("'" + expr.value.join('.') + 
                             "' is not a function");
-          ret.push(val.apply(thisarg, m_eval_expr(expr.call, contexts, thisarg)));
+          ret.push(val.apply(parent || thisarg, 
+                             m_eval_expr(expr.call, contexts, thisarg)));
         }
         else
-          ret.push(val);
+          ret.push(val ? val.value : val);
         break;
       case string:
         ret.push(expr.value);

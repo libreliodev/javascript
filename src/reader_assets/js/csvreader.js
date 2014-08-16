@@ -216,7 +216,7 @@ function csvreader_template_url(app_data, csv_url, csv_url_dir, external_b,
   return csv_url_dir + '/' +
     path.basename(path_str, path.extname(path_str)) + '.tmpl';
 }
-function eval_page(sel, ctx)
+function eval_page(csv, sel, ctx)
 {
   var $page = $(sel),
   $tpage = $page.data('template') || $page,
@@ -225,7 +225,8 @@ function eval_page(sel, ctx)
   $pagei.data('template', $tpage);
   $page.replaceWith($pagei);
 
-  $pagei.dhtml('item_update', [ ctx, global_ctx ], { recursive: true });
+  blocks_put($pagei, csv.blocks);
+  $pagei.dhtml('item_init', [ ctx, global_ctx ], { recursive: true });
 
   return $pagei;
 }
@@ -235,7 +236,7 @@ function open_row_page(csv, sel, index, row, noanim)
     index: index,
     row: row
   },
-  $page = eval_page(sel, ctx),
+  $page = eval_page(csv, sel, ctx),
   page_el = $page[0];
   if(!page_el)
     return;
@@ -398,18 +399,37 @@ function initiate_filters(csv)
         checked_opts = {},
         option_values = [],
         allchoice = filter_info.AllChoice;
-        if(typeof options == 'object' && !$.isArray(options))
+        if(typeof options == 'object')
         {
-          var tmp = options;
-          options = [];
-          for(var c in tmp)
+          if($.isArray(options))
           {
-            options.push(c);
-            option_values.push(tmp[c]);
+            if(options.length > 0 && $.isArray(options[0]))
+            {
+              var tmp = options,
+              options = [];
+              for(var c = 0, cl = tmp.length; c < cl; ++c)
+              {
+                var opt = tmp[c];
+                options.push(opt[0]);
+                option_values.push(opt[1]);
+              }
+            }
+            else
+            {
+              option_values = options;
+            }
+          }
+          else
+          {
+            var tmp = options;
+            options = [];
+            for(var c in tmp)
+            {
+              options.push(c);
+              option_values.push(tmp[c]);
+            }
           }
         }
-        else
-          option_values = options;
         switch(typeof deflt)
         {
         case 'string':
@@ -575,9 +595,12 @@ function load_csv(csv_url, tmpl_url, cb)
       } catch(e1) {
         return cb(e1);
       }
-      var ret = {
+      var blocks = blocks_get(csvreader),
+      ret = {
         rows: rows,
-        template: csvreader.html()
+        blocks: blocks,
+        template: csvreader.html(),
+        template_csvtable: $('#csvtable').html()
       };
       if(dict_b)
       {
@@ -658,10 +681,19 @@ function filter_create_isin(p, a)
 }
 function update_csvreader(csv)
 {
-  csvreader.hide();
-  $('#csvtable').each(function() { this.parentNode.removeChild(this); });
+  var csvtable = $('#csvtable');
+  //csvtable.each(function() { this.parentNode.removeChild(this); });
   // insert template
-  csvreader.html(csv.template);
+  //csvtable.html(csv.template_csvtable);
+  try {
+    var el = csvtable[0],
+    parentEl = el.parentNode;
+    csvtable = $('<div id="csvtable"></div>').html(csv.template_csvtable);
+    parentEl.replaceChild(csvtable[0], el);
+  } catch(e) {
+    console.error(e);
+    return;
+  }
   var cols_info = csv.columns_info,
   query = csv.rowsDB();
   if(csv.rowFilters)
@@ -675,15 +707,14 @@ function update_csvreader(csv)
     rows: query.get().map(function(a) { return a.__row; })
   };
   csv.ctx = csv_ctx;
-  $('#csvtable').dhtml('item_init', [ csv_ctx, global_ctx ], { 
+  blocks_put(csvtable, csv.blocks);
+  csvtable.dhtml('item_init', [ csv_ctx, global_ctx ], { 
     recursive: true,
     foreach_cache_get: foreach_cache_get,
     foreach_cache_set: foreach_cache_set
   });
   
   update_csvreader_columns_element(cols_info)
-
-  csvreader.show();
 }
 function foreach_cache_get(forexpr, i, v, c)
 {
@@ -793,4 +824,30 @@ function request_csv_data(csv_url, tmpl_url, cb)
      {
        cb(err, res); 
      });
+}
+
+function blocks_get(el)
+{
+  var ret = {};
+  el.find('*').each(function()
+    {
+      var $this = $(this),
+      block_name;
+      if((block_name = $this.data('init-block')))
+      {
+        ret[block_name] = $this.html();
+        $this.remove();
+      }
+    });
+  return ret;
+}
+function blocks_put(el, blocks)
+{
+  el.find('*').each(function()
+    {
+      var $this = $(this),
+      block_name;
+      if((block_name = $this.data('block')))
+        $this.html(blocks[block_name] || '');
+    });
 }

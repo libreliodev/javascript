@@ -9,7 +9,7 @@ module.exports = function (grunt) {
     reader_dist_dir = dist_dir + '/reader',
     reader_assets_dist_dir = reader_dist_dir + '/assets',
     webviews_dist_dir = dist_dir + '/webviews',
-    webviews_assets_dist_dir = webviews_dist_dir + '/assets';
+    webviews_assets_dist_dir = webviews_dist_dir;
 
     var src_dir = 'src',
     shared_assets = src_dir + '/assets',
@@ -164,7 +164,7 @@ module.exports = function (grunt) {
                     assets: webviews_assets_dist_dir
                 },
                 files: [
-                    {expand: true, cwd: 'src/templates/reader', src: ['csvreader.hbs'], dest: webviews_dist_dir}
+                    {expand: true, cwd: 'src/templates/webviews', src: ['*.hbs'], dest: webviews_dist_dir}
                 ]
             },
             // site librelio.com
@@ -235,11 +235,6 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: shared_assets, src: ['lib/**','img/**','js/**'],
                         dest: reader_assets_dist_dir + '/'
-                    },
-                    {
-                        expand: true,
-                        cwd: shared_assets, src: ['lib/**','img/**','js/**'],
-                        dest: webviews_assets_dist_dir + '/'
                     },
                   /* copy pdfreader assets to reader & admin */
                     {
@@ -634,14 +629,22 @@ module.exports = function (grunt) {
                     /* webviews */
                     {
                         expand: true,
-                        cwd: webviews_assets_src_dir + '/template',
-                        src: './**/*',
-                        dest: webviews_assets_dist_dir + '/template'
+                        cwd: shared_assets,
+                        src: ['lib/jquery.plist.js', 'lib/localeplanet/**','js/**'],
+                        dest: webviews_assets_dist_dir + '/',
+                        /*filter: 'isFile',
+                        flatten: true*/
+                    },
+                    {
+                        expand: true,
+                        cwd: webviews_assets_src_dir + '/templates',
+                        src: '**',
+                        dest: webviews_assets_dist_dir + '/templates'
                     },
                     {
                         expand: true,
                         cwd: 'bower_components/jquery/',
-                        src: ['./jquery*.js'],
+                        src: ['./jquery.min.js'],
                         dest: webviews_assets_dist_dir + '/lib'
                     },
                     {
@@ -653,21 +656,12 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'bower_components/bootstrap/dist/',
-                        src: ['./**/*.*'],
+                        src: [
+                          'css/bootstrap.min.css',
+                          'js/bootstrap.min.js',
+                          'fonts/*'
+                        ],
                         dest: webviews_assets_dist_dir + '/lib/bootstrap'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'bower_components/font-awesome/',
-                        src: ['./css/*.*', './fonts/*.*'],
-                        dest: webviews_assets_dist_dir + '/lib/Font-Awesome'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'bower_components/sprintf/dist/',
-                        src: 'sprintf.min.js',
-                        dest: webviews_assets_dist_dir + '/lib/'
-                        
                     },
                     {
                         expand: true,
@@ -691,13 +685,13 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'bower_components/path/',
-                        src: 'path*.js',
+                        src: 'path.min.js',
                         dest: webviews_assets_dist_dir + '/lib/'
                     },
                     {
                         expand: true,
                         cwd: 'bower_components/querystring/',
-                        src: 'querystring*.js',
+                        src: 'querystring.min.js',
                         dest: webviews_assets_dist_dir + '/lib/'
                     },
                     {
@@ -714,7 +708,7 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'src/templates/reader',
+                        cwd: 'src/templates/webviews',
                         src: './application_.json',
                         dest: webviews_dist_dir + '/'
                     },
