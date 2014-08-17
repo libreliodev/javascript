@@ -629,17 +629,23 @@ module.exports = function (grunt) {
                     /* webviews */
                     {
                         expand: true,
+                        cwd: reader_assets_src_dir + '/csvreader-templates',
+                        src: '**',
+                        dest: reader_assets_dist_dir + '/csvreader-templates'
+                    },
+                    {
+                        expand: true,
+                        cwd: reader_assets_src_dir + '/csvreader-templates',
+                        src: '**',
+                        dest: webviews_assets_dist_dir + '/csvreader-templates'
+                    },
+                    {
+                        expand: true,
                         cwd: shared_assets,
                         src: ['lib/jquery.plist.js', 'lib/localeplanet/**','js/**'],
                         dest: webviews_assets_dist_dir + '/',
                         /*filter: 'isFile',
                         flatten: true*/
-                    },
-                    {
-                        expand: true,
-                        cwd: webviews_assets_src_dir + '/templates',
-                        src: '**',
-                        dest: webviews_assets_dist_dir + '/templates'
                     },
                     {
                         expand: true,
@@ -711,12 +717,6 @@ module.exports = function (grunt) {
                         cwd: 'src/templates/webviews',
                         src: './application_.json',
                         dest: webviews_dist_dir + '/'
-                    },
-                    { // for development
-                        expand: true,
-                        cwd: 'src/reader_assets/img',
-                        src: ['./test_.csv'],
-                        dest: webviews_assets_dist_dir + '/img'
                     },
                 ]
             }

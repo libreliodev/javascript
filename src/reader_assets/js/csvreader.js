@@ -1,19 +1,18 @@
 var default_template, csvreader, csvfilters, csv_urldir, tmpl_urldir,
+default_template_path = assets + '/csvreader-templates/default/default.tmpl', 
 global_ctx = {
   path: path,
   url: url,
   relpath: function()
   {
-    // shortcut for path.join(urldir,[arg0,[arg1,[..]]])
-    return path.join
-      .apply(path, 
-             ([ csv_urldir ]).concat(Array.prototype.slice.call(arguments)));
+    // shortcut for concat(urldir,'/',path.join([arg0,[arg1,[..]]]))
+    return csv_urldir + '/' + 
+      path.join.apply(path, Array.prototype.slice.call(arguments));
   },
   tmplrelpath: function()
   {
-    return path.join
-      .apply(path, 
-             ([ tmpl_urldir ]).concat(Array.prototype.slice.call(arguments)));
+    return tmpl_urldir + '/' + 
+      path.join.apply(path, Array.prototype.slice.call(arguments));
   },
   decimalFormat: function(l, v)
   {
@@ -24,8 +23,6 @@ initialize_reader(function()
   {
     csvfilters = $('#csvfilters').dhtml('list_init');
     csvreader = $('#csvreader');
-    default_template = csvreader.html();
-    csvreader.html('');
     $('.sidebartoggle')
       .bind('touchstart touchmove touchend', function(ev)
       {
@@ -57,6 +54,8 @@ initialize_reader(function()
       {
         if(err)
           return notifyError(err);
+        if(csv.used_default_template)
+          tmpl_urldir = global_ctx.tmpl_urldir = url_dir(default_template_path);
         initiate_filters(csv);
         initiate_sortable_columns(csv);
         update_csvreader(csv);
@@ -275,8 +274,9 @@ function zoomable_img_init()
 function csvreader_template_url(app_data, csv_url, csv_url_dir, external_b,
                                 doc_query)
 {
-  if(doc_query.watmpl)
-    return reader_url_eval(doc_query.watmpl, external_b, app_data);
+  /* We don't use watmpl
+    if(doc_query.watmpl)
+    return reader_url_eval(doc_query.watmpl, external_b, app_data);*/
 
   var path_str = url('path', csv_url);
   return csv_url_dir + '/' +
@@ -639,7 +639,8 @@ function load_csv(csv_url, tmpl_url, cb)
                 next = cb;
             });
         }
-      }, parallel_ready = [];
+      }, parallel_ready = [],
+      used_default_template;
       if(err)
         return cb(err);
       
@@ -647,7 +648,10 @@ function load_csv(csv_url, tmpl_url, cb)
       if(data_obj.template)
         csvreader.html(data_obj.template);
       else
+      {
         csvreader.html(default_template);
+        used_default_template = true;
+      }
       csvreader.find('.csvinit').dhtml('item_init', [ csvinit_ctx, global_ctx ],
                                        { recursive: true });
       var csv_data = data_obj.csv_data,
@@ -666,7 +670,8 @@ function load_csv(csv_url, tmpl_url, cb)
         rows: rows,
         blocks: blocks,
         template: csvreader.html(),
-        template_csvtable: $('#csvtable').html()
+        template_csvtable: $('#csvtable').html(),
+        used_default_template: used_default_template
       };
       if(dict_b)
       {
@@ -867,7 +872,26 @@ function request_csv_data(csv_url, tmpl_url, cb)
         error: function(xhr, err, err_text)
         {
           console.log('try for loading tmplate failed: ' + err_text);
-          cb();
+          if(!default_template)
+          {
+            console.log('loading default template');
+            // load template file
+            $.ajax(default_template_path, {
+              success: function(data)
+              {
+                default_template = data;
+                cb();
+              },
+              error: function(xhr, err, err_text)
+              {
+                var err = sprintf(_("Request for default template" + 
+                                    " has failed: %s"), err_text);
+                cb(err);
+              }
+            });
+          }
+          else
+            cb();
         }
       });
     },
@@ -907,13 +931,21 @@ function blocks_get(el)
     });
   return ret;
 }
-function blocks_put(el, blocks)
+function blocks_put(el, blocks, used_blocks)
 {
+  used_blocks = used_blocks || [];
   el.find('*').each(function()
     {
       var $this = $(this),
       block_name;
       if((block_name = $this.data('block')))
+      {
+        if(used_blocks.indexOf(block_name) != -1)
+          throw new Error(block_name + ' has made endless loop');
         $this.html(blocks[block_name] || '');
+        var tmp = used_blocks.concat();
+        tmp.push(block_name);
+        blocks_put($this, blocks, tmp);
+      }
     });
 }
