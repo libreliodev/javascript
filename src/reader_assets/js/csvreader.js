@@ -76,6 +76,80 @@ initialize_reader(function()
   });
 function zoomable_img_init()
 {
+  function find_fixed_ancestor(el)
+  {
+    var $el = $(el).parent();
+    while($el.length > 0)
+    {
+      if($el.css('position') == 'fixed')
+        return $el[0];
+      $el = $el.parent();
+    }
+  }
+  function find_room(img, orig_img)
+  {
+    var rects = [],
+    nwidth = orig_img.width,
+    nheight = orig_img.height,
+    fixed_anc = find_fixed_ancestor(img),
+    anc_offset = $(fixed_anc).offset(),
+    offset = $(img).offset(),
+    // zoomable is in a fixed element
+    // remove scroll offset
+    img_offx = offset.left - (anc_offset ? anc_offset.left : 0), 
+    img_offy = offset.top - (anc_offset ? anc_offset.top : 0),
+    img_width = img.width,
+    img_height = img.height,
+    sw = window.innerWidth,
+    sh = window.innerHeight,
+    rect;
+    // paths to calculate every side's rect
+    var paths = [
+      [ 0, 0, 0, 1, 1 ], // top path
+      [ 0, 1, 0, 2, 1 ], // bottom path
+      [ 0, 0, 1, 0, 0 ], // left path
+      [ 1, 0, 2, 0, 0 ] // right path 
+    ];
+    for(var i = 0, l = paths.length; i < l; ++i)
+    {
+      var path = paths[i];
+      rect = [ [ 0, img_offx + img_width ][path[0]],
+               [ 0, img_offy + img_height ][path[1]],
+               [ '100%', img_offx, sw - img_offx - img_width ][path[2]],
+               [ '100%', img_offy, sh - img_offy - img_height ][path[3]] ];
+      if((path[2] !== 0 && rect[2] <= 0) ||
+         (path[3] !== 0 && rect[3] <= 0))
+        continue;
+
+      var pidx = path[4];
+      if(rect[2 + pidx] >= [ nwidth, nheight ][pidx])
+      {
+        if(path[0 + pidx] === 0)
+          rect[0 + pidx] = rect[2 + pidx] - [ nwidth, nheight ][pidx];
+        rect[2 + pidx] = [ nwidth, nheight ][pidx];
+      }
+      rects.push(rect);
+    }
+    function area(r)
+    {
+      return (typeof r[2] == 'string' ? sw : r[2]) *
+        (typeof r[3] == 'string' ? sh : r[3]);
+    }
+    // use largest rect
+    var best_found = rects.length > 0 ? rects[0] : null,
+    best_area = best_found ? area(best_found) : null;
+    for(var i = 1; i < rects.length; ++i)
+    {
+      var rect = rects[i],
+      rect_area = area(rect);
+      if(best_area < rect_area)
+      {
+        best_area = rect_area;
+        best_found = rect;
+      }
+    }
+    return best_found;
+  }
   function event_mouse_position(ev)
   {
     if(ev.originalEvent.touches)
@@ -98,13 +172,9 @@ function zoomable_img_init()
       {
         if(!img)
           return;
-        // offset.top must be greater that zero
+        // define zoomed_img size
         var width = this.width,
         height = this.height,
-        offset = {
-          left: img[0].offsetLeft,
-          top: img[0].offsetTop
-        },
         zoom_ratio = parseFloat(img.data('zoomable-zoom')),
         zoom_max = img.data('zoomable-max');
         if(!isNaN(zoom_ratio))
@@ -118,26 +188,22 @@ function zoomable_img_init()
           }
           zoomed_img.width(nw);
           zoomed_img.height(nh);
-          width = nw;
-          height = nh;
+        }
+        var rect = find_room(img[0], zoomed_img[0]);
+        if(!rect)
+        {
+          img = null;
+          return;
         }
         // place zoom wrp on screen
         zoomed_img_wrp.css({
           position: 'fixed',
-          left: 0,
-          top:  0,
-          width: '100%',
-          height: offset.top,
+          left: rect[0],
+          top:  rect[1],
+          width: rect[2],
+          height: rect[3],
           zIndex: 10
         });
-        var hits_ceiling = offset.top - height <= 0;
-        if(!hits_ceiling)
-        {
-          zoomed_img_wrp.css({
-            top: offset.top - height,
-            height: height
-          });
-        }
         cb();
       });
   }
