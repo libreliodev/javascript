@@ -7,8 +7,6 @@
   float: left;
   width: 150px;
   background-color: white;
-  padding: 5px;
-  padding-right: 8px;
 }
 #csvreader {
   margin-left: 150px;
@@ -46,23 +44,15 @@
   opacity: 0;
 }
 .csvpage-content {
-  position: absolute;
-  left: 0px;
-  top: 0px;
-  width: 100%;
-  height: 100%;
-  background: white;
+  background-color: white;
   overflow-y: scroll;
   -webkit-overflow-scrolling: touch;
-  padding-top: 40px;
 }
 .csvpage-navbar {
-  background: lightgrey;
-  position: fixed;
+  position: relative;
+  background: rgb(233, 233, 233);
   width: 100%;
   height: 40px;
-  top: 0px;
-  left: 0px;
   z-index: 2;
   text-align: center;
 
@@ -73,30 +63,17 @@
   .nav-btns i {
     font-size: 15px;
   }
-  .close-btn i {
-    font-size: 24px;
-  }
-  .nav-btns .next-btn {
-    padding-left: 20px;
-  }
-  .nav-btns .previous-btn {
-    padding-right: 20px;
-  }
-  .close-btn {
-    color: black;
-    width: 30px;
-    height: 30px;
+  .row-fav-toggle-btn {
     position: absolute;
-    top: 5px;
-    left: 5px;
-    text-align: center;
+    bottom: 3px;
+    right: 5px;
   }
 }
 .dark-bkg {
   .csvpage-close-btn {
     color: white;
   }
-  .csvpage {
+  .csvpage-content {
     background-color: black;
   }
   #sidebar-content {
@@ -157,12 +134,6 @@
   }
 }
 
-.row-fav-toggle-btn {
-  position: absolute;
-  top: 3px;
-  right: 5px;
-}
-
 .row-fav-toggle-btn.enabled .is-disabled,
 .row-fav-toggle-btn .is-enabled {
   display: none;
@@ -179,4 +150,10 @@
 .favorites-toggle-btn .is-disabled,
 .favorites-toggle-btn.enabled .is-enabled {
   display: block;
+}
+
+
+.scrollable {
+  overflow-y: scroll;
+  -webkit-overflow-scrolling: touch;
 }

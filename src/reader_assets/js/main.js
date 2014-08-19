@@ -209,10 +209,10 @@ function application_info_load(cb)
     {
       cb(undefined, app_data);
     },
-    error: function(xhr, err_text)
+    error: function(xhr, err, err_text)
     {
       cb(sprintf(_("Couldn't load `%s`: %s"), app_url,
-                 textStatus));
+                 err_text));
     }
   });
 }

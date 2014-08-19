@@ -1,5 +1,6 @@
 var default_template, csvreader, csvfilters, csv_urldir, tmpl_urldir,
 default_template_path = assets + '/csvreader-templates/default/default.tmpl', 
+popstate_disabled, active_page,
 global_ctx = {
   path: path,
   url: url,
@@ -54,15 +55,16 @@ initialize_reader(function()
       {
         if(err)
           return notifyError(err);
-        if(csv.used_default_template)
-          tmpl_urldir = global_ctx.tmpl_urldir = url_dir(default_template_path);
+        if(csv.default_tmpl_urldir)
+          tmpl_urldir = csv.default_tmpl_urldir;
         initiate_filters(csv);
         initiate_sortable_columns(csv);
         update_csvreader(csv);
         $('.favorites-toggle-btn').click(function()
           {
             csv.fav_filter = !csv.fav_filter;
-            $('.favorites-toggle-btn').toggleClass('enabled', csv.fav_filter);
+            $('.favorites-toggle-btn').toggleClass('enabled', csv.fav_filter)
+              .toggleClass('active', csv.fav_filter);
             update_filters(csv);
             return false;
           });
@@ -71,6 +73,59 @@ initialize_reader(function()
             csv.search_query = this.value;
             update_filters(csv);
           });
+        window.onpopstate = function(ev)
+        {
+          if(popstate_disabled)
+            return;
+          var state;
+          try {
+            state = JSON.stringify(ev.state);
+          } catch(e) {
+          }
+          process_request_hash(state);
+        }
+        process_request_hash({ noanim: true });
+        function process_request_hash(state)
+        {
+          // format rpage,[<pageid>],<row-index>
+          state = state || {};
+          var hash = document.location.hash.length > 0 ? 
+            document.location.hash.substr(1) : '',
+          list = hash.split(',');
+          if(hash === '')
+          {
+            if(active_page)
+            {
+              close_page(active_page);
+              active_page = null;
+            }
+            return;
+          }
+          switch(list[0]) // action
+          {
+          case 'rpage':
+            var pageid = 'detailpage',
+            row_index;
+            if(list.length == 2)
+            {
+              pageid = state.pageid || pageid;
+              row_index = parseInt(list[1]);
+            }
+            else if(list.length == 3)
+            {
+              pageid = list[1] || state.pageid || pageid;
+              row_index = parseInt(list[2]);
+            }
+            else
+              return;
+            if(isNaN(row_index) || row_index < 0 || 
+               row_index >= csv.rows.length)
+              return;
+            open_row_page(csv, '#' + pageid, 
+                          row_index, csv.rows[row_index], state.noanim);
+            break;
+          }
+        }
       });
   });
 function zoomable_img_init()
@@ -106,8 +161,8 @@ function zoomable_img_init()
     var paths = [
       [ 0, 0, 0, 1, 1 ], // top path
       [ 0, 1, 0, 2, 1 ], // bottom path
-      [ 0, 0, 1, 0, 0 ], // left path
-      [ 1, 0, 2, 0, 0 ] // right path 
+      //[ 0, 0, 1, 0, 0 ], // left path
+      //[ 1, 0, 2, 0, 0 ] // right path 
     ];
     for(var i = 0, l = paths.length; i < l; ++i)
     {
@@ -276,8 +331,8 @@ function csvreader_template_url(app_data, csv_url, csv_url_dir, external_b,
 {
   /* We don't use watmpl
     if(doc_query.watmpl)
-    return reader_url_eval(doc_query.watmpl, external_b, app_data);*/
-
+    return reader_url_eval(doc_query.watmpl, external_b, app_data);
+  */
   var path_str = url('path', csv_url);
   return csv_url_dir + '/' +
     path.basename(path_str, path.extname(path_str)) + '.tmpl';
@@ -306,22 +361,28 @@ function open_row_page(csv, sel, index, row, noanim)
   page_el = $page[0];
   if(!page_el)
     return;
-  $('body').css('overflow','hidden');
+  active_page = sel;
+  //$('body').css('overflow','hidden');
   if(!noanim)
   {
     $page.toggleClass('openstart', true);
     setTimeout(function()
       {
         $page.toggleClass('open', true);
+        activeclasses_proc($page);
         page_el._open_end_timeout = setTimeout(function()
           {
             $page.toggleClass('openstart', false)
+            activeclasses_proc($page);
             page_el._open_end_timeout = undefined;
           }, parseInt($page.data('open-delay')) || 500);
       }, 10);
   }
   else
+  {
     $page.toggleClass('open', true);
+    activeclasses_proc($page);
+  }
   $page.find('.nav-btns button').click(function()
     {
       var $btn = $(this),
@@ -329,20 +390,30 @@ function open_row_page(csv, sel, index, row, noanim)
       rows = csv && csv.ctx ? csv.ctx.rows : null;
       if(!rows || goto_row_index >= rows.length || goto_row_index < 0)
         return false;
-      open_row_page(csv, sel, goto_row_index, rows[goto_row_index], true);
+      popstate_disabled = true;
+      history.back();
+      setTimeout(function()
+        {
+          popstate_disabled = false;
+        }, 100);
+      var nrow = rows[goto_row_index];
+      history.pushState({ pageid: sel }, '', '#rpage,' + nrow.__index);
+      open_row_page(csv, sel, goto_row_index, nrow, true);
       return false;
     });
   $page.find('.close-btn').click(function()
     {
-      close_page(sel);
+      history.back();
       return false;
     });
   $page.find('.row-fav-toggle-btn')
     .toggleClass('enabled', !!row.__infav)
+    .toggleClass('active', !!row.__infav)
     .click(function()
       {
         row.__infav = !row.__infav;
-        $page.find('.row-fav-toggle-btn').toggleClass('enabled', row.__infav);
+        $page.find('.row-fav-toggle-btn').toggleClass('enabled', row.__infav)
+          .toggleClass('active', row.__infav);
         return false;
       });
   return false;
@@ -640,7 +711,7 @@ function load_csv(csv_url, tmpl_url, cb)
             });
         }
       }, parallel_ready = [],
-      used_default_template;
+      tmpl_urldir;
       if(err)
         return cb(err);
       
@@ -650,7 +721,7 @@ function load_csv(csv_url, tmpl_url, cb)
       else
       {
         csvreader.html(default_template);
-        used_default_template = true;
+        tmpl_urldir = global_ctx.tmpl_urldir = url_dir(default_template_path);
       }
       csvreader.find('.csvinit').dhtml('item_init', [ csvinit_ctx, global_ctx ],
                                        { recursive: true });
@@ -671,7 +742,7 @@ function load_csv(csv_url, tmpl_url, cb)
         blocks: blocks,
         template: csvreader.html(),
         template_csvtable: $('#csvtable').html(),
-        used_default_template: used_default_template
+        tmpl_urldir: tmpl_urldir
       };
       if(dict_b)
       {
@@ -716,6 +787,7 @@ function load_csv(csv_url, tmpl_url, cb)
           for(var c in row)
             row_obj[c] = col_value(c, row[c]);
           row_obj.__row = row;
+          row.__index = i;
           dbrows.push(row_obj);
         }
       }
@@ -728,6 +800,7 @@ function load_csv(csv_url, tmpl_url, cb)
           row_obj = {
             __row: row
           };
+          row.__index = i;
           for(var c = 0, cl = row.length; c < cl; ++c)
             row_obj[c+''] = col_value(c, row[c]);
           dbrows.push(row_obj);
@@ -773,7 +846,11 @@ function update_csvreader(csv)
   if(csv.order)
     query = query.order(csv.order);
   var csv_ctx = {
-    open_row_page: function(a, b, c) { open_row_page(csv, a, b, c); },
+    open_row_page: function(a, b, c, d)
+    {
+      history.pushState({ pageid: a }, '', '#rpage,' + c.__index);
+      open_row_page(csv, a, b, c, d);
+    },
     columns: csv.columns,
     rows: query.get().map(function(a) { return a.__row; })
   };
@@ -786,6 +863,7 @@ function update_csvreader(csv)
   });
   
   update_csvreader_columns_element(cols_info)
+  activeclasses_proc();
 }
 function foreach_cache_get(forexpr, i, v, c)
 {
@@ -947,5 +1025,31 @@ function blocks_put(el, blocks, used_blocks)
         tmp.push(block_name);
         blocks_put($this, blocks, tmp);
       }
+    });
+}
+
+$(window).bind('resize', function() { activeclasses_proc(); });
+function activeclasses_proc(scope)
+{
+  $('.fillheight', scope).each(function()
+    {
+      var $el = $(this),
+      $pel = $el.parent();
+      $el.height(window.innerHeight - $pel.height() - $pel.offset().top + 
+                 $el.height());
+    });
+
+  $('.fillparentheight', scope).each(function()
+    {
+      var el = this,
+      $el = $(this),
+      $pel = $el.parent(),
+      chheight = 0;
+      $pel.children().each(function()
+        {
+          if(this != el)
+            chheight += $(this).height();
+        });
+      $el.height($pel.height() - chheight);
     });
 }
