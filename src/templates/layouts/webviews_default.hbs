@@ -3,7 +3,6 @@
   <head>
     <meta charset="UTF-8">
     <title localize>{{ title }}</title>
-    <base href="http://localhost/">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta name="apple-mobile-web-app-capable" content="yes">
     <!--IE Compatibility modes-->
@@ -20,15 +19,28 @@
       assets = '{{ assets }}';
     </script>
 
+    <script src="{{assets}}/lib/url.min.js"></script>
+    <script src="{{assets}}/js/helper.js"></script>
+<script>
+(function(){
+var httpreq_open = XMLHttpRequest.prototype.open;
+XMLHttpRequest.prototype.open = function(m, url_str, a2, a3, a4)
+{
+  if(url_protocol(url_str) === null || 
+     url('hostname', url_str) == config.s3Bucket + '.s3.amazonaws.com')
+    url_str = 'http://localhost/' + encodeURIComponent(url_str);
+  return httpreq_open.call(this, m, url_str, a2, a3, a4);
+}
+})();
+</script>
+
     <script src="{{assets}}/lib/jquery.min.js"></script>
     <script src="{{assets}}/lib/bootstrap/js/bootstrap.min.js"></script>
-    <script src="{{assets}}/lib/url.min.js"></script>
     <script src="{{assets}}/lib/sprintf.min.js"></script>
     <script src="{{assets}}/js/dhtml.js"></script>
     <script src="{{assets}}/lib/localeplanet/icu_{{config.locale}}.js"></script>
     <script src="{{assets}}/lib/localeplanet/translate.js"></script>
     <script src="{{assets}}/js/localize.js"></script>
-    <script src="{{assets}}/js/helper.js"></script>
     <script src="{{assets}}/js/main.js"></script>
 
     {{#if javascripts}}
