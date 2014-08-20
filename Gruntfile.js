@@ -9,10 +9,11 @@ module.exports = function (grunt) {
     reader_dist_dir = dist_dir + '/reader',
     reader_assets_dist_dir = reader_dist_dir + '/assets',
     webviews_dist_dir = dist_dir + '/webviews',
-    webviews_assets_dist_dir = webviews_dist_dir;
+    webviews_assets_dist_dir = webviews_dist_dir + '/assets';
 
     var src_dir = 'src',
     shared_assets = src_dir + '/assets',
+    csvreader_assets = src_dir + '/csvreader_assets',
     pdfreader_assets = src_dir + '/pdfreader_assets',
     reader_assets_src_dir = src_dir + '/reader_assets',
     admin_assets_src_dir = src_dir + '/admin_assets',
@@ -246,6 +247,17 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: pdfreader_assets, src: ['lib/**','js/**'],
                         dest: admin_assets_dist_dir + '/'
+                    },
+                  /* copy csvreader assets */
+                    {
+                        expand: true,
+                        cwd: csvreader_assets, src: ['js/**'],
+                        dest: reader_assets_dist_dir + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: csvreader_assets, src: ['js/**'],
+                        dest: webviews_assets_dist_dir + '/'
                     },
                   /* admin assets */
                     {
@@ -626,12 +638,18 @@ module.exports = function (grunt) {
                         src: ['taffy-min.js'],
                         dest: reader_assets_dist_dir + '/lib'
                     },
-                    /* webviews */
                     {
                         expand: true,
                         cwd: reader_assets_src_dir + '/csvreader-templates',
                         src: '**',
                         dest: reader_assets_dist_dir + '/csvreader-templates'
+                    },
+                    /* webviews */
+                    {
+                        expand: true,
+                        cwd: webviews_assets_src_dir,
+                        src: ['js/**'],
+                        dest: webviews_assets_dist_dir
                     },
                     {
                         expand: true,
@@ -643,9 +661,7 @@ module.exports = function (grunt) {
                         expand: true,
                         cwd: shared_assets,
                         src: ['lib/jquery.plist.js', 'lib/localeplanet/**','js/**'],
-                        dest: webviews_assets_dist_dir + '/',
-                        /*filter: 'isFile',
-                        flatten: true*/
+                        dest: webviews_assets_dist_dir + '/'
                     },
                     {
                         expand: true,
@@ -678,12 +694,6 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: reader_assets_src_dir + '/js',
-                        src: ['main.js','csvreader.js'],
-                        dest: webviews_assets_dist_dir + '/js/'
-                    },
-                    {
-                        expand: true,
                         cwd: 'bower_components/async/lib',
                         src: 'async.js',
                         dest: webviews_assets_dist_dir + '/lib/'
@@ -711,13 +721,7 @@ module.exports = function (grunt) {
                         cwd: 'bower_components/taffydb/',
                         src: ['taffy-min.js'],
                         dest: webviews_assets_dist_dir + '/lib'
-                    },
-                    {
-                        expand: true,
-                        cwd: 'src/templates/webviews',
-                        src: './application_.json',
-                        dest: webviews_dist_dir + '/'
-                    },
+                    }
                 ]
             }
         },

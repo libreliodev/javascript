@@ -26,9 +26,9 @@
 var httpreq_open = XMLHttpRequest.prototype.open;
 XMLHttpRequest.prototype.open = function(m, url_str, a2, a3, a4)
 {
-  if(url_protocol(url_str) === null || 
-     url('hostname', url_str) == config.s3Bucket + '.s3.amazonaws.com')
-    url_str = 'http://localhost/' + encodeURIComponent(url_str);
+  /* url('hostname', url_str) == config.s3Bucket + '.s3.amazonaws.com' */
+  if(url_protocol(url_str) === null)
+    url_str = 'app://' + url_str;
   return httpreq_open.call(this, m, url_str, a2, a3, a4);
 }
 })();
@@ -64,7 +64,6 @@ XMLHttpRequest.prototype.open = function(m, url_str, a2, a3, a4)
   js.src = "//connect.facebook.net/en_US/sdk.js#xfbml=1&appId={{config.idFedFBAppId}}&version=v2.0";
   fjs.parentNode.insertBefore(js, fjs);
 }(document, 'script', 'facebook-jssdk'));</script>
-<script>!function(d,s,id){var js,fjs=d.getElementsByTagName(s)[0],p=/^http:/.test(d.location)?'http':'https';if(!d.getElementById(id)){js=d.createElement(s);js.id=id;js.src=p+'://platform.twitter.com/widgets.js';fjs.parentNode.insertBefore(js,fjs);}}(document, 'script', 'twitter-wjs');</script>
 <!-- main-content -->
 {{> body }}
 <!-- #main-content -->

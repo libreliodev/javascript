@@ -36,7 +36,7 @@ global_ctx = {
     return icu.getDecimalFormat(l).format(parseFloat(v));
   }
 };
-initialize_reader(function()
+$(function()
   {
     csvfilters = $('#csvfilters').dhtml('list_init');
     csvreader = $('#csvreader');
@@ -57,93 +57,89 @@ initialize_reader(function()
         return false;
       });
     zoomable_img_init();
-  },
-                  function(app_data, csv_url, csv_url_dir, 
-                           external_b, doc_query)
-  {
-    if(!csv_url)
-      return;
-    var tmpl_url = csvreader_template_url(app_data, csv_url, csv_url_dir, 
-                                          external_b, doc_query);
-    csv_urldir = global_ctx.urldir = csv_url_dir;
-    tmpl_urldir = global_ctx.tmpl_urldir = url_dir(tmpl_url);
-    load_csv(csv_url, tmpl_url, function(err, csv)
-      {
-        if(err)
-          return notifyError(err);
-        if(csv.default_tmpl_urldir)
-          tmpl_urldir = csv.default_tmpl_urldir;
-        initiate_filters(csv);
-        initiate_sortable_columns(csv);
-        update_csvreader(csv);
-        $('.favorites-toggle-btn').click(function()
-          {
-            csv.fav_filter = !csv.fav_filter;
-            $('.favorites-toggle-btn').toggleClass('enabled', csv.fav_filter)
-              .toggleClass('active', csv.fav_filter);
-            update_filters(csv);
-            return false;
-          });
-        $('#search-inp').bind('input', function()
-          {
-            csv.search_query = this.value;
-            update_filters(csv);
-          });
-        window.onpopstate = function(ev)
-        {
-          if(popstate_disabled)
-            return;
-          var state;
-          try {
-            state = JSON.stringify(ev.state);
-          } catch(e) {
-          }
-          process_request_hash(state);
-        }
-        process_request_hash({ noanim: true });
-        function process_request_hash(state)
-        {
-          // format rpage,[<pageid>],<row-index>
-          state = state || {};
-          var hash = document.location.hash.length > 0 ? 
-            document.location.hash.substr(1) : '',
-          list = hash.split(',');
-          if(hash === '')
-          {
-            if(active_page)
-            {
-              close_page(active_page);
-              active_page = null;
-            }
-            return;
-          }
-          switch(list[0]) // action
-          {
-          case 'rpage':
-            var pageid = 'detailpage',
-            row_index;
-            if(list.length == 2)
-            {
-              pageid = state.pageid || pageid;
-              row_index = parseInt(list[1]);
-            }
-            else if(list.length == 3)
-            {
-              pageid = list[1] || state.pageid || pageid;
-              row_index = parseInt(list[2]);
-            }
-            else
-              return;
-            if(isNaN(row_index) || row_index < 0 || 
-               row_index >= csv.rows.length)
-              return;
-            open_row_page(csv, '#' + pageid, 
-                          row_index, csv.rows[row_index], state.noanim);
-            break;
-          }
-        }
-      });
   });
+
+function init_csvreader(csv_url, tmpl_url)
+{
+  csv_urldir = global_ctx.urldir = url_dir(csv_url);
+  tmpl_urldir = global_ctx.tmpl_urldir = url_dir(tmpl_url);
+  load_csv(csv_url, tmpl_url, function(err, csv)
+    {
+      if(err)
+        return notifyError(err);
+      if(csv.default_tmpl_urldir)
+        tmpl_urldir = csv.default_tmpl_urldir;
+      initiate_filters(csv);
+      initiate_sortable_columns(csv);
+      update_csvreader(csv);
+      $('.favorites-toggle-btn').click(function()
+        {
+          csv.fav_filter = !csv.fav_filter;
+          $('.favorites-toggle-btn').toggleClass('enabled', csv.fav_filter)
+            .toggleClass('active', csv.fav_filter);
+          update_filters(csv);
+          return false;
+        });
+      $('#search-inp').bind('input', function()
+        {
+          csv.search_query = this.value;
+          update_filters(csv);
+        });
+      window.onpopstate = function(ev)
+      {
+        if(popstate_disabled)
+          return;
+        var state;
+        try {
+          state = JSON.stringify(ev.state);
+        } catch(e) {
+        }
+        process_request_hash(state);
+      }
+      process_request_hash({ noanim: true });
+      function process_request_hash(state)
+      {
+        // format rpage,[<pageid>],<row-index>
+        state = state || {};
+        var hash = document.location.hash.length > 0 ? 
+          document.location.hash.substr(1) : '',
+        list = hash.split(',');
+        if(hash === '')
+        {
+          if(active_page)
+          {
+            close_page(active_page);
+            active_page = null;
+          }
+          return;
+        }
+        switch(list[0]) // action
+        {
+        case 'rpage':
+          var pageid = 'detailpage',
+          row_index;
+          if(list.length == 2)
+          {
+            pageid = state.pageid || pageid;
+            row_index = parseInt(list[1]);
+          }
+          else if(list.length == 3)
+          {
+            pageid = list[1] || state.pageid || pageid;
+            row_index = parseInt(list[2]);
+          }
+          else
+            return;
+          if(isNaN(row_index) || row_index < 0 || 
+             row_index >= csv.rows.length)
+            return;
+          open_row_page(csv, '#' + pageid, 
+                        row_index, csv.rows[row_index], state.noanim);
+          break;
+        }
+      }
+    });
+}
 function zoomable_img_init()
 {
   function find_fixed_ancestor(el)
@@ -342,17 +338,16 @@ function zoomable_img_init()
         clear_image();
     });
 }
-function csvreader_template_url(app_data, csv_url, csv_url_dir, external_b,
-                                doc_query)
+
+function csvreader_template_url(csv_url, csv_url_dir)
 {
-  /* We don't use watmpl
-    if(doc_query.watmpl)
-    return reader_url_eval(doc_query.watmpl, external_b, app_data);
-  */
+  if(!csv_url_dir)
+    csv_url_dir = url_dir(csv_url);
   var path_str = url('path', csv_url);
   return csv_url_dir + '/' +
     path.basename(path_str, path.extname(path_str)) + '.tmpl';
 }
+
 function eval_page(csv, sel, ctx)
 {
   var $page = $(sel),
