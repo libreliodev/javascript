@@ -4,6 +4,22 @@ popstate_disabled, active_page,
 global_ctx = {
   path: path,
   url: url,
+  querystringify: function()
+  {
+    var obj = {};
+    for(var i = 0, l = arguments.length; i < l; i += 2)
+    {
+      var key = arguments[i],
+      val = arguments[i + 1];
+      if(typeof obj[key] == 'undefined')
+        obj[key] = val;
+      else if($.isArray(obj[key]))
+        obj[key].push(val);
+      else
+        obj[key] = [ obj[key], val ];
+    }
+    return querystring.stringify(obj);
+  },
   relpath: function()
   {
     // shortcut for concat(urldir,'/',path.join([arg0,[arg1,[..]]]))
@@ -348,7 +364,7 @@ function eval_page(csv, sel, ctx)
 
   blocks_put($pagei, csv.blocks);
   $pagei.dhtml('item_init', [ ctx, global_ctx ], { recursive: true });
-
+  sharelist_link_proc($pagei.find('a'));
   return $pagei;
 }
 function open_row_page(csv, sel, index, row, noanim)
@@ -723,8 +739,11 @@ function load_csv(csv_url, tmpl_url, cb)
         csvreader.html(default_template);
         tmpl_urldir = global_ctx.tmpl_urldir = url_dir(default_template_path);
       }
-      csvreader.find('.csvinit').dhtml('item_init', [ csvinit_ctx, global_ctx ],
-                                       { recursive: true });
+      var csvinit = csvreader.find('.csvinit');
+      csvinit.dhtml('item_init', [ csvinit_ctx, global_ctx ],
+                    { recursive: true });
+      sharelist_link_proc(csvinit.filter('a'));
+      
       var csv_data = data_obj.csv_data,
       rows,
       dict_b = typeof $('#csvtable').data('dict') == 'string';
@@ -861,7 +880,8 @@ function update_csvreader(csv)
     foreach_cache_get: foreach_cache_get,
     foreach_cache_set: foreach_cache_set
   });
-  
+  sharelist_link_proc(csvtable.find('a'));
+
   update_csvreader_columns_element(cols_info)
   activeclasses_proc();
 }
@@ -1034,9 +1054,20 @@ function activeclasses_proc(scope)
   $('.fillheight', scope).each(function()
     {
       var $el = $(this),
-      $pel = $el.parent();
-      $el.height(window.innerHeight - $pel.height() - $pel.offset().top + 
-                 $el.height());
+      $pel = $el.parent(),
+      height = $el.height(),
+      counter = 0;
+      while(1)
+      {
+        tmp = Math.floor(window.innerHeight - $pel.height() - 
+                         $pel.offset().top + height);
+        if(Math.abs(height - tmp) < 1)
+          break;
+        height = tmp;
+        $el.height(height);
+        if(counter++ > 5)
+          break;
+      }
     });
 
   $('.fillparentheight', scope).each(function()
@@ -1051,5 +1082,16 @@ function activeclasses_proc(scope)
             chheight += $(this).height();
         });
       $el.height($pel.height() - chheight);
+    });
+}
+function sharelist_link_proc($els)
+{
+  $els.each(function()
+    {
+      if(sharelist.isSharelist(this.href))
+      {
+        var sharelist_obj = sharelist.new(this.href);
+        this.parentNode.replaceChild(sharelist_obj.element, this);
+      }
     });
 }

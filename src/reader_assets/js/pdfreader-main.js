@@ -25,8 +25,30 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
          data.real_url = data.url;
          data.url = librelio_pdf_resolve_url(data.url, pdf_url_dir);
        }
-     });
-  pdf_viewer.bind('openlink', function(ev, obj)
+     })
+    .bind('render-link', function(ev, data, page)
+     {
+       /* sharelist bind */
+       var url_str = data.real_url;
+       console.log('sharelist', sharelist);
+       console.log(url_str, sharelist.isSharelist(url_str));
+       if(sharelist && sharelist.isSharelist(url_str))
+       {
+         var sharelist_obj = sharelist.new(url_str),
+         el = sharelist_obj.element,
+         rect = data.rect;
+         $(el).css({
+           position: 'absolute',
+           overflow: 'auto',
+           left: rect[0],
+           top: rect[1],
+           width: rect[2],
+           height: rect[3]
+         });
+         data.element = el;
+       }
+     })
+    .bind('openlink', function(ev, obj)
      {
        var data = obj.data,
        path_str = url('path', data.real_url);

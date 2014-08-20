@@ -287,14 +287,14 @@
         }
         if(expr.call)
         {
-          var parent = val.parent;
-          val = val.value;
           if(!val)
             throw new Error("'" + expr.value.join('.') + 
                             "' is undefined");
-          if(typeof val != funcStr)
+          if(typeof val.value != funcStr)
             throw new Error("'" + expr.value.join('.') + 
                             "' is not a function");
+          var parent = val.parent;
+          val = val.value;
           ret.push(val.apply(parent || thisarg, 
                              m_eval_expr(expr.call, contexts, thisarg)));
         }

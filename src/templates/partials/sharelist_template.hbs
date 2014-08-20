@@ -1,0 +1,28 @@
+<style>
+.sharelist {
+  padding: 0px;
+  margin: 0px;
+  list-style: none;
+}
+.sharelist li {
+  display: inline-block;
+  padding: 2px;
+  margin-right: 6px;
+}
+</style>
+<ul id="sharelist-template" class="sharelist" style="display:none">
+  <li data-id="mail">
+    <a data-attrs="href=share_mail_href()">Share with mail</a>
+  </li>
+  <li data-id="twitter">
+    <a href="#" data-bind="click=share_twitter_clicked">Share on twitter</a>
+  </li>
+  <li data-id="facebook">
+    <a href="#" data-bind="click=share_facebook_clicked">Share on facebook</a>
+  </li>
+</ul>
+<script>
+var tmpl = $('#sharelist-template');
+tmpl.removeAttr('id');
+sharelist.setTemplate(tmpl[0]);
+</script>
