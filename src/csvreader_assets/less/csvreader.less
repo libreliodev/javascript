@@ -53,6 +53,7 @@
   background: rgb(233, 233, 233);
   width: 100%;
   height: 40px;
+  overflow: hidden;
   z-index: 2;
   text-align: center;
 
@@ -63,10 +64,15 @@
   .nav-btns i {
     font-size: 15px;
   }
-  .row-fav-toggle-btn {
-    position: absolute;
-    bottom: 3px;
-    right: 5px;
+  .right-btns { 
+    text-align: left;
+    margin: 0px;
+    padding: 0px;
+    list-style: none;
+    float: right;
+    > li {
+      float: right;
+    }
   }
 }
 .dark-bkg {

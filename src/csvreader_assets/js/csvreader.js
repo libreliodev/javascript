@@ -359,7 +359,7 @@ function eval_page(csv, sel, ctx)
 
   blocks_put($pagei, csv.blocks);
   $pagei.dhtml('item_init', [ ctx, global_ctx ], { recursive: true });
-  sharelist_link_proc($pagei.find('a'));
+  sharelist_link_proc($pagei.find('ul'));
   return $pagei;
 }
 function open_row_page(csv, sel, index, row, noanim)
@@ -737,7 +737,7 @@ function load_csv(csv_url, tmpl_url, cb)
       var csvinit = csvreader.find('.csvinit');
       csvinit.dhtml('item_init', [ csvinit_ctx, global_ctx ],
                     { recursive: true });
-      sharelist_link_proc(csvinit.filter('a'));
+      sharelist_link_proc(csvinit.filter('ul'));
       
       var csv_data = data_obj.csv_data,
       rows,
@@ -875,7 +875,7 @@ function update_csvreader(csv)
     foreach_cache_get: foreach_cache_get,
     foreach_cache_set: foreach_cache_set
   });
-  sharelist_link_proc(csvtable.find('a'));
+  sharelist_link_proc(csvtable.find('ul'));
 
   update_csvreader_columns_element(cols_info)
   activeclasses_proc();
@@ -1083,10 +1083,10 @@ function sharelist_link_proc($els)
 {
   $els.each(function()
     {
-      if(sharelist.isSharelist(this.href))
+      var href = $(this).data('href');
+      if(typeof href == 'string' && href && sharelist.isSharelist(href))
       {
-        var sharelist_obj = sharelist.new(this.href);
-        this.parentNode.replaceChild(sharelist_obj.element, this);
+        var sharelist_obj = sharelist.new(href, this);
       }
     });
 }

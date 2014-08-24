@@ -5,7 +5,7 @@ function parse_url(url_str, listobj)
   return {
     image: url('path', url_str),
     sites: (query.wasites||'').split(','),
-    url: query.waurl || '',
+    url: query.waurl || query.walink || '',
     title: query.watitle || '',
     text: query.watext || ''
   };
@@ -19,9 +19,11 @@ sharelist = {
     if(tmpl_el.parentNode)
       tmpl_el.parentNode.removeChild(tmpl_el);
   },
-  new: function(url_str)
+  new: function(url_str, el)
   {
-    var $el = template.clone().show(),
+    var $el = el ?
+      $(el).addClass(template.attr('class'))
+      .html(template.html()) : template.clone().show(),
     listobj = {
       element: $el[0],
       $element: $el,
@@ -53,7 +55,6 @@ sharelist = {
             }
           }
         );
-        return false;
       },
       share_twitter_clicked: function(e)
       {
@@ -67,7 +68,6 @@ sharelist = {
           url: info.url,
           text: info.title + '\n' + info.text
         }), 'twitterwindow', params);
-        return false;
       },
       info: info
     },

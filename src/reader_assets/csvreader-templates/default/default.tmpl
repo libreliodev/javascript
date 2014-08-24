@@ -45,8 +45,12 @@
   color: white;
   font-size: 10px;
 }
-.csvpage-navbar .row-fav-toggle-btn, 
-.csvpage-navbar .row-fav-toggle-btn:hover {
+
+.csvpage-navbar {
+  overflow: visible;
+}
+.csvpage-navbar .right-btns .btn, 
+.csvpage-navbar .right-btns .btn:hover {
   color: #333333;
   font-size: 24px;
   bottom: 0px;
@@ -56,6 +60,19 @@
   box-shadow: none !important;
   -moz-box-shadow: none !important;
   -webkit-box-shadow: none !important;
+}
+.csvpage-navbar .right-btns .dropdown-menu {
+  left: auto;
+  right: 0px;
+}
+.csvpage-navbar .right-btns {
+  position: absolute;
+  bottom: 0px;
+  right: 2px;
+}
+.csvpage-navbar .right-btns .sharelist li {
+  padding: 0px;
+  display: block;
 }
 
 .head-tile {
@@ -69,7 +86,7 @@
 .csvpage-navbar h2 {
   display: none;
 }
-@media (min-width:601px) {
+@media (min-width:600px) {
   .csvpage-content {
     padding-top: 0px;
   }
@@ -208,11 +225,11 @@
 </style>
 <div data-init-block="row-icons">
   <!-- icon for men -->
-  <span class="item-icon np" data-init="if(not(eq(row.6,'1')),this.remove())" data-block="Homme-img"></span>
+  <img class="item-icon" data-init="if(not(eq(row.6,'1')),this.remove())" data-attrs="src=tmplrelpath('Homme.png')" />
   <!-- icon for women -->
-  <span class="item-icon np" data-init="if(not(eq(row.6,'2')),this.remove())" data-block="Femme-img"></span>
+  <img class="item-icon" data-init="if(not(eq(row.6,'2')),this.remove())" data-attrs="src=tmplrelpath('Femme.png')" />
   <!-- icon -->
-  <span class="item-icon np" data-init="if(not(eq(row.3,'1')),this.remove())" data-block="TesterChoice-img"></span>
+  <img class="item-icon" data-init="if(not(eq(row.3,'1')),this.remove())" data-attrs="src=tmplrelpath('TesterChoice.png')" />
 </div>
 <div class="head-tile"><h2>Votre recherche</h2></div>
 <div id="csvtable">
@@ -327,10 +344,24 @@
       <button type="button" class="previous-btn btn btn-default"><i class="glyphicon glyphicon-chevron-up"></i></button>
       <button type="button" class="next-btn btn btn-default"><i class="glyphicon glyphicon-chevron-down"></i></button>
     </div>
-    <button type="button" class="row-fav-toggle-btn btn btn-default">
-      <span class="is-enabled"><i class="glyphicon glyphicon-star"></i></span>
-      <span class="is-disabled"><i class="glyphicon glyphicon-star-empty"></i></span>
-    </button>
+    <ul class="right-btns">
+      <li>
+        <div class="dropdown">
+          <button class="btn btn-default dropdown-toggle" type="button" id="sharelist-dropdown" data-toggle="dropdown">
+            <span class="glyphicon glyphicon-share"></span>
+          </button>
+          <ul class="dropdown-menu" role="menu" aria-labelledby="sharelist-dropdown" data-attrs="data-href=row.21">
+          </ul>
+          <a ></a>
+        </div>
+      </li>
+      <li>
+        <button type="button" class="row-fav-toggle-btn btn btn-default">
+          <span class="is-enabled"><i class="glyphicon glyphicon-star"></i></span>
+          <span class="is-disabled"><i class="glyphicon glyphicon-star-empty"></i></span>
+        </button>
+      </li>
+    </ul>
   </div>
   <div id="detailpagec" class="csvpage-content scrollable fillparentheight">
     <style>
@@ -497,7 +528,7 @@
     #detailpagec .top_table_sc {
       width: 140px;
     }
-    @media (min-width:601px) {
+    @media (min-width:600px) {
       #detailpagec .top_table_fc div {
         display: inline;
       }
