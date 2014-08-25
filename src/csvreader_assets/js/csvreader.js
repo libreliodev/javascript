@@ -358,7 +358,11 @@ function eval_page(csv, sel, ctx)
   $page.replaceWith($pagei);
 
   blocks_put($pagei, csv.blocks);
-  $pagei.dhtml('item_init', [ ctx, global_ctx ], { recursive: true });
+  try {
+    $pagei.dhtml('item_init', [ ctx, global_ctx ], { recursive: true });
+  } catch(err) {
+    console.error(err);
+  }
   sharelist_link_proc($pagei.find('ul'));
   return $pagei;
 }
@@ -606,7 +610,11 @@ function initiate_filters(csv)
         ctx.options = options;
         break;
       }
-      item.dhtml('item_update', [ ctx, global_ctx ], { recursive: true });
+      try {
+        item.dhtml('item_init', [ ctx, global_ctx ], { recursive: true }); 
+      } catch(err) {
+        console.error(err);
+      }
       item.find('select').change(_update_filters);
       item.find('input').bind('input', _update_filters);
       items.push(item);
@@ -735,8 +743,12 @@ function load_csv(csv_url, tmpl_url, cb)
         tmpl_urldir = global_ctx.tmpl_urldir = url_dir(default_template_path);
       }
       var csvinit = csvreader.find('.csvinit');
-      csvinit.dhtml('item_init', [ csvinit_ctx, global_ctx ],
-                    { recursive: true });
+      try {
+        csvinit.dhtml('item_init', [ csvinit_ctx, global_ctx ],
+                      { recursive: true });
+      } catch(err) {
+        console.error(err);
+      }
       sharelist_link_proc(csvinit.filter('ul'));
       
       var csv_data = data_obj.csv_data,
@@ -870,11 +882,15 @@ function update_csvreader(csv)
   };
   csv.ctx = csv_ctx;
   blocks_put(csvtable, csv.blocks);
-  csvtable.dhtml('item_init', [ csv_ctx, global_ctx ], { 
-    recursive: true,
-    foreach_cache_get: foreach_cache_get,
-    foreach_cache_set: foreach_cache_set
-  });
+  try {
+    csvtable.dhtml('item_init', [ csv_ctx, global_ctx ], { 
+      recursive: true,
+      foreach_cache_get: foreach_cache_get,
+      foreach_cache_set: foreach_cache_set
+    });
+  } catch(err) {
+    console.error(err);
+  }
   sharelist_link_proc(csvtable.find('ul'));
 
   update_csvreader_columns_element(cols_info)
