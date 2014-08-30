@@ -88,7 +88,7 @@ sharelist = {
   },
   isSharelist: function(url_str)
   {
-    return url_protocol(url_str) == 'share:';
+    return url_protocol(url_str+'') == 'share:';
   }
 };
 

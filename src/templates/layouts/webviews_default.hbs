@@ -28,7 +28,7 @@ XMLHttpRequest.prototype.open = function(m, url_str, a2, a3, a4)
 {
   /* url('hostname', url_str) == config.s3Bucket + '.s3.amazonaws.com' */
   if(url_protocol(url_str) === null)
-    url_str = 'app://' + url_str;
+    url_str = 'http://apphost' + (url_str[0] == '/' ? '' : '/') + url_str;
   return httpreq_open.call(this, m, url_str, a2, a3, a4);
 }
 })();

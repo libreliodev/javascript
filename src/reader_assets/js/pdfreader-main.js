@@ -9,7 +9,7 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
                              pdf_url_lquery.wapage);
 
 
-  PDFJS.disableRange = true;
+  PDFJS.disableRange = false;
   if(!isNaN(pdf_target_page))
     pdf_viewer.pdfviewer('set', 'curPageIndex', pdf_target_page);
   pdf_viewer.pdfviewer('loadDocument', pdf_url, function(err)
@@ -30,8 +30,6 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
      {
        /* sharelist bind */
        var url_str = data.real_url;
-       console.log('sharelist', sharelist);
-       console.log(url_str, sharelist.isSharelist(url_str));
        if(sharelist && sharelist.isSharelist(url_str))
        {
          var sharelist_obj = sharelist.new(url_str),
