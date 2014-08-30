@@ -16,130 +16,66 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
-#: reader_assets/js/magazine.js:28 reader_assets/js/magazine.js:130
-#: reader_assets/js/pdfviewer-main.js:90
-msgid "Couldn't load `%s`: %s"
-msgstr "Couldn't load `%s`: %s"
-
-#: reader_assets/js/main.js:182
-msgid "Unknown response!"
-msgstr "Unknown response!"
-
-#: reader_assets/js/main.js:189
-msgid "Request has failed: %s"
-msgstr "Request has failed: %s"
-
-#: reader_assets/js/pdfviewer-video-player.js:92
-msgid ""
-"To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that %ssupports HTML5 video%s"
-msgstr ""
-"To view this video please enable JavaScript, and consider upgrading to a web "
-"browser that %ssupports HTML5 video%s"
-
-#. Title of magazine page
-#: template/reader/index.hbs
-msgid "Magazines"
-msgstr "Magazines"
-
-#. Title of pdf reader page
-#: template/reader/pdfreader.hbs
-msgid "PDF Reader"
-msgstr "PDF Reader"
-
-#. Login Button
-#: templates/reader/index.hbs:17
-msgid "Login"
-msgstr "Login"
-
-#. Logout Button
-#: templates/reader/index.hbs:19
-msgid "Logout"
-msgstr "Logout"
-
-#. Magazine's read button
-#: templates/reader/index.hbs:29
-msgid "magazine_read_btn"
-msgstr "Lire..."
-
-#. Magazine's sample button
-#: templates/reader/index.hbs:30
-msgid "magazine_sample_btn"
-msgstr "Sample"
-
-#. PDF Viewer initialization failed!
-#: templates/reader/pdfreader.hbs:34
-msgid ""
-"Could not initiate PDF Viewer. You should update your browser to see this "
-"page."
-msgstr ""
-"Could not initiate PDF Viewer. You should update your browser to see this "
-"page."
-
-#. Loading text
-#: templates/reader/pdfreader.hbs:50
-#: reader_assets/js/pdfviewer-slideshow.js:266
 msgid "Loading..."
-msgstr "Loading..."
+msgstr "Chargement..."
 
-#: templates/partials/purchase_dialog.hbs:8
-msgid "Enter your code"
-msgstr "Enter your code"
+msgid "Cancel"
+msgstr " Annuler"
 
-#: templates/partials/purchase_dialog.hbs:9
-msgid "Enter your user ID and password"
-msgstr "Enter your user ID and password"
+msgid "Login"
+msgstr "Mes identifiants d'abonné"
 
-#. Code label
-#: templates/partials/purchase_dialog.hbs:16
-msgid "Code"
-msgstr "Code"
+msgid "Password"
+msgstr "Mot de passe"
 
-#. Code input text placeholder
-#: templates/partials/purchase_dialog.hbs:19
+msgid "magazine_read_btn"
+msgstr "Lire"
+
+msgid "Username"
+msgstr "Code client"
+
+msgid "Close"
+msgstr "Fermer"
+
 msgid "code_placeholder"
 msgstr "Code"
 
-#. Username label
-#: templates/partials/puchase_dialog.hbs:26
-msgid "Username"
-msgstr "Username"
+msgid "Code"
+msgstr "Code"
 
-#. Username input text placeholder
-#: templates/partials/purchase_dialog.hbs:29
-msgid "username_placeholder"
-msgstr "Username"
+msgid "Couldn't load `%s`: %s"
+msgstr "impossible de charger `%s`: %s"
 
-#. Password label
-#: templates/partials/purchase_dialog.hbs:34
-msgid "Password"
-msgstr "Password"
+msgid "Enter your code"
+msgstr "Entrez votre code"
 
-#. Password input text placeholder
-#: templates/partials/purchase_dialog.hbs:37
-msgid "password_placeholder"
-msgstr "Password"
+msgid "Enter your user ID and password"
+msgstr "Entrez votre code utilisateur"
 
-#. DO NOT REMOVE `%s`
-#: templates/partials/purchase_dialog.hbs:42
-msgid "Login request failed: %s"
-msgstr "Login request failed: %s"
-
-#: templates/partials/purchase_dialog.hbs:46
 msgid "Logged in successfully!"
-msgstr "Logged in successfully!"
+msgstr "Connecté"
 
-#. Submit button
-#: templates/partials/purchase_dialog.hbs:52
+msgid "Login request failed: %s"
+msgstr "Echec de connection : %s"
+
+msgid "Logout"
+msgstr "Se déconnecter"
+
+msgid "magazine_sample_btn"
+msgstr "Extrait"
+
+msgid "Magazines"
+msgstr "Magazines"
+
+msgid "PDF Reader"
+msgstr "Liseuse PDF"
+
+msgid "Request has failed: %s"
+msgstr "la requête a échoué: %s"
+
 msgid "Submit"
-msgstr "Submit"
+msgstr "Soumettre"
 
-#. Close button
-#: templates/partials/purchase_dialog.hbs:55
-msgid "Close"
-msgstr "Close"
+msgid "Unknown response!"
+msgstr "Réponse inconnue!"
 
-#. Cancel button
-#: templates/partials/purchase_dialog.hbs:56
-msgid "Cancel"
-msgstr "Cancel"
