@@ -56,16 +56,16 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
        {
          if(app_data)
          {
-           var type = app_data.code_service ? 'code' : 
-             (app_data.user_service ? 'user' : null);
-           var service_name = app_data.code_service ? app_data.code_service : 
-             (app_data.user_service ? app_data.user_service : null);
+           var type = app_data.CodeService ? 'code' : 
+             (app_data.UserService ? 'user' : null);
+           var service_name = app_data.CodeService ? app_data.CodeService : 
+             (app_data.UserService ? app_data.UserService : null);
            if(!type)
              return;
            purchase_dialog_open({
              type: type,
-             client: app_data.client_name,
-             app: app_data.magazine_name, 
+             client: app_data.Publisher,
+             app: app_data.Application, 
              service: service_name,
              urlstring: path_str
            });

@@ -61,6 +61,7 @@ function url_path_plus(url_str)
 }
 function get_url_query(url)
 {
+  url = url+'';
   var idx = url.indexOf('?'),
   idx2 = url.indexOf('#');
   return idx == -1 ? '' : 

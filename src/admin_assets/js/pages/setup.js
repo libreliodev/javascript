@@ -105,7 +105,16 @@ $(function(){
                       {
                           var $this = $(this);
                           if($this.attr('name') == key && obj[key])
-                              $this.val(obj[key]);
+                          {
+                              switch($this.data('type'))
+                              {
+                              case 'BOOL':
+                                  $this.val(obj[key] ? 'True' : 'False');
+                                  break;
+                              default:
+                                  $this.val(obj[key]);
+                              }
+                          }
                       });
                }
            });
@@ -118,9 +127,17 @@ $(function(){
             $el.find('input[type=hidden], input[type=text], textarea')
                 .each(function()
                   {
-                      var $this = $(this);
-                      ret[$this.attr('name')] = $this.data('value') ||
+                      var $this = $(this),
+                      val = $this.data('value') ||
                           $this.val() || '';
+                      switch($this.data('type'))
+                      {
+                      case 'BOOL':
+                          ret[$this.attr('name')] = val == 'True' ? true : false;
+                          break;
+                      default:
+                          ret[$this.attr('name')] = val;
+                      }
                   });
             return ret;
         }

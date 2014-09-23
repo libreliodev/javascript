@@ -578,7 +578,7 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: 'src/templates/reader',
-                        src: './application_.json',
+                        src: './reader_.plist',
                         dest: reader_dist_dir + '/'
                     },
                     {

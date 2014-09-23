@@ -1,21 +1,23 @@
 $(function(){
   // load application_.json data
-  var magazines_list = $('.magazines').eq(0),
+  var doc_query = querystring.parse(get_url_query(document.location+'')),
+  magazines_list = $('.magazines').eq(0),
   app_data,
   MAG_TYPE_FREE = 'Free',
   MAG_TYPE_PAID = 'Paid',
-  refresh_timeout;
+  refresh_timeout,
+  update_every;
 
   magazines_init(magazines_list);
 
-  application_info_load(function(err, data)
+  application_info_load(doc_query, function(err, data)
      {
        if(err)
          return notifyError(err);
        // get update rate it's in minutes
-       var q = querystring.parse(get_url_query(data.root_view)) || {},
-       update_every = parseFloat(q.waupdate);
-       data.update_every = (isNaN(update_every) ? 30 : update_every)*60*1000;
+       var q = querystring.parse(get_url_query(data.RootView)) || {},
+       _update_every = parseFloat(q.waupdate);
+       update_every = (isNaN(_update_every) ? 30 : _update_every)*60*1000;
        app_data = data;
        magazines_load(data, magazines_list, magazines_loaded_handle);
 
@@ -33,7 +35,7 @@ $(function(){
       {
         magazines_load(app_data, magazines_list, magazines_loaded_handle);
         refresh_timeout = undefined;
-      }, app_data.update_every);
+      }, update_every);
   }
   function notifyIfError(err)
   {
@@ -81,16 +83,16 @@ $(function(){
   function read_paid_file(item)
   {
   
-    var type = app_data.code_service ? 'code' : 
-      (app_data.user_service ? 'user' : null);
-    var service_name = app_data.code_service ? app_data.code_service : 
-      (app_data.user_service ? app_data.user_service : null);
+    var type = app_data.CodeService ? 'code' : 
+      (app_data.UserService ? 'user' : null);
+    var service_name = app_data.CodeService ? app_data.CodeService : 
+      (app_data.UserService ? app_data.UserService : null);
     if(!type)
       return;
     purchase_dialog_open({
       type: type,
-      client: app_data.client_name,
-      app: app_data.magazine_name,
+      client: app_data.Publisher,
+      app: app_data.Application,
       service: service_name,
       urlstring: (item.FileName[0] != '/' ? '/' : '') + item.FileName
     });
@@ -103,7 +105,7 @@ $(function(){
   }
   function magazines_load(data, list, cb)
   {
-    var filename = 'Magazines.plist';
+    var filename = data.RootView;
     $.ajax(magazines_url(data), {
       dataType: 'xml'
     }).success(function(xml)
@@ -128,7 +130,7 @@ $(function(){
       .fail(function(xhr, textStatus, err)
          {
            cb && cb(new Error(sprintf(_("Couldn't load `%s`: %s"), filename,
-                                      textStatus)));
+                                      err)));
          });
   }
   function magazine_file_url(data, file)
@@ -138,11 +140,11 @@ $(function(){
   }
   function magazine_file_key(data, file)
   {
-    return data.client_name + '/' + data.magazine_name + '/' + file;
+    return data.Publisher + '/' + data.Application + '/' + file;
   }
   function magazines_url(data)
   {
-    return  magazine_file_url(data, data.root_view);
+    return  magazine_file_url(data, data.RootView);
   }
   function magazine_get_thumbnail_by_filename(fn)
   {
@@ -170,16 +172,16 @@ $(function(){
   login_or_out_update();
   $('#login-btn').click(function()
     {
-      var type = app_data.code_service ? 'code' : 
-        (app_data.user_service ? 'user' : null);
-    var service_name = app_data.code_service ? app_data.code_service : 
-      (app_data.user_service ? app_data.user_service : null);
+      var type = app_data.CodeService ? 'code' : 
+        (app_data.UserService ? 'user' : null);
+    var service_name = app_data.CodeService ? app_data.CodeService : 
+      (app_data.UserService ? app_data.UserService : null);
       if(!type)
         return;
       purchase_dialog_open({
         type: type,
-        client: app_data.client_name,
-        app: app_data.magazine_name,
+        client: app_data.Publisher,
+        app: app_data.Application,
         service: service_name,
         submit_callback: login_or_out_update
       });

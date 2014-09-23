@@ -200,18 +200,34 @@ function magazine_name_free2paid(fn, noext)
   return bn + '_'  + (noext ? '' : ext);
 }
 
-function application_info_load(cb)
+function application_info_load(opts, cb)
 {
-  var app_url = 'application_.json'
-  $.ajax(app_url, {
-    dataType: 'json',
-    success: function(app_data)
+  opts = opts || {};
+  var app_url;
+  if(opts.wapublisher && opts.waapp)
+    app_info_url = s3bucket_file_url(opts.wapublisher + '/' + opts.waapp + 
+                                    '/APP_/Uploads/setup.plist');
+  else
+    app_info_url = 'reader_.plist';
+  $.ajax(app_info_url, {
+    success: function(data)
     {
-      cb(undefined, app_data);
+      var data_obj,
+      err;
+      try {
+        data_obj = $.plist($.parseXML(data));
+        if(!data_obj.Active)
+          err = _("This App Does Not Exist");
+        data_obj.Publisher = data_obj.Publisher || opts.wapublisher;
+        data_obj.Application = data_obj.Application || opts.waapp;
+      } catch(e) {
+        err = e+'';
+      }
+      cb(err, data_obj);
     },
     error: function(xhr, err, err_text)
     {
-      cb(sprintf(_("Couldn't load `%s`: %s"), app_url,
+      cb(sprintf(_("Couldn't load `%s`: %s"), app_info_url,
                  err_text));
     }
   });
@@ -222,8 +238,8 @@ function reader_url_eval(url_str, external_b, app_data)
   // if it has leading slash it's a file from application storage
   // otherwise treat it as it's a external link
   if(!external_b && url_str[0] == '/')
-    url_str = s3bucket_file_url(app_data.client_name + '/' + 
-                                app_data.magazine_name + url_str);
+    url_str = s3bucket_file_url(app_data.Publisher + '/' + 
+                                app_data.Application + url_str);
   return url_str;
 }
 function initialize_reader(cb, cb2)
@@ -235,7 +251,7 @@ function initialize_reader(cb, cb2)
 
   $(function(){
     cb2 && cb && cb();
-    application_info_load(function(err, data)
+    application_info_load(doc_query, function(err, data)
       {
         if(err)
           return notifyError(err);

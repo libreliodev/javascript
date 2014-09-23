@@ -164,3 +164,7 @@ msgstr ""
 #, text
 msgid "Cancel"
 msgstr ""
+
+#: reader_assets/js/main.js:220
+msgid "This App Does Not Exist"
+msgstr ""
