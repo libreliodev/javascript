@@ -1,5 +1,5 @@
 var appName = storage.getItem(config.storageAppNameKey),
-appDir = get_app_dir(app_name);
+appDir = get_app_dir(appName);
 $(function() {
     function workOnAwsS3()
     {

@@ -410,6 +410,11 @@ msgstr ""
 msgid "Background color"
 msgstr ""
 
+#. Input label
+#: templates/pages/setup.hbs:114
+msgid "Background Image"
+msgstr ""
+
 #. Page subheading
 #: templates/pages/setup.hbs:121
 msgid "Navigation"

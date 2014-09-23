@@ -5,6 +5,7 @@ $(function(){
     if(!app_name)
         return;
     awsS3Ready(workOnAwsS3);
+    $page.find('input[type=text], textarea').prop('disabled', true);
     function workOnAwsS3()
     {
         loadSetupPage(app_dir, $page);
@@ -97,7 +98,7 @@ $(function(){
                    return;
                }
                var obj = res ? $.plist($.parseXML(res.Body.toString())) : {},
-               $inps = $page.find('input[type=text], textarea');
+               $inps = $page.find('input[type=hidden], input[type=text], textarea');
                for(var key in obj)
                {
                    $inps.each(function()
@@ -114,7 +115,7 @@ $(function(){
         function getObjectOfSetupPage($el)
         {
             var ret = {};
-            $el.find('input[type=text], textarea')
+            $el.find('input[type=hidden], input[type=text], textarea')
                 .each(function()
                   {
                       var $this = $(this);
