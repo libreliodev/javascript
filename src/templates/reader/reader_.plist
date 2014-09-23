@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+  <key>Publisher</key>
+  <string>niveales</string>
+  <key>Application</key>
+  <string>wind</string>
+  <key>RootView</key>
+  <string>Magazines.plist?waupdate=30</string>
+  <key>Active</key>
+  <true/>
+  <key>CodeService</key>
+  <string>S3</string>
+  <key>UserService</key>
+  <string>LibrelioDB</string>
+  <key>LongName</key>
+  <string>Ab3s</string>
+  <key>ShortName</key>
+  <string>aee</string>
+  <key>Description</key>
+  <string></string>
+  <key>BackgroundColor</key>
+  <string>#8fff00</string>
+  <key>WebSite</key>
+  <string></string>
+  <key>Facebook</key>
+  <string></string>
+  <key>RSS</key>
+  <string></string>
+  <key>GACode</key>
+  <string>UA-1732003-23</string>
+</dict>
+</plist>
