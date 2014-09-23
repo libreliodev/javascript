@@ -1,8 +1,7 @@
 $(function(){
 
     var app_name = storage.getItem(config.storageAppNameKey),
-    app_dir = s3AuthObj.rootDirectory + '/' + app_name + 
-        (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : ''),
+    app_dir = get_app_dir(app_name),
     $adsTable = $('#adsDataTable'),
     ads_tableData = $adsTable.dataTable(),
     $adDlg = $('#adModal');

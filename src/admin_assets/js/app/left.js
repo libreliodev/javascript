@@ -36,7 +36,7 @@ function leftStatusBarUpdate()
     {
         $(function(){
             // show some of menu items
-            var show_links = [ 'setup.html', 'publications.html' ];
+            var show_links = [ 'setup.html', 'publications.html', 'tracking.html' ];
             $('#menu > li > a').each(function()
                 {
                     var $a = $(this);

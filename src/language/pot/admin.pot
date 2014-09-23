@@ -565,3 +565,7 @@ msgstr ""
 #: templates/layouts/default.hbs:179
 msgid "2014 © Librelio Admin"
 msgstr ""
+
+#: admin_assets/js/pages/tracking.js:65
+msgid "Analytics data not yet available"
+msgstr ""

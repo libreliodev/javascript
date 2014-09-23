@@ -1,6 +1,5 @@
 var appName = storage.getItem(config.storageAppNameKey),
-appDir = s3AuthObj.rootDirectory + '/' + appName + 
-  (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : '');
+appDir = get_app_dir(app_name);
 $(function() {
     function workOnAwsS3()
     {
@@ -17,10 +16,7 @@ $(function() {
     if(!appName)
         return;
     
-    if(awsS3)
-        workOnAwsS3()
-    else
-        $(document).bind('awsS3Initialized', workOnAwsS3);
+    awsS3Ready(workOnAwsS3);
         
     $('.new-pub-btn').click(function()
         {

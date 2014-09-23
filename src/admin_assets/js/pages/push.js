@@ -1,6 +1,7 @@
 $(function(){
 
     var app_name = storage.getItem(config.storageAppNameKey),
+    app_dir = get_app_dir(app_name),
     $messages_table = $('#dataTable'),
     messages_tableData = $messages_table.dataTable();
     if(!app_name)
@@ -76,8 +77,7 @@ $(function(){
     {
         awsS3.getObject({
             Bucket: config.s3Bucket,
-            Key: s3AuthObj.rootDirectory + '/' + app_name + 
-                '/APP_/REPORTS/push_.tsv',
+            Key: app_dir + '/APP_/REPORTS/push_.tsv',
             ResponseContentEncoding: 'utf8'
         }, function(err, res)
            {

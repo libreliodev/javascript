@@ -1,6 +1,7 @@
 $(function(){
 
     var app_name = storage.getItem(config.storageAppNameKey),
+    app_dir = get_app_dir(app_name),
     $pubdl_table = $('#publication-downloads-table'),
     pubdl_tableData = $pubdl_table.dataTable({
         "aaSorting": [[ 0, "desc" ]]
@@ -8,20 +9,24 @@ $(function(){
     
     if(!app_name)
         return;
-    updatePublicationDownloadTable(app_name, $pubdl_table);
+    
+    awsS3Ready(function()
+      {
+          updatePublicationDownloadTable(app_dir, $pubdl_table);
+      });
 
-    function updatePublicationDownloadTable(app_name, $table)
+    function updatePublicationDownloadTable(app_dir, $table)
     {
         awsS3.getObject({
             Bucket: config.s3Bucket,
-            Key: s3AuthObj.rootDirectory + '/' + app_name + 
-                '/APP_/REPORTS/publications_.tsv',
+            Key: app_dir + '/APP_/REPORTS/publications_.tsv',
             ResponseContentEncoding: 'utf8'
         }, function(err, res)
            {
-               if(err/* && err.code != 'NoSuchKey'*/)
+               if(err)
                {
-                   handleAWSS3Error(err)
+                   handleAWSS3Error(err.code == 'NoSuchKey' ? 
+                                    _('Analytics data not yet available') : err)
                    return;
                }
                var tsvContent = res.Body.toString(),

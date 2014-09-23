@@ -1,14 +1,10 @@
 $(function(){
     var app_name = storage.getItem(config.storageAppNameKey),
-    app_dir = app_name + 
-        (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : ''),
+    app_dir = get_app_dir(app_name);
     $page = $('#setup-wrapper');
     if(!app_name)
         return;
-    if(awsS3)
-        workOnAwsS3();
-    else
-        $(document).bind('awsS3Initialized', workOnAwsS3);
+    awsS3Ready(workOnAwsS3);
     function workOnAwsS3()
     {
         loadSetupPage(app_dir, $page);
@@ -18,8 +14,7 @@ $(function(){
                    s3: awsS3,
                    type: 'Image',
                    Bucket: config.s3Bucket,
-                   Prefix: s3AuthObj.rootDirectory + '/' + app_dir + 
-                       '/APP_/Uploads/',
+                   Prefix: app_dir + '/APP_/Uploads/',
                    signExpires: function()
                    {
                        return awsExpireReverse(config.awsExpireReverseInHours);
@@ -91,8 +86,7 @@ $(function(){
         // load setup plist file and set its content in the form
         awsS3.getObject({
             Bucket: config.s3Bucket,
-            Key: s3AuthObj.rootDirectory + '/' + app_dir + 
-                '/APP_/Uploads/setup_.plist',
+            Key: app_dir + '/APP_/Uploads/setup_.plist',
             ResponseContentEncoding: 'utf8'
         }, function(err, res)
            {
@@ -135,8 +129,7 @@ $(function(){
         // save setup plist file for input app
         awsS3.putObject({
             Bucket: config.s3Bucket,
-            Key: s3AuthObj.rootDirectory + '/' + app_dir + 
-                '/APP_/Uploads/setup_.plist',
+            Key: app_dir + '/APP_/Uploads/setup_.plist',
             Body: body
         }, function(err, res)
            {
