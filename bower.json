@@ -38,6 +38,7 @@
     "sprintf": "~1.0.0",
     "formbuilder": "~0.2.0",
     "handsontable": "~0.10.5",
-    "taffydb": "*"
+    "taffydb": "*",
+    "jssor-slider": "*"
   }
 }

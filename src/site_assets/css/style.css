@@ -20,3 +20,20 @@
 	
 }
 
+#home-top-slider {
+  position: relative;
+}
+
+#home-top-slider .slides {
+  position: absolute;
+  cursor: move;
+  overflow: hidden;
+  left: 0px;
+  top: 0px;
+  width: 100%;
+  height: 100%;
+}
+
+#home-top-slider .slides > div {
+  
+}

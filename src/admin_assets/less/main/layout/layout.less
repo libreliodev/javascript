@@ -44,7 +44,24 @@ body.padTop53 {
     right:0;
 }
 
+
+#left-sidebar-toggle {
+  display: block;
+  float: left;
+  margin-right: 16px;
+  font-size: 24px;
+  color: #bababa;
+  .transition(color .3s ease-in-out 0s);
+}
+#left-sidebar-toggle.active {
+  .transition(color .3s ease-in-out 0s);
+  color: white;
+}
+
 @media (min-width: @screen-md-min) {
+  #left-sidebar-toggle {
+    display: none;
+  }
   #left {
         position: relative;
     float: left;
@@ -85,5 +102,4 @@ body.padTop53 {
     width: @miniSidebarWidth;
     
 }
-
 /* ================== END Template Layout ============== */

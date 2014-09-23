@@ -508,6 +508,12 @@ module.exports = function (grunt) {
                         src: ['./**/*.*'],
                         dest: site_assets_dist_dir + '/img'
                     },
+                    {
+                      expand: true,
+                      cwd: 'bower_components/jssor-slider/js',
+                      src: ['jssor.slider.mini.js'],
+                      dest: site_assets_dist_dir + '/lib'
+                    },
                   /* copy reader assets */
                     {
                         expand: true,

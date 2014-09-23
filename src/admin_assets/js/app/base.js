@@ -30,9 +30,11 @@ $(function () {
         $(this).children('span').children('i').toggleClass('icon-angle-down');
     });
     
-    $('#menu-toggle').on('click', function(e){
+    $('#left-sidebar-toggle').on('click', function(e){
+        $(this).toggleClass('active');
         $('#left').toggleClass('opened');
         e.preventDefault();
+        return false;
     });
     
     $('#menu').metisMenu();

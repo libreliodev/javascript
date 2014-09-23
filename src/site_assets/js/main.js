@@ -113,4 +113,27 @@ $(document).ready(function() {
         if ($('.navbar-toggle').is(":visible"))
         $("#nav-collapse").removeClass("in").addClass("collapse");
     });
+
+    var home_top_slider = $('#home-top-slider');
+    if(home_top_slider.length > 0)
+    {
+      var jssor_slider = new $JssorSlider$('home-top-slider', {
+        $AutoPlay: true
+      });
+      function ScaleSlider()
+      {
+        var parentWidth = home_top_slider.parent().width();
+        if (parentWidth) {
+          jssor_slider.$SetScaleWidth(parentWidth);
+        }
+        else
+          window.setTimeout(ScaleSlider, 30);
+      }
+      //Scale slider after document ready
+      ScaleSlider();
+      if (!navigator.userAgent.match(/(iPhone|iPod|iPad|BlackBerry|IEMobile)/)) {
+        //Capture window resize event
+        $(window).bind('resize', ScaleSlider);
+      }
+    }
 });
