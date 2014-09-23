@@ -248,7 +248,7 @@ function initialize_reader(cb, cb2)
   url_str = doc_query ? doc_query.waurl : null,
   external_b = doc_query ? typeof doc_query.external != 'undefined' : null,
   url_str_dir;
-
+  
   $(function(){
     cb2 && cb && cb();
     application_info_load(doc_query, function(err, data)
@@ -263,5 +263,29 @@ function initialize_reader(cb, cb2)
         cb = cb2 ? cb2 : cb;
         cb(data, url_str, url_str_dir, external_b, doc_query);
       });
+  });
+}
+
+function reader_supported()
+{
+  var doc_query = querystring.parse(get_url_query(document.location+''));
+  if(doc_query.waversion != 'html5' &&
+     navigator.userAgent.match(/(iPhone|iPod|iPad|Android)/))
+    return false;
+  return true;
+}
+
+function reader_notify_not_supported(app_data)
+{
+  $('#notsupported-native-link').attr('href', "librelio://librelio-europe.s3.amazonaws.com/" + app_data.Publisher + "/" + app_data.Application + "/Magazines.plist");
+  $('#notsupported-force-link').attr('href', "http://reader.librelio.com?" + 
+                                    querystring.stringify({
+                                      wapublisher: app_data.Publisher,
+                                      waapp: app_data.Application,
+                                      waversion: 'html5'
+                                    }));
+  $('#notsupported-modal').modal({
+    keyboard: false,
+    backdrop: 'static'
   });
 }

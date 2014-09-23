@@ -12,6 +12,8 @@ $(function(){
 
   application_info_load(doc_query, function(err, data)
      {
+       if(!reader_supported())
+         return reader_notify_not_supported(data);
        if(err)
          return notifyError(err);
        // get update rate it's in minutes
