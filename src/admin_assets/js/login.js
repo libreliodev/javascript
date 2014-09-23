@@ -109,6 +109,7 @@ $(function(){
                });
             return false;
         });
+    // social network authentication starts
     $('.oauth2-wrp > a').click(function()
          {
              var $this = $(this);
@@ -122,14 +123,14 @@ $(function(){
                               {
                                   $this.data('inProcess', false);
                                   loggedInFacebook(response);
-                              })
+                              }, { scope: 'email' })
                  }
                  else if($this.hasClass('gp-signin-btn'))
                  {
                      gapi.auth.signIn({
                          clientid: config.idFedGPAppId,
                          cookiepolicy : 'single_host_origin',
-                         scope: 'https://www.googleapis.com/auth/plus.login',
+                         scope: 'email',
                          approvalprompt: 'force',
                          callback: 'loggedInGooglePlus'
                      });
@@ -150,26 +151,22 @@ function idFedLogin(opts, cb)
          userDirname: userDirname
        }
      */
-    function testPermission(cb)
+    function testPermissionAndPutUserInfo(cb)
     {
         // caller should userId in opts.userId;
         // requests for users directory
         // at end of this method life it will call `cb(err)' and if there is
-        var testfile = userDir + '/tf';
         s3.putObject({
             Bucket: config.s3Bucket,
-            Key: testfile
+            Key: userDir + '/APP_/user_.txt',
+            Body: JSON.stringify({
+                firstname: opts.firstname,
+                lastname: opts.lastname,
+                email: opts.email
+            }, null, "  ")
         }, function(err)
-          { 
-               if(err)
-                   return cb && cb(err);
-               s3.deleteObject({
-                   Bucket: config.s3Bucket,
-                   Key: testfile
-               }, function(err, data)
-                  {
-                      cb && cb(err);
-                  });
+           {
+               cb && cb(err);
            });
     }
     AWS.config.credentials = new AWS.WebIdentityCredentials(opts.cred);
@@ -179,28 +176,12 @@ function idFedLogin(opts, cb)
     app_name = config.idFedAppName,
     rootDir = config.idFedS3RootDirectory,
     userDir = rootDir + '/' + app_name + '/' + opts.userDirname;
-    s3.listObjects({
-        Bucket: config.s3Bucket,
-        Prefix: userDir + '/',
-        MaxKeys: 1
-    }, function(err, data)
-       {
-           if(err)
-           {
-               cb && cb(err);
-           }
-           else if(!data || !data.Contents || data.Contents.length <= 0)
-           {
-               testPermission(function(err)
-                 {
-                     if(err)
-                         return cb && cb(err);
-                     continue_job();
-                 });
-           }
-           else
-               continue_job();
-       });
+    testPermissionAndPutUserInfo(function(err)
+        {
+            if(err)
+                return cb && cb(err);
+            continue_job();
+        });
     function continue_job()
     {
         var auth_obj = {
@@ -232,16 +213,25 @@ function loggedInFacebook(response)
 {
     if(response.status == 'connected')
     {
-        var authResp = response.authResponse;
-        idFedLogin({
-            userDirname: config.idFedFBUserDirnamePrefix + authResp.userID,
-            host: 'facebook.com',
-            cred: {
-                RoleArn: config.idFedFBUsersRoleArn,
-                WebIdentityToken: authResp.accessToken,
-                ProviderId: 'graph.facebook.com'
-            }
-        }, alertIfError);
+        FB.api('me', 'get', {
+          
+        }, function(userInfo)
+           {
+               var authResp = response.authResponse;
+               idFedLogin({
+                   userDirname: config.idFedFBUserDirnamePrefix + 
+                       authResp.userID,
+                   firstname: userInfo.first_name,
+                   lastname: userInfo.last_name,
+                   email: userInfo.email,
+                   host: 'facebook.com',
+                   cred: {
+                       RoleArn: config.idFedFBUsersRoleArn,
+                       WebIdentityToken: authResp.accessToken,
+                       ProviderId: 'graph.facebook.com'
+                   }
+               }, alertIfError);
+           });
     }
 }
 function loggedInGooglePlus(response)
@@ -251,16 +241,21 @@ function loggedInGooglePlus(response)
         gapi.client.load('plus', 'v1', function()
            {
                gapi.client.plus.people.get({ 'userId': 'me' })
-                   .execute(function(resp)
+                   .execute(function(userInfo)
                   {
-                      if(!resp.id)
+                      if(!userInfo.id)
                       {
                           alert(_("Couldn't get users info!"))
                           return;
                       }
+                      var name_obj = userInfo.name || {};
                       idFedLogin({
-                          userDirname: 
-                                config.idFedGPUserDirnamePrefix + resp.id,
+                          userDirname: config.idFedGPUserDirnamePrefix + 
+                              userInfo.id,
+                          firstname: name_obj.givenName || '',
+                          lastname: name_obj.familyName || '',
+                          email: userInfo.emails && userInfo.emails.length > 0 ?
+                              userInfo.emails[0].value : '',
                           host: 'plus.google.com',
                           cred: {
                               RoleArn: config.idFedGPUsersRoleArn,
