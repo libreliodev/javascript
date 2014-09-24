@@ -5,7 +5,11 @@ $(function(){
     $userInfoDlg = $('#userInfoModal');
     if(!app_name)
         return;
-    updateUsersTable(app_name, $users_table, users_tableData);
+    awsCredentialsReady(function()
+      {
+        updateUsersTable(app_name, $users_table, users_tableData);
+      });
+
     $userInfoDlg.find('.close').click(function()
          {
              // remove update info
@@ -50,6 +54,7 @@ $(function(){
                               handleAWSS3Error(err)
                               return;
                           }
+                          user.Password = npass;
                           users_tableData.fnUpdate(npass, user._tr, 1, 
                                                    true, false);
                           

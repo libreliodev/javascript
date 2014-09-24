@@ -37,3 +37,11 @@ function awsS3Ready(cb)
     else
         $(document).bind('awsS3Initialized', cb);
 }
+
+function awsCredentialsReady(cb)
+{
+    if(AWS.config.credentials)
+        cb();
+    else
+        $(document).bind('awsCredentialsReady', cb);
+}

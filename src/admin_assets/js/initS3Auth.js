@@ -108,8 +108,8 @@ function idFedLoggedIn(token)
     var cred = s3AuthObj.cred;
     cred.WebIdentityToken = token;
     AWS.config.credentials = new AWS.WebIdentityCredentials(s3AuthObj.cred);
-    
     AWS.config.region = config.s3BucketRegion;
+    $(document).trigger('awsCredentialsReady');
     awsS3 = new AWS.S3({ region: config.s3BucketRegion });
     $(document).trigger('awsS3Initialized');
 }
