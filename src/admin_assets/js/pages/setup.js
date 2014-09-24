@@ -87,7 +87,7 @@ $(function(){
         // load setup plist file and set its content in the form
         awsS3.getObject({
             Bucket: config.s3Bucket,
-            Key: app_dir + '/APP_/Uploads/setup_.plist',
+            Key: app_dir + '/APP_/Uploads/setup.plist',
             ResponseContentEncoding: 'utf8'
         }, function(err, res)
            {
@@ -147,7 +147,7 @@ $(function(){
         // save setup plist file for input app
         awsS3.putObject({
             Bucket: config.s3Bucket,
-            Key: app_dir + '/APP_/Uploads/setup_.plist',
+            Key: app_dir + '/APP_/Uploads/setup.plist',
             Body: body
         }, function(err, res)
            {
