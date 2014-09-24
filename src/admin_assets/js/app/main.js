@@ -26,8 +26,8 @@ function get_publisher_dir()
 
 function get_app_dir(app_name)
 {
-    return get_publisher_dir() + '/' + app_name + 
-        (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : '');
+    return get_publisher_dir() + '/' + app_name; /*+ 
+        (s3AuthObj.type == 'idFed' ? '/' + s3AuthObj.userDirname : '');*/
 }
 
 function awsS3Ready(cb)

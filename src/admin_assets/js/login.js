@@ -170,12 +170,12 @@ function idFedLogin(opts, cb)
            });
     }
     AWS.config.credentials = new AWS.WebIdentityCredentials(opts.cred);
-
     AWS.config.region = config.s3BucketRegion;
+
     var s3 = new AWS.S3({ region: config.s3BucketRegion, maxRetries: 1 }),
-    app_name = config.idFedAppName,
+    app_name = opts.userDirname,
     rootDir = config.idFedS3RootDirectory,
-    userDir = rootDir + '/' + app_name + '/' + opts.userDirname;
+    userDir = rootDir + '/' + app_name;
     testPermissionAndPutUserInfo(function(err)
         {
             if(err)
@@ -188,7 +188,6 @@ function idFedLogin(opts, cb)
             type: 'idFed',
             cred: opts.cred,
             host: opts.host,
-            userDirname: opts.userDirname,
             rootDirectory: rootDir
         };
         storage.type = 'local';
