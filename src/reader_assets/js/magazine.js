@@ -71,11 +71,9 @@ $(function(){
         else
         {
           if(ext == '.pdf')
-            url = 'pdfreader.html?waurl=' + 
-            encodeURIComponent('/' + fn); // using leading slash it will load
-                                          // file from application's storage
+            url = magazine_pdfreader_link_for(fn)
           else
-            url = magazine_file_url(app_data, fn);
+            return false; // do nothing url = magazine_file_url(app_data, fn);
         
           document.location = url;
         }

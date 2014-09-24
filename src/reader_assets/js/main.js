@@ -144,8 +144,7 @@ function purchase_dialog_submit(opts, cb)
           pidx = path_str.indexOf(prefix);
           if(pidx > -1 && ((pidx == 1 && path_str[0] == '/') || pidx === 0 ))
             path_str = path_str.substr(pidx + prefix.length);
-          document.location = 'pdfreader.html?waurl=' + 
-            encodeURIComponent('/' + path_str);
+          document.location = magazine_pdfreader_link_for(path_str);
         }
         cb && cb(true);
       }
@@ -163,6 +162,22 @@ function purchase_dialog_submit(opts, cb)
       show_login_result(err);
     }
   });
+}
+function magazine_pdfreader_link_for(path_str)
+{
+  var doc_query = querystring.parse(get_url_query(document.location+'')),
+  params = {
+    waurl: '/' + path_str // using leading slash it will load
+                          // file from application's storage
+  },
+  inherit_params_key = [ 'wapublisher', 'waapp' ];
+  for(var i = 0, l = inherit_params_key.length; i < l; ++i)
+  {
+    var key = inherit_params_key[i];
+    if(doc_query[key])
+      params[key] = doc_query[key];
+  }
+  return 'pdfreader.html?' + querystring.stringify(params);
 }
 $(function()
   {
