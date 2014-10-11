@@ -468,9 +468,9 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: 'bower_components/font-awesome/fonts/',
-                        src: ['*'],
-                        dest: site_assets_dist_dir + '/fonts'
+                        cwd: 'bower_components/font-awesome/',
+                        src: ['./css/*.*', './fonts/*.*'],
+                        dest: site_assets_dist_dir + '/'
                     },
                     {
                         expand: true,
