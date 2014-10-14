@@ -269,11 +269,13 @@ $(function(){
         if(!hasChanged(annot))
           continue;
         var annot_data = {
-          Action: annot.remove ? 'Remove' : 'Add',
-          Rect: annot.rect.join(' ')
+          Action: annot.remove ? 'Remove' : 'Add'
         };
         if(annot.id)
           annot_data.ID = annot.id;
+        if(annot.remove)
+          continue;
+        annot_data.Rect = annot.rect.join(' ');
         switch(annot.subtype)
         {
         case 'Link':
@@ -602,7 +604,7 @@ $(function(){
       if(selected_annot)
       {
         // remove from annotations
-        if(selected_annot.id)
+        if(selected_annot.pdf_data)
           selected_annot.remove = true;
         else
         {
@@ -711,12 +713,19 @@ $(function(){
     {
       if(selected_annot)
       {
-        selected_annot.value_link = this.value;
-        link_annot_update(selected_annot);
-        if(selected_annot.linktype == 'url')
+        switch(selected_annot.linktype)
         {
+        case 'url':
+          selected_annot.value_link = this.value;
+          link_annot_update(selected_annot);
           switch_url_type(selected_annot,
            $.fn.pdfviewer.is_slideshow(selected_annot.value_link) ? 'img' : '');
+          break;
+        case 'page':
+          selected_annot.dest = parseInt(this.value);
+          if(isNaN(selected_annot.dest))
+            selected_annot.dest = 1;
+          break;
         }
       }
       annotationsHasChanged();
@@ -776,7 +785,7 @@ $(function(){
           update_input_element_with_annot(this, data);
         });
       links_props.find('input[name=link]').val(
-        (data.linktype == 'url' ? data.value_link : data.url) || '');
+        (data.linktype == 'page' ? data.dest : data.value_link) || '');
       if(data.linktype == 'url')
       {
         switch_url_type(data,
