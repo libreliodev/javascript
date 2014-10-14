@@ -2452,6 +2452,12 @@ var NetworkManager = (function NetworkManagerClosure() {
         var rangeStr = args.begin + '-' + (args.end - 1);
         xhr.setRequestHeader('Range', 'bytes=' + rangeStr);
         pendingRequest.expectedStatus = 206;
+        // safari 7.1 tries to cache 206 request as a whole file response
+        // which cause pdf.js to not load it correctly
+        // adding "If-Modified-Since" of past can fix this issue for safari
+        if(navigator.userAgent.indexOf("Safari") > -1)
+          xhr.setRequestHeader("If-Modified-Since", 
+                               "Thu, 01 Jan 1970 00:00:00 GMT");
       } else {
         pendingRequest.expectedStatus = 200;
       }
