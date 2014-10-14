@@ -820,43 +820,143 @@
     {
       var self = this,
       o = self.data(pvobj_key);
-      PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler, {
-        onHeadersReceived: function(data)
+      async.series([ function(next)
+      {
+        function xhrGetResponseHeaders(xhr)
         {
-          self.trigger('headersReceived', [ data ]);
+          var allHead = xhr.getAllResponseHeaders(),
+          heads = allHead.split(/\r\n|\n|\r/g),
+          ret = {};
+          for(var i = 0; i < heads.length; ++i)
+          {
+            var head_name = heads[i].split(':')[0];
+            if(head_name)
+              ret[head_name] = xhr.getResponseHeader(head_name);
+          }
+          return ret;
         }
-      })
-        .then(function(pdf)
+
+        var xhr = new XMLHttpRequest();
+        xhr.open('GET', pdf_url, true);
+        xhr.onreadystatechange = function()
         {
-          try {
-            self.on('render', function()
+          if(xhr.readyState >= 2 && next)
+          {
+            var data = {
+              headers: xhrGetResponseHeaders(xhr)
+            };
+            self.trigger('headersReceived', [ data ]);
+            var length = xhr.getResponseHeader('Content-Length');
+            length = parseInt(length, 10);
+            next(undefined, length);
+            next = null;
+            xhr.abort()
+          }
+        }
+        xhr.send(null);
+      } ],
+      function(err, filesize)
+      {
+        filesize = filesize[0];
+        var rangeListeners = [],
+        progressListeners = [];
+        function callListeners(listeners, thisArg, args)
+        {
+          for(var i = 0; i < listeners.length; ++i)
+          {
+            listeners[i].apply(thisArg, args);
+          }
+        }
+        function getArrayBuffer(xhr) {
+          var data = (xhr.mozResponseArrayBuffer || xhr.mozResponse ||
+                      xhr.responseArrayBuffer || xhr.response);
+          if (typeof data !== 'string') {
+            return data;
+          }
+          var length = data.length;
+          var buffer = new Uint8Array(length);
+          for (var i = 0; i < length; i++) {
+            buffer[i] = data.charCodeAt(i) & 0xFF;
+          }
+          return buffer;
+        }
+
+        PDFJS.getDocument({
+          url: pdf_url,
+          length: filesize
+        }, {
+          addRangeListener: function(listener)
+          {
+            rangeListeners.push(listener);
+          },
+          addProgressListener: function(listener)
+          {
+            progressListeners.push(listener);
+          },
+          requestDataRange: function(begin, end)
+          {
+            var req_url = pdf_url + (pdf_url.indexOf('?') == -1 ? '?' : '&') + 
+              '_time=' + new Date().getTime();
+            var xhr = new XMLHttpRequest();
+            xhr.open('GET', req_url, true);
+            xhr.mozResponseType = xhr.responseType = 'arraybuffer';
+
+            xhr.setRequestHeader('Range', 'bytes=' + begin + '-' + (end - 1));
+            xhr.onload = function(ev)
+            {
+              if(this.status == 200 || this.status == 206)
               {
-                if(!o.disable_fade_loadingscreen)
-                  $elements_has_target_to($('.pdfviewer-loadingscreen'), 
-                                          self[0]).fadeOut();
-                self.off('render', arguments.callee);
-              });
-            self.pdfviewer('set', 'pdfDoc', pdf);
-            cb && cb();
-          }catch(e) {
-            console.error(e);
-            cb && cb(e);
+                callListeners(rangeListeners, this, 
+                              [ begin, getArrayBuffer(xhr) ]);
+              }
+            };
+            xhr.onprogress = function(ev)
+            {
+              callListeners(progressListeners, this, [ ev.loaded ]);
+            };
+            xhr.onerror = function(ev) {
+              cb("Error occured while loading pdf file: " + xhr.status);
+            };
+            xhr.send(null);
+          }
+        }, null, downloadProgressHandler, {
+          onHeadersReceived: function(data)
+          {
+            self.trigger('headersReceived', [ data ]);
           }
         })
-        .catch(function(err)
+          .then(function(pdf)
+          {
+            try {
+              self.on('render', function()
+                      {
+                        if(!o.disable_fade_loadingscreen)
+                          $elements_has_target_to($('.pdfviewer-loadingscreen'),
+                                                  self[0]).fadeOut();
+                        self.off('render', arguments.callee);
+                      });
+              self.pdfviewer('set', 'pdfDoc', pdf);
+              cb && cb();
+            }catch(e) {
+              console.error(e);
+              cb && cb(e);
+            }
+          })
+          .catch(function(err)
+          {
+            cb && cb(err);
+          });
+        function downloadProgressHandler(ev)
         {
-          cb && cb(err);
-        });
-      function downloadProgressHandler(ev)
-      {
-        var $els = $elements_has_target_to($('.pdfviewer-progress'), self[0]);
-        if($els.data('fadingout'))
-          return;
-        $els.find('.progress-bar')
-          .css('width', (ev.loaded / ev.total * 100) + '%');
-        if(ev.loaded >= ev.total)
-          $els.fadeOut().data('fadingout', true);
-      }
+          var $els = $elements_has_target_to($('.pdfviewer-progress'), self[0]);
+          if($els.data('fadingout'))
+            return;
+          $els.find('.progress-bar')
+            .css('width', (ev.loaded / ev.total * 100) + '%');
+          if(ev.loaded >= ev.total)
+            $els.fadeOut().data('fadingout', true);
+        }
+      });
     },
     update_for_theme: function()
     {

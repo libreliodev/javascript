@@ -37736,7 +37736,7 @@ var WorkerMessageHandler = PDFJS.WorkerMessageHandler = {
           pdfManagerCapability.reject(ex);
         }
         return pdfManagerCapability.promise;
-      } else if (source.chunkedViewerLoading || source.forceChunkedLoading) {
+      } else if (source.chunkedViewerLoading) {
         try {
           pdfManager = new NetworkPdfManager(source, handler);
           pdfManagerCapability.resolve();
@@ -37751,6 +37751,7 @@ var WorkerMessageHandler = PDFJS.WorkerMessageHandler = {
         withCredentials: source.withCredentials,
         requestMethod: source.requestMethod
       });
+
       var fullRequestXhrId = networkManager.requestFull({
         onHeadersReceived: function onHeadersReceived() {
           var fullRequestXhr = networkManager.getRequestXhr(fullRequestXhrId);

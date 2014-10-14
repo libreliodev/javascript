@@ -3332,7 +3332,6 @@ var WorkerTransport = (function WorkerTransportClosure() {
     fetchDocument: function WorkerTransport_fetchDocument(source) {
       source.disableAutoFetch = PDFJS.disableAutoFetch;
       source.chunkedViewerLoading = !!this.pdfDataRangeTransport;
-      source.forceChunkedLoading = !!PDFJS.forceChunkedLoading;
       source.requestMethod = PDFJS.requestMethod;
       this.messageHandler.send('GetDocRequest', {
         source: source,
