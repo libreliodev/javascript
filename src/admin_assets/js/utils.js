@@ -465,4 +465,38 @@ root.redirectToLogin = function()
     document.location = "login.html" + (query || '');
 }
 
+root.s3ModifyObjectMetadata = function(s3, opts, cb)
+{
+  if(!opts.Key)
+    throw new Error("Option Key is required!");
+  var tmp_cpy = opts.Key + '__tmp__copy__';
+  s3.copyObject({
+    Bucket: opts.Bucket,
+    CopySource: opts.Bucket + '/' + opts.Key,
+    Key: tmp_cpy
+  }, function(err, res)
+     {
+       if(err)
+         return cb && cb(err);
+       s3.copyObject({
+         Bucket: opts.Bucket,
+         CopySource: opts.Bucket + '/' + tmp_cpy,
+         Key: opts.Key,
+         Metadata: opts.Metadata,
+         MetadataDirective: 'REPLACE'
+       }, function(err, res)
+          {
+            s3.deleteObject({
+              Bucket: opts.Bucket,
+              Key: tmp_cpy
+            }, function(err2)
+               {
+                 if(err || err2)
+                   return cb && cb(err || err2);
+                 cb && cb(undefined, res);
+               });
+          });
+     });
+}
+
 })(window);

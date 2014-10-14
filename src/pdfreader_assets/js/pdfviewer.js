@@ -451,6 +451,8 @@
           {
             o.curPages = pages;
             operation_complete(next, err, pages);
+            for(var i = 0; i < pages.length; ++i)
+              pages[i].extra_links = [];
             if(!o.silent)
               self.trigger('curPages-changed', [ pages ]);
             typeof o._onCurPagesChange == 'function' && 
@@ -816,15 +818,22 @@
   methods = viewer.method = {
     loadDocument: function(pdf_url, cb)
     {
-      var self = this;      
-      PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler)
+      var self = this,
+      o = self.data(pvobj_key);
+      PDFJS.getDocument(pdf_url, null, null, downloadProgressHandler, {
+        onHeadersReceived: function(data)
+        {
+          self.trigger('headersReceived', [ data ]);
+        }
+      })
         .then(function(pdf)
         {
           try {
             self.on('render', function()
               {
-                $elements_has_target_to($('.pdfviewer-loadingscreen'), self[0])
-                  .fadeOut();
+                if(!o.disable_fade_loadingscreen)
+                  $elements_has_target_to($('.pdfviewer-loadingscreen'), 
+                                          self[0]).fadeOut();
                 self.off('render', arguments.callee);
               });
             self.pdfviewer('set', 'pdfDoc', pdf);
@@ -1021,6 +1030,9 @@
           $(o.links_div).replaceWith(page_data.links_div);
           o.links_div = page_data.links_div;
           copy_canvas(spare_canvas, canvas);
+          var pages = o.curPages;
+          for(var i = 0; i < pages.length; ++i)
+            pages[i].extra_links = [];
           self.trigger('curPages-changed', [ o.curPages ]);
           copy_canvas(canvas, spare_canvas, true);
           self.trigger('render');

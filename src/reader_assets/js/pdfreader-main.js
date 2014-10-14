@@ -52,7 +52,7 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
        path_str = url('path', data.real_url);
        
        // buy:// protocol
-       if(data.protocol == 'buy')
+       if(data.protocol == 'buy' && obj.return_value !== false)
        {
          if(app_data)
          {

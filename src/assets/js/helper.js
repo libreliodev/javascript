@@ -25,8 +25,9 @@ function librelio_pdf_resolve_url(s, relto)
       (query ? '?' + query : '') + (hash ? '#' + hash : '');
   }
   var hostname = url('hostname', s),
+  protos = [ 'http:', 'https:', '' ],
   proto = url_protocol(s);
-  if(hostname == 'localhost' || proto === null)
+  if((hostname == 'localhost' && protos.indexOf(proto) != -1) || proto === null)
     return (relto ? relto + '/' : '') + relpath(s);
   return s;
 }

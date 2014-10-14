@@ -22,7 +22,7 @@ if (typeof PDFJS === 'undefined') {
 }
 
 PDFJS.version = '1.0.1';
-PDFJS.build = 'fatal: Not a git repository (or any of the parent directories): .git';
+PDFJS.build = '48b826b';
 
 (function pdfjsWrapper() {
   // Use strict in our context only - users might not want it
@@ -1560,6 +1560,20 @@ function loadJpegStream(id, imageUrl, objs) {
   img.src = imageUrl;
 }
 
+function xhrGetResponseHeaders(xhr)
+{
+  var allHead = xhr.getAllResponseHeaders(),
+  heads = allHead.split(/\r\n|\n|\r/g),
+  ret = {};
+  for(var i = 0; i < heads.length; ++i)
+  {
+    var head_name = heads[i].split(':')[0];
+    if(head_name)
+      ret[head_name] = xhr.getResponseHeader(head_name);
+  }
+  return ret;
+}
+
 
 var DEFAULT_ICON_SIZE = 22; // px
 var HIGHLIGHT_OFFSET = 4; // px
@@ -2425,7 +2439,6 @@ var NetworkManager = (function NetworkManagerClosure() {
       var pendingRequest = this.pendingRequests[xhrId] = {
         xhr: xhr
       };
-
       xhr.open(this.requestMethod, this.url);
       xhr.withCredentials = this.withCredentials;
       for (var property in this.httpHeaders) {
@@ -2514,7 +2527,6 @@ var NetworkManager = (function NetworkManagerClosure() {
       }
 
       this.loadedRequests[xhrId] = true;
-
       var chunk = getArrayBuffer(xhr);
       if (xhrStatus === PARTIAL_CONTENT_RESPONSE) {
         var rangeHeader = xhr.getResponseHeader('Content-Range');
@@ -2816,9 +2828,18 @@ var ChunkedStreamManager = (function ChunkedStreamManagerClosure() {
         requestMethod: args.requestMethod
       });
       this.sendRequest = function ChunkedStreamManager_sendRequest(begin, end) {
-        this.networkManager.requestRange(begin, end, {
+        var xhrId = this.networkManager.requestRange(begin, end, {
           onDone: this.onReceiveData.bind(this),
-          onProgress: this.onProgress.bind(this)
+          onProgress: this.onProgress.bind(this),
+          onHeadersReceived: (function()
+          {
+            var xhr = this.networkManager.getRequestXhr(xhrId);
+            if(!xhr)
+              return;
+            handler.send('headersReceived', {
+              headers: xhrGetResponseHeaders(xhr)
+            });
+          }).bind(this)
         });
       };
     }
@@ -37709,7 +37730,7 @@ var WorkerMessageHandler = PDFJS.WorkerMessageHandler = {
           pdfManagerCapability.reject(ex);
         }
         return pdfManagerCapability.promise;
-      } else if (source.chunkedViewerLoading) {
+      } else if (source.chunkedViewerLoading || source.forceChunkedLoading) {
         try {
           pdfManager = new NetworkPdfManager(source, handler);
           pdfManagerCapability.resolve();
@@ -37726,11 +37747,16 @@ var WorkerMessageHandler = PDFJS.WorkerMessageHandler = {
       });
       var fullRequestXhrId = networkManager.requestFull({
         onHeadersReceived: function onHeadersReceived() {
+          var fullRequestXhr = networkManager.getRequestXhr(fullRequestXhrId);
+          
+          handler.send('headersReceived', {
+            headers: xhrGetResponseHeaders(fullRequestXhr)
+          });
+          
           if (disableRange) {
             return;
           }
 
-          var fullRequestXhr = networkManager.getRequestXhr(fullRequestXhrId);
           if (fullRequestXhr.getResponseHeader('Accept-Ranges') !== 'bytes') {
             return;
           }

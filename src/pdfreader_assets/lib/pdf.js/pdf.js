@@ -22,7 +22,7 @@ if (typeof PDFJS === 'undefined') {
 }
 
 PDFJS.version = '1.0.1';
-PDFJS.build = 'fatal: Not a git repository (or any of the parent directories): .git';
+PDFJS.build = '48b826b';
 
 (function pdfjsWrapper() {
   // Use strict in our context only - users might not want it
@@ -1560,6 +1560,20 @@ function loadJpegStream(id, imageUrl, objs) {
   img.src = imageUrl;
 }
 
+function xhrGetResponseHeaders(xhr)
+{
+  var allHead = xhr.getAllResponseHeaders(),
+  heads = allHead.split(/\r\n|\n|\r/g),
+  ret = {};
+  for(var i = 0; i < heads.length; ++i)
+  {
+    var head_name = heads[i].split(':')[0];
+    if(head_name)
+      ret[head_name] = xhr.getResponseHeader(head_name);
+  }
+  return ret;
+}
+
 
 var DEFAULT_ICON_SIZE = 22; // px
 var HIGHLIGHT_OFFSET = 4; // px
@@ -2525,7 +2539,7 @@ PDFJS.verbosity = (PDFJS.verbosity === undefined ?
 PDFJS.getDocument = function getDocument(source,
                                          pdfDataRangeTransport,
                                          passwordCallback,
-                                         progressCallback) {
+                                         progressCallback, listeners) {
   var workerInitializedCapability, workerReadyCapability, transport;
 
   if (typeof source === 'string') {
@@ -2555,7 +2569,7 @@ PDFJS.getDocument = function getDocument(source,
   workerReadyCapability = createPromiseCapability();
   transport = new WorkerTransport(workerInitializedCapability,
                                   workerReadyCapability, pdfDataRangeTransport,
-                                  progressCallback);
+                                  progressCallback, listeners);
   workerInitializedCapability.promise.then(function transportInitialized() {
     transport.passwordCallback = passwordCallback;
     transport.fetchDocument(params);
@@ -2973,7 +2987,7 @@ var PDFPageProxy = (function PDFPageProxyClosure() {
  */
 var WorkerTransport = (function WorkerTransportClosure() {
   function WorkerTransport(workerInitializedCapability, workerReadyCapability,
-                           pdfDataRangeTransport, progressCallback) {
+                           pdfDataRangeTransport, progressCallback, listeners) {
     this.pdfDataRangeTransport = pdfDataRangeTransport;
 
     this.workerReadyCapability = workerReadyCapability;
@@ -2984,6 +2998,7 @@ var WorkerTransport = (function WorkerTransportClosure() {
     this.pagePromises = [];
     this.downloadInfoCapability = createPromiseCapability();
     this.passwordCallback = null;
+    this.listeners = listeners || {};
 
     // If worker support isn't disabled explicit and the browser has worker
     // support, create a new web worker and test if it/the browser fullfills
@@ -3095,7 +3110,7 @@ var WorkerTransport = (function WorkerTransportClosure() {
       function updatePassword(password) {
         messageHandler.send('UpdatePassword', password);
       }
-
+        
       var pdfDataRangeTransport = this.pdfDataRangeTransport;
       if (pdfDataRangeTransport) {
         pdfDataRangeTransport.addRangeListener(function(begin, chunk) {
@@ -3116,6 +3131,13 @@ var WorkerTransport = (function WorkerTransportClosure() {
             pdfDataRangeTransport.requestDataRange(data.begin, data.end);
           }, this);
       }
+
+      var listeners = this.listeners;
+      messageHandler.on('headersReceived', function headersReceived(obj)
+        {
+          if(typeof listeners.onHeadersReceived == 'function')
+            listeners.onHeadersReceived(obj);
+        });
 
       messageHandler.on('GetDoc', function transportDoc(data) {
         var pdfInfo = data.pdfInfo;
@@ -3310,6 +3332,7 @@ var WorkerTransport = (function WorkerTransportClosure() {
     fetchDocument: function WorkerTransport_fetchDocument(source) {
       source.disableAutoFetch = PDFJS.disableAutoFetch;
       source.chunkedViewerLoading = !!this.pdfDataRangeTransport;
+      source.forceChunkedLoading = !!PDFJS.forceChunkedLoading;
       source.requestMethod = PDFJS.requestMethod;
       this.messageHandler.send('GetDocRequest', {
         source: source,

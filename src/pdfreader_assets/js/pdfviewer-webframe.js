@@ -6,7 +6,7 @@ $(function(){
   }
   function is_webframe(s)
   {
-    var protos = [ 'http:', 'https:' ],
+    var protos = [ 'http:','https:', '' ],
     proto = url_protocol(s);
     if(s === undefined || proto === null || protos.indexOf(proto) == -1)
       return false;
@@ -35,7 +35,6 @@ $(function(){
      {
        var url_str = data.url,
        query = querystring.parse(librelio_url_query(url_str));
-
        if(url_str && is_webframe(url_str) && !data.element)
        {
          var data_wa = data.wa = {};
