@@ -88,8 +88,25 @@ $(function(){
     pdf_viewer.pdfviewer('set', 'disable_fade_loadingscreen', true);
 
     var step0_done = false;
-    pdf_viewer.bind('linksUpdated', function()
+    pdf_viewer.bind('linksUpdated', function(ev, eannotations)
       {
+        for(var pid in eannotations)
+        {
+          var eannots = eannotations[pid],
+          mannots = annotations[pid] = annotations[pid] || [],
+          page_index = parseInt(pid.substr(1));
+          for(var i = 0, l = eannots.length; i < l; ++i)
+          {
+            var eannot = eannots[i],
+            annot = getAnnotsById(eannot.id, mannots);
+            if(!annot)
+            {
+              eannot.page_index = page_index;
+              annotation_init(eannot);
+              mannots.push(eannot);
+            }
+          }
+        }
         pdf_viewer.unbind('linksUpdated', arguments.callee);
         if(step0_done)
           continue_job();
@@ -249,6 +266,8 @@ $(function(){
       var pdf_data = annot.pdf_data;
       if(pdf_data)
       {
+        if(typeof annot.dest == 'object')
+          return false;
         return annot.remove || annot.rect[0] != pdf_data.rect[0] ||
           annot.rect[1] != pdf_data.rect[1] ||
           annot.rect[2] != pdf_data.rect[2] ||
@@ -474,18 +493,6 @@ $(function(){
     docPage = page.docPage;
     return docPage.getAnnotations().then(function(annots)
       {
-        if(page.extra_links)
-        {
-          var eannots = page.extra_links;
-          for(var i = 0, l = eannots.length; i < l; ++i)
-          {
-            var eannot = eannots[i],
-            annot = getAnnotsById(eannot.id, mannots);
-            if(!annot)
-              add_annot(eannot);
-          }
-        }
-
         for(var i = 0, l = annots.length; i < l; ++i)
         {
           var data = annots[i];
@@ -722,9 +729,9 @@ $(function(){
            $.fn.pdfviewer.is_slideshow(selected_annot.value_link) ? 'img' : '');
           break;
         case 'page':
-          selected_annot.dest = parseInt(this.value);
-          if(isNaN(selected_annot.dest))
-            selected_annot.dest = 1;
+          var value = parseInt(this.value)
+          if(!isNaN(value))
+            selected_annot.dest = value;
           break;
         }
       }
@@ -764,6 +771,12 @@ $(function(){
   }
   function annotation_select(data, $el)
   {
+    if(data && data.subtype == 'Link' && data.linktype == 'page' && 
+       typeof data.dest == 'object')
+    {
+      notifyUserError("Couldn't change the link. Not ready yet!")
+      return;
+    }
     var $links_div = $(pdf_viewer.pdfviewer('get', 'links_div'));
     $links_div.find('.selected').toggleClass('selected');
     if(data && $el)
@@ -785,7 +798,9 @@ $(function(){
           update_input_element_with_annot(this, data);
         });
       links_props.find('input[name=link]').val(
-        (data.linktype == 'page' ? data.dest : data.value_link) || '');
+        (data.linktype == 'page' ? 
+         (typeof data.dest == 'number' ? data.dest : '?') : 
+         data.value_link) || '');
       if(data.linktype == 'url')
       {
         switch_url_type(data,

@@ -17,13 +17,14 @@ $(function()
               console.log("Couldn't parse annotations update file: " + e);
             } finally {
               update_annots(obj);
-              pdf_viewer.trigger('linksUpdated');
             }
+            pdf_viewer.trigger('linksUpdated', [ obj ]);
           },
           error: function(xhr, err, err_text)
           {
             console.log("Couldn't load annotations update file: " + 
                         update_fn + ' error: ' + err_text);
+            pdf_viewer.trigger('linksUpdated');
           }
         });
       }
