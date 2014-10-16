@@ -3,42 +3,36 @@ title: Login Page
 ---
 <div class="container">
     <div class="text-center">
-        <img src="assets/img/logo.png" alt="Metis Logo">
+        <img src="assets/img/logo.png" alt="Librelio Logo">
     </div>
     <div class="tab-content">
         <div id="login" class="tab-pane active">
             <form action="index.html" class="form-signin">
                 <p class="text-muted text-center" localize>
-                    Enter your AWS Access Key ID and password
+                    New to Librelio? </p>
+                <p class="text-muted text-center" localize>
+Sign-in with Google or Facebook!
+                </p>                
+                <div class="oauth2-wrp">
+<!--                   <div class="fb-login-button" data-max-rows="1" data-size="small" data-show-faces="false" data-auto-logout-link="false" onlogin="loggedInFacebook"></div> -->
+                  <a href="#" class="fb-signin-btn"><img alt="Login with facebook" src="{{assets}}/img/fb-login-en-large.png" /></a>
+                  <a href="#" class="gp-signin-btn"><img alt="Sign in with google plus" src="{{assets}}/img/gp-signin-en-large.png" /></a>
+
+                </div>
+                 <p class="text-muted text-center" localize>
+                    Otherwise, please enter your credentials:
                 </p>
                 <input name="access-key-id" type="text" placeholder="Access Key ID" class="form-control" localize="_.attr('placeholder','access_key_id_placeholder')">
                 <input name="secret-access-key" type="password" placeholder="Secret Access Key" class="form-control" localize="_.attr('placeholder','secret_access_key_placeholder')">
-                <input name="root-directory" type="text" placeholder="Root directory" class="form-control" localize="_.attr('placeholder','root_directory_placeholder')">
+                <input name="root-directory" type="email" placeholder="Root directory" class="form-control" localize="_.attr('placeholder','root_directory_placeholder')">
 			   <div class="text-muted remember-me-wrp">
-					<label>
+					<label style="font-weight:normal">
 						<input id="remember-me" class="uniform" type="checkbox" value="remember"> <span localize>Remember me on this computer</span>
 					</label>
 				</div>
                 <button class="btn btn-primary btn-lg btn-block ladda-button" data-style="slide-down" localize>
                     Login
                 </button>
-                <div class="oauth2-wrp">
-<!--                   <div class="fb-login-button" data-max-rows="1" data-size="small" data-show-faces="false" data-auto-logout-link="false" onlogin="loggedInFacebook"></div> -->
-                  <a href="#" class="fb-signin-btn"><img alt="Login with facebook" src="{{assets}}/img/fb-login-en-large.png" /></a>
-                  <a href="#" class="gp-signin-btn"><img alt="Sign in with google plus" src="{{assets}}/img/gp-signin-en-large.png" /></a>
-<!-- 
-                  <span
-                     id="gp-login-btn"
-                     class="g-signin"
-                     data-clientid="{{ config.idFedGPAppId }}"
-                     data-height="short"
-                     data-callback="loggedInGooglePlus"
-                     data-cookiepolicy="single_host_origin"
-                     data-requestvisibleactions="http://schemas.google.com/AddActivity"
-                     data-scope="https://www.googleapis.com/auth/plus.login">
- -->
-                  </span>
-                </div>
             </form>
         </div>
  
