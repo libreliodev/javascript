@@ -292,6 +292,7 @@ $(function(){
         };
         if(annot.id)
           annot_data.ID = annot.id;
+        pres.push(annot_data);
         if(annot.remove)
           continue;
         annot_data.Rect = annot.rect.join(' ');
@@ -309,7 +310,6 @@ $(function(){
           }
           break;
         }
-        pres.push(annot_data);
       }
       if(pres.length > 0)
         res[pid] = pres;
