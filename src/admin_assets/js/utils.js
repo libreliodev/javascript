@@ -170,8 +170,8 @@ root.s3UploadInit = function($upload, opts)
         
         opts.s3.deleteObject({
             Bucket: opts.Bucket,
-            Key: opts.Key ? eval_opts_prop(opts.Key,['delete']) : 
-                eval_opts_prop(opts.Prefix,['delete']) + image_name
+            Key: opts.Key ? eval_opts_prop(opts.Key, ['delete']) : 
+                eval_opts_prop(opts.Prefix, ['delete']) + inp_name
         }, function(err)
            {
                $new_btn.html(new_v);
