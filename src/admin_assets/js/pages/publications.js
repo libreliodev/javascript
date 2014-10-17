@@ -13,6 +13,8 @@ $(function() {
         "aaSorting": [[ 0, "desc" ]]
     }),
     $pubDlg = $('#pubModal');
+  
+    activeInactiveEvents($pubTable);
     if(!appName)
         return;
     
@@ -649,7 +651,6 @@ $(function() {
                     // Apply events for the active/inactive buttons
                     //---------------------------------------------------
 
-                    activeInactiveEvents(publicationsTable);
                     
                     $pubTable.on('click', 'tbody > tr', pubTRClick)
                 });
@@ -677,14 +678,14 @@ function formDisplay() {
 
 function activeInactiveEvents(publicationsTable) {
 
-    $("a.btnActive").bind("click", function(e) {
+    publicationsTable.on("click", "a.btnActive", {}, function(e) {
         e.preventDefault();
         var obj = $(this);
         activePublication(obj, publicationsTable);
         return false;
     });
 
-    $("a.btnInactive").bind("click", function(e) {
+    publicationsTable.on("click", "a.btnInactive", {}, function(e) {
         e.preventDefault();
         var obj = $(this);
         inactivePublication(obj, publicationsTable);
@@ -750,7 +751,13 @@ function inactivePublication(obj, publicationsTable) {
 }
 
 function activeServerRequest(obj, publicationsTable) {
-
+    function is_paid_pub(filename, cb)
+    {
+      s3ObjectExists(awsS3, {
+        Bucket: config.s3Bucket,
+        Key: appDir + '/' + filename + '/' + filename + '_.pdf'
+      }, cb);
+    }
     var pTitle = $("input[name='pubTitleInput']").val();
     var pSubtitle = $("input[name='pubSubtitleInput']").val();
 
@@ -766,34 +773,38 @@ function activeServerRequest(obj, publicationsTable) {
         }catch(e) {
             activeList = [];
         }
-        
-        var pub = {
-            FileName: obj.data("filename") + "/" + obj.data("filename") + "_.pdf",
-            Title: pTitle,
-            Subtitle: pSubtitle
-        };
-        insertPubInList(pub, activeList);
-        
-        var body = $.plist('toString', activeList);
+        is_paid_pub(obj.data('filename'), function(err, is_paid)
+          {
+            if(err)
+              return console.error(err);
+            var pub = {
+              FileName: obj.data("filename") + "/" + obj.data("filename") + 
+                (is_paid ? '_' : '') + ".pdf",
+              Title: pTitle,
+              Subtitle: pSubtitle
+            };
+            insertPubInList(pub, activeList);
+            
+            var body = $.plist('toString', activeList);
         
 
-        var params = {
-            Bucket: window.config.s3Bucket, // required
-            Key: appDir+'/Magazines.plist',
-            //Body: PlistParser.toPlist(activeList)
-            Body: body
-        };
-        window.awsS3.putObject(params, function(err, data) {
-            if (err) {
+            var params = {
+              Bucket: window.config.s3Bucket, // required
+              Key: appDir+'/Magazines.plist',
+              //Body: PlistParser.toPlist(activeList)
+              Body: body
+            };
+            window.awsS3.putObject(params, function(err, data) {
+              if (err) {
                 alert(Error);
-            } else {
+              } else {
                 //obj.addClass("btnInactive").addClass("btn-danger").removeClass("btnActive").removeClass("btn-success").html("Inactive").data("id", activeListLength);
                 //publicationsTable.fnGetPosition( obj.parents('tr').closest('.ttitle')[0]).html(pTitle);
                 //publicationsTable.fnGetPosition( obj.parents('tr').closest('.tsubtitle')[0]).html(pSubtitle);
                 location.reload();
-            }
-        });
-
+              }
+            });
+          });
     });
 }
 
