@@ -38,7 +38,7 @@ $(function() {
                   return false;
               }
           });
-  $pubDlg.find('.pdfannotedit-btn').bind('click', function()
+    $pubDlg.find('.pdfannotedit-btn').bind('click', function()
           {
               var pub = $pubDlg.find('input[name=FolderName]').val(),
               filename = pubDlgEvalAttr($(this).data('filename'));
@@ -51,7 +51,6 @@ $(function() {
                   return false;
               }
           });
-
 
     $("#asset-uploader").pluploadQueue({
         // General settings
@@ -89,7 +88,7 @@ $(function() {
 
     if(s3AuthObj.type == 'idFed')
     {
-        asset_uploader.unbind('UploadFile');
+      asset_uploader.unbind('UploadFile');
 	    asset_uploader.bind('UploadFile', function(up, file)
           {
               var filename = file.target_name || file.name;
@@ -116,36 +115,36 @@ $(function() {
                      unbindEvents();
                      if(err)
                      {
-                         console.error(err);
-                         up.trigger('Error', {
-					         code : plupload.HTTP_ERROR,
-					         message : plupload.translate('HTTP Error.'),
-					         file : file,
-					         response: err+'',
-					         status: xhr ? xhr.status : _('Unknown'),
-					         responseHeaders: 
-                             xhr ? xhr.getAllResponseHeaders() : {}
-				         });
-                         return;
+                       console.error(err);
+                       up.trigger('Error', {
+                         code : plupload.HTTP_ERROR,
+                         message : plupload.translate('HTTP Error.'),
+                         file : file,
+                         response: err+'',
+                         status: xhr ? xhr.status : _('Unknown'),
+                         responseHeaders: 
+                               xhr ? xhr.getAllResponseHeaders() : {}
+                       });
+                       return;
                      }
-                     file.loaded = file.size;
-                     up.trigger('UploadProgress', file);
-                     
+                   file.loaded = file.size;
+                   up.trigger('UploadProgress', file);
+                   
 	                 file.status = plupload.DONE;
-				     up.trigger('FileUploaded', file, {
-					     response: 'success',
-					     status: 200,
-					     responseHeaders: {}
-				     });
+                   up.trigger('FileUploaded', file, {
+                     response: 'success',
+                     status: 200,
+                     responseHeaders: {}
+                   });
                  });
               xhr = request.httpRequest.stream;
               if(xhr && xhr.upload)
                   $(xhr.upload).on('progress', function(ev)
                      {
-                         ev = ev.originalEvent;
-					     file.loaded = ev.loaded;
-					     up.trigger('UploadProgress', file);
-				     });
+                       ev = ev.originalEvent;
+                       file.loaded = ev.loaded;
+                       up.trigger('UploadProgress', file);
+                     });
           });
     }
     else
@@ -377,8 +376,29 @@ $(function() {
                  $pubDlg.find('.pub-body-form').show();
                  $pubDlg.find('.fileinput').each(function()
                     {
-                        if(this._s3Upload)
-                            this._s3Upload.reload();
+                      var $upload = $(this),
+                      inp = $upload.find('input[type=file]')[0];
+                      if(this._s3Upload)
+                        this._s3Upload.reload();
+                      if(inp)
+                      {
+                        // fileinput download-btn ready
+                        $upload.find('.download-btn').each(function()
+                          {
+                            var title = 
+                              $pubDlg.find('input[name=FolderName]').val(),
+                            file = uploadElEvalFilename(inp),
+                            a_tag = this;
+                            awsS3.getSignedUrl('getObject', {
+                              Bucket: config.s3Bucket,
+                              Key: appDir + '/' + title + '/' + file,
+                              Expires: awsExpireReverse(config.awsExpireReverseInHours)
+                            }, function(err, url)
+                               {
+                                 a_tag.href = !err && url ? url : '';
+                               })
+                          });
+                      }
                     });
                  if(s3AuthObj.type != 'idFed')
                      setPLUploadInfoForPub(pub_name);
