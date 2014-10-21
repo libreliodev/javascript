@@ -16,6 +16,20 @@ $(function(){
                    type: 'Image',
                    Bucket: config.s3Bucket,
                    Prefix: app_dir + '/APP_/Uploads/',
+                   checkBeforeUpload: function(inp_el, file, cb)
+                   {
+                     makeImageFromFile(file, function(err, image)
+                       {
+                         if(err)
+                           return notifyUserError(err);
+                         var b = validateImageSizeByElementAttrs(inp_el, image);
+                         cb(b);
+                         if(!b)
+                           notifyUserError($(inp_el)
+                                             .data('required-image-message') ||
+                                           "Invalid image size!");
+                       });
+                   },
                    signExpires: function()
                    {
                        return awsExpireReverse(config.awsExpireReverseInHours);
