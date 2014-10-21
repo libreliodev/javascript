@@ -272,7 +272,6 @@ root.s3UploadInit = function($upload, opts)
               {
                   opts.checkBeforeUpload(this, file, function(ok)
                     {
-                      console.log('ok', ok);
                       if(ok)
                       {
                         previous_preview = 

@@ -16,7 +16,7 @@ function userLogout()
 
 function notifyUserError(err)
 {
-    alert(err);
+    bootbox.alert(err);
 }
 
 function get_publisher_dir()
