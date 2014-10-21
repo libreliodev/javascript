@@ -196,7 +196,7 @@ $(function(){
                           return ads[index];
                   }
               }
-              function Status()
+              function updateAdsStatus()
               {
                   var col = adTableColumns[2],
                   col_class = adTableColumns_class[2];
