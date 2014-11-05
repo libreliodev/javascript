@@ -37,12 +37,10 @@ $(function(){
                        {
                          if(err)
                            return notifyUserError(err);
-                         var b = validateImageSizeByElementAttrs(inp_el, image);
-                         cb(b);
-                         if(!b)
-                           notifyUserError($(inp_el)
-                                             .data('required-image-message') ||
-                                           "Invalid image size!");
+                         var m = validateImageSizeByElementAttrs(inp_el, image);
+                         cb(!m);
+                         if(m)
+                           notifyUserError(m);
                        });
                    },
                    onerror: handleAWSS3Error,

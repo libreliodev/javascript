@@ -574,3 +574,15 @@ msgstr ""
 #: admin_assets/js/pages/tracking.js:65
 msgid "Analytics data not yet available"
 msgstr ""
+
+#: admin_assets/js/utils.js:189
+msgid "Invalid image size!"
+msgstr ""
+
+#: admin_assets/js/utils.js:189
+msgid "Invalid image size!"
+msgstr ""
+
+#: templates/pages/setup.hbs:105
+msgid "Image size should be 1024x1024"
+msgstr ""

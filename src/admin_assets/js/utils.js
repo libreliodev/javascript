@@ -183,9 +183,13 @@ root.validateImageSizeByElementAttrs = function(el, img)
   {
     var value = $el.data(attrs_prefix + attr);
     if(value && (tests[attr])(value) === false)
-      return false;
+    {
+      return $el.data(attrs_prefix + 'message') || 
+        localize($el.data(attrs_prefix + 'message-localize')||'') ||
+        localize("Invalid image size!");
+    }
   }
-  return true;
+  return false;
 }
 root.makeImageFromFile = function(file, cb)
 {
