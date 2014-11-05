@@ -30,7 +30,8 @@ $(function(){
      });
   function magazines_loaded_handle(err)
   {
-    notifyIfError(err);
+    if(err)
+      console.log(err);
     if(refresh_timeout !== undefined)
       clearTimeout(refresh_timeout);
     refresh_timeout = setTimeout(function()
@@ -38,11 +39,6 @@ $(function(){
         magazines_load(app_data, magazines_list, magazines_loaded_handle);
         refresh_timeout = undefined;
       }, update_every);
-  }
-  function notifyIfError(err)
-  {
-    if(err)
-      return notifyError(err);
   }
   function magazines_init(list)
   {
