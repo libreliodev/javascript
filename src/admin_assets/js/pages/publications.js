@@ -769,15 +769,15 @@ function inactivePublication(obj, publicationsTable) {
         }
     });
 }
-
+function is_paid_pub(filename, cb)
+{
+  s3ObjectExists(awsS3, {
+    Bucket: config.s3Bucket,
+    Key: appDir + '/' + filename + '/' + filename + '_.pdf'
+  }, cb);
+}
 function activeServerRequest(obj, publicationsTable) {
-    function is_paid_pub(filename, cb)
-    {
-      s3ObjectExists(awsS3, {
-        Bucket: config.s3Bucket,
-        Key: appDir + '/' + filename + '/' + filename + '_.pdf'
-      }, cb);
-    }
+    
     var pTitle = $("input[name='pubTitleInput']").val();
     var pSubtitle = $("input[name='pubSubtitleInput']").val();
 
@@ -836,42 +836,46 @@ function inactiveServerRequest(obj, publicationsTable) {
     }, function(err, activated) {
 
         var tmp = obj.data('filename'),
-        filename = tmp + '/' + tmp + '_.pdf',
         activeList;
         try {
             activeList = $.plist($.parseXML(activated.Body.toString()));
         }catch(e) {
             activeList = [];
         }
-        
-        for(var i = 0; i < activeList.length; )
-            if(activeList[i].FileName == filename)
+        is_paid_pub(tmp, function(err, is_paid)
+          {
+            if(err)
+              return console.error(err);
+            var filename = tmp + '/' + tmp + (is_paid ? '_' : '') + '.pdf';
+
+            for(var i = 0; i < activeList.length; )
+              if(activeList[i].FileName == filename)
                 activeList.splice(i, 1);
-            else
+              else
                 i++;
         
-        var body = $.plist('toString', activeList);
+            var body = $.plist('toString', activeList);
         
-        //var rowIndex = publicationsTable.fnGetPosition( obj.closest('tr')[0] );
-        //publicationsTable.fnDeleteRow(rowIndex);
+            //var rowIndex = publicationsTable.fnGetPosition( obj.closest('tr')[0] );
+            //publicationsTable.fnDeleteRow(rowIndex);
 
-        var params = {
-            Bucket: window.config.s3Bucket, // required
-            Key: appDir+'/Magazines.plist',
-            //Body: PlistParser.toPlist(activeList)
-            Body: cleanKeys($.plist('toString', activeList))
-        };
-        window.awsS3.putObject(params, function(err, data) {
-            if (err) {
+            var params = {
+              Bucket: window.config.s3Bucket, // required
+              Key: appDir+'/Magazines.plist',
+              //Body: PlistParser.toPlist(activeList)
+              Body: cleanKeys($.plist('toString', activeList))
+            };
+            window.awsS3.putObject(params, function(err, data) {
+              if (err) {
                 alert(Error);
-            } else {
+              } else {
                 //obj.removeClass("btnInactive").removeClass("btn-danger").addClass("btnActive").addClass("btn-success").html("Active").data("id", 0);
                 //publicationsTable.fnGetPosition( obj.parents('tr').closest('.ttitle')[0]).html("");
                 //publicationsTable.fnGetPosition( obj.parents('tr').closest('.tsubtitle')[0]).html("");
                 location.reload();
-            }
-        });
-
+              }
+            });
+          });
     });
 }
 
