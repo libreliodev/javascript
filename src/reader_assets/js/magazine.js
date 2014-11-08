@@ -24,9 +24,27 @@ $(function(){
        magazines_load(data, magazines_list, magazines_loaded_handle);
 
        // set background
-       if(data.background)
-         $('.reader-background').css('backgroundImage', 
-                  'url("' + magazine_file_url(data, data.background) +'")');
+       if(data.BackgroundColor)
+       {
+         
+       }
+       
+       //$('.reader-background').css('backgroundImage', 
+                //'url("' + magazine_file_url(data, 'APP_/Uploads/logo') +'")');
+
+       $('#logo-btn img').attr('src', magazine_file_url(data, 'APP_/Uploads/logo'));
+
+       // links to sites
+       var $logo_dropdown_list = $("#logo-btn").parent().find('.dropdown-menu'),
+       sites_to_class = { WebSite: 'site-item', Facebook: 'facebook-item' };
+       for(var site in sites_to_class)
+       {
+         var $site_li = $logo_dropdown_list.find('.' + sites_to_class[site]);
+         if(data[site])
+           $site_li.find('a').attr('href', data[site]);
+         else
+           $site_li.hide();
+       }
      });
   function magazines_loaded_handle(err)
   {

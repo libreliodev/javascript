@@ -10,6 +10,17 @@ theme: dark-bkg
   <div class="reader-background"></div>
   <div class="headline">
     <h4 class="text-center" localize>{{title}}</h4>
+    <div class="upper-left">
+      <div class="dropdown">
+        <div id="logo-btn" class="dropdown-toggle" data-toggle="dropdown">
+          <img src="" alt="Logo">
+        </div>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="logo-btn">
+          <li class="site-item" role="presentation"><a role="menuitem" tabindex="-1" href="#" localize>WebSite</a></li>
+          <li class="facebook-item" role="presentation"><a role="menuitem" tabindex="-1" href="#" localize>Facebook</a></li>
+        </ul>
+      </div>
+    </div>
     <div class="upper-right-buttons">
       <button id="login-btn" type="button"
               class="btn btn-success" localize>Login</button>

@@ -11,6 +11,11 @@
   margin-top: 0px;
   z-index: 2;
 }
+.upper-left {
+  position: absolute;
+  left: 10px;
+  top: 5px;
+}
 .upper-right-buttons {
   position: absolute;
   right: 10px;
@@ -23,7 +28,7 @@
   height: 100%;
   background-repeat: no-repeat;
   background-position: center center;
-  background-image: url(../img/Magazines_background.png);
+  /*background-image: url(../img/Magazines_background.png);*/
   background-size:100% 100%;
   z-index: 0;
   border: none;
@@ -32,7 +37,13 @@
   position: relative;
   z-index: 1;
 }
-
+#logo-btn {
+  cursor: pointer;
+  height: @readerHeadlineHeight;
+  img {
+    height: 100%;
+  }
+}
 /* Purchase dialog */
 #purchase-dialog {
   .user-service, .code-service, .result {
