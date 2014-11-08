@@ -7,7 +7,6 @@ $(function() {
         $pubDlg.find('.fileinput').each(initUploadEl);
         updatePubTable();
     }
-
     var $pubTable = $(".publicationDataTable"),
     publicationsTable = $pubTable.dataTable({
         "aaSorting": [[ 0, "desc" ]]
@@ -280,6 +279,18 @@ $(function() {
                     pubDlgUpdateType();
                 }
             },
+            checkBeforeUpload: function(inp_el, file, cb)
+            {
+              makeImageFromFile(file, function(err, image)
+                {
+                  if(err)
+                    return notifyUserError(err);
+                  var m = validateImageSizeByElementAttrs(inp_el, image);
+                  cb(!m);
+                  if(m)
+                    notifyUserError(m);
+                });
+            },
             onerror: handleAWSS3Error,
             loadnow: false
         });
@@ -509,7 +520,7 @@ $(function() {
     }
 
     
-    function updatePubTable()
+    function updatePubTable(callback)
     {
         s3ListAllObjects(awsS3, {
                 Bucket: config.s3Bucket,
@@ -673,6 +684,8 @@ $(function() {
 
                     
                     $pubTable.on('click', 'tbody > tr', pubTRClick)
+
+                    callback && callback();
                 });
             });
     }

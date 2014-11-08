@@ -308,7 +308,7 @@ msgid "Free"
 msgstr ""
 
 #: templates/pages/publications.hbs:103
-msgid "Paid"
+msgid "Protected"
 msgstr ""
 
 #: templates/pages/publications.hbs:111
@@ -320,7 +320,7 @@ msgid "Edit SVG"
 msgstr ""
 
 #: templates/pages/publications.hbs:127
-msgid "Paid version"
+msgid "Protected version"
 msgstr ""
 
 #: templates/pages/publications.hbs:143
@@ -585,4 +585,20 @@ msgstr ""
 
 #: templates/pages/setup.hbs:105
 msgid "Image size should be 1024x1024"
+msgstr ""
+
+#: templates/pages/publications.hbs:151
+msgid "height should be 1024px"
+msgstr ""
+
+#: templates/pages/publications.hbs:159
+msgid "Image height should be 1024 pixels"
+msgstr ""
+
+#: templates/pages/publications.hbs:168
+msgid "height should be 300px"
+msgstr ""
+
+#: templates/pages/publications.hbs:176
+msgid "Image height should be 300 pixels"
 msgstr ""

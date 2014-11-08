@@ -46,6 +46,8 @@ scripts:
             </header>
             <div id="collapse4" class="body">
             	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn btn-primary new-pub-btn" href="#pubModal" localize>New publication</a></p>
+
+              <img id="page-loading-indicator" src="{{ assets }}/img/loader-big-snake.gif" alt="Loading..." />
                 <table id="dataTable" class="table table-bordered table-condensed table-hover table-striped publicationDataTable">
 					<thead>
 					<tr>
@@ -67,7 +69,7 @@ scripts:
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+        <button type="button" class="btn btn-success" style="float:right;" data-dismiss="modal" aria-hidden="true">Done</button>
         <h4 class="modal-title">
           <span class="pub-dlg-new" localize>New publication</span>
           <span class="pub-dlg-update" localize>Update publication</span>
@@ -100,7 +102,7 @@ scripts:
               <div class="col-sm-offset-1 radio">
                 <label class="control-label col-lg-1">
                   <input type="radio" name="Type" value="Paid">
-                  <span localize>Paid</span>
+                  <span localize>Protected</span>
                 </label>
               </div>
             </div>
@@ -127,7 +129,7 @@ scripts:
               </li>
               <li class="list-group-item paid-elem">
                 <div class="form-group">
-                  <label class="control-label col-lg-2" localize>Paid version</label>
+                  <label class="control-label col-lg-2" localize>Protected version</label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
@@ -146,7 +148,7 @@ scripts:
               </li>
               <li class="list-group-item">
                 <div class="form-group">
-                  <label class="control-label col-lg-2" localize>Medium res cover</label>
+                  <label class="control-label col-lg-2"><span localize>Medium res cover</span> - <span localize>height should be 1024px</span></label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
@@ -154,7 +156,7 @@ scripts:
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*_newsstand.png"></span>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*_newsstand.png" data-required-image-height="1024" data-required-image-message-localize="Image height should be 1024 pixels"></span>
 				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>
@@ -163,7 +165,7 @@ scripts:
               </li>
               <li class="list-group-item">
                 <div class="form-group">
-                  <label class="control-label col-lg-2" localize>Low res cover</label>
+                  <label class="control-label col-lg-2"><span localize>Low res cover</span> - <span localize>height should be 300px</span></label>
                   <div class="col-lg-8">
                     <div class="fileinput fileinput-new" 
                          data-provides="fileinput">
@@ -171,7 +173,7 @@ scripts:
                            data-trigger="fileinput" 
                            style="width: 200px; height: 150px;"></div>
 				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*.png"></span>
+				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*.png" data-required-image-height="300" data-required-image-message-localize="Image height should be 300 pixels"></span>
 				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
 				      </div>
 			        </div>

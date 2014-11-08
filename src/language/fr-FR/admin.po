@@ -220,13 +220,13 @@ msgstr "Aucun fichier n'est sélectionné"
 msgid "Open"
 msgstr "Ouvrir"
 
-msgid "Paid"
+msgid "Protected"
 msgstr "Payant"
 
 msgid "Paid Downloads"
 msgstr "Téléchargements payants"
 
-msgid "Paid version"
+msgid "Protected version"
 msgstr "Version payante"
 
 msgid "Please select application before sending notification"
@@ -363,3 +363,35 @@ msgstr "Votre navigateur n'est pas compatible"
 
 msgid "Preview"
 msgstr "Prévisualisation"
+
+#: admin_assets/js/pages/tracking.js:65
+msgid "Analytics data not yet available"
+msgstr ""
+
+#: admin_assets/js/utils.js:189
+msgid "Invalid image size!"
+msgstr ""
+
+#: admin_assets/js/utils.js:189
+msgid "Invalid image size!"
+msgstr ""
+
+#: templates/pages/setup.hbs:105
+msgid "Image size should be 1024x1024"
+msgstr ""
+
+#: templates/pages/publications.hbs:151
+msgid "height should be 1024px"
+msgstr ""
+
+#: templates/pages/publications.hbs:159
+msgid "Image height should be 1024 pixels"
+msgstr ""
+
+#: templates/pages/publications.hbs:168
+msgid "height should be 300px"
+msgstr ""
+
+#: templates/pages/publications.hbs:176
+msgid "Image height should be 300 pixels"
+msgstr ""
