@@ -337,7 +337,9 @@ $(function() {
              title_val = $title_inp.val();
              if(!title_val)
                  return false;
-             if(illegalPubs.indexOf(title_val) >= 0)                
+             var allowed_pattrn = /^[a-z0-9\-_]+$/;
+             if(illegalPubs.indexOf(title_val) >= 0 ||
+                !allowed_pattrn.test(title_val))
              {
                  notifyUserError(_('Invalid publication name!'));
                  return false;
