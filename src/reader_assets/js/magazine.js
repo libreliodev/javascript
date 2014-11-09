@@ -26,7 +26,19 @@ $(function(){
        // set background
        if(data.BackgroundColor)
        {
-           $('body, .headline').css('backgroundColor', data.BackgroundColor);
+           var color = new RGBColor(data.BackgroundColor),
+           invert_color;
+           if(color.ok)
+           {
+             var bright = ((color.r + color.g + color.b) / 255 / 3) > 0.5;
+             $('body').toggleClass('light-bkg', bright)
+               .toggleClass('dark-bkg', !bright);
+             invert_color = 'rgb(' + (255 - color.r) + ',' + (255 - color.g) +
+               ',' + (255 - color.b) + ')';
+           }
+           $('<style type="text/css" />').html(
+             'body, .headline, .label-default { background-color:' + data.BackgroundColor + ' !important; }' +
+              (invert_color ? '.label-default[href]:hover, .label-default[href]:focus { background-color:' + invert_color + ' !important; }' : '')).appendTo('head');
        }
        $('.reader-background').css('backgroundImage', 
               'url("' + magazine_file_url(data, 'APP_/Uploads/Magazines_background.png') +'")');
