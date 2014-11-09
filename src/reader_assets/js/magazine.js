@@ -26,11 +26,10 @@ $(function(){
        // set background
        if(data.BackgroundColor)
        {
-         
+           $('body, .headline').css('backgroundColor', data.BackgroundColor);
        }
-       
-       //$('.reader-background').css('backgroundImage', 
-                //'url("' + magazine_file_url(data, 'APP_/Uploads/logo') +'")');
+       $('.reader-background').css('backgroundImage', 
+              'url("' + magazine_file_url(data, 'APP_/Uploads/Magazines_background.png') +'")');
 
        $('#logo-btn img').attr('src', magazine_file_url(data, 'APP_/Uploads/logo'));
 
