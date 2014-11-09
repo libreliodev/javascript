@@ -50,11 +50,8 @@ $(function(){
     {
         $('#app-list-dropdown').parent().hide();
     }
-    else if(s3AuthObj.type != 'idFed')
+    else
     {
-        if(awsS3)
-            listApps();
-        else
-            $(document).bind('awsS3Initialized', listApps);
+        awsS3Ready(listApps);
     }
 });

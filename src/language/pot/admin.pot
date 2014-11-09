@@ -602,3 +602,7 @@ msgstr ""
 #: templates/pages/publications.hbs:176
 msgid "Image height should be 300 pixels"
 msgstr ""
+
+#: templates/pages/publications.hbs:89
+msgid "Allowed characters"
+msgstr ""

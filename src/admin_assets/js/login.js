@@ -158,7 +158,7 @@ function idFedLogin(opts, cb)
         // at end of this method life it will call `cb(err)' and if there is
         s3.putObject({
             Bucket: config.s3Bucket,
-            Key: userDir + '/APP_/user_.txt',
+            Key: userDir + '/' + app_name + '/APP_/user_.txt',
             Body: JSON.stringify({
                 firstname: opts.firstname,
                 lastname: opts.lastname,
@@ -173,9 +173,8 @@ function idFedLogin(opts, cb)
     AWS.config.region = config.s3BucketRegion;
 
     var s3 = new AWS.S3({ region: config.s3BucketRegion, maxRetries: 1 }),
-    app_name = opts.userDirname,
-    rootDir = config.idFedS3RootDirectory,
-    userDir = rootDir + '/' + app_name;
+    app_name = config.idFedDefaultApp,
+    userDir = opts.userDirname;
     testPermissionAndPutUserInfo(function(err)
         {
             if(err)
@@ -188,7 +187,7 @@ function idFedLogin(opts, cb)
             type: 'idFed',
             cred: opts.cred,
             host: opts.host,
-            rootDirectory: rootDir
+            rootDirectory: userDir
         };
         storage.type = 'local';
         storage.setItem('storage-type', 'local');
@@ -197,7 +196,6 @@ function idFedLogin(opts, cb)
         if(!prevObj || prevObj.userDirname != auth_obj.userDirname)
             clearUserStorage(); // clear user info
         storage.setItem(config.storageAuthKey, JSON.stringify(auth_obj));
-        storage.setItem(config.singleAppModeKey, "1");
         storage.setItem(config.storageAppNameKey, app_name);
         redirectLoggedInUser();
         cb && cb();
