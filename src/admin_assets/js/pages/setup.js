@@ -1,21 +1,25 @@
 $(function(){
     var app_name = storage.getItem(config.storageAppNameKey),
-    app_dir = get_app_dir(app_name);
-    $page = $('#setup-wrapper');
+    app_dir = get_app_dir(app_name),
+    $page = $('#setup-wrapper'),
+    setup_file_path = $page.data('setup-file-path'),
+    upload_dir = $page.data('upload-dir') || '';
     if(!app_name)
         return;
     awsS3Ready(workOnAwsS3);
-    $page.find('input[type=text], textarea').prop('disabled', true);
+    if(setup_file_path)
+      setupPageInit();
     function workOnAwsS3()
     {
-        loadSetupPage(app_dir, $page);
+        if(setup_file_path)
+          loadSetupPage(app_dir, $page);
         $page.find('.fileinput').each(function()
            {
                s3UploadInit($(this), {
                    s3: awsS3,
                    type: 'Image',
                    Bucket: config.s3Bucket,
-                   Prefix: app_dir + '/APP_/Uploads/',
+                   Prefix: app_dir + '/' + upload_dir,
                    checkBeforeUpload: function(inp_el, file, cb)
                    {
                      makeImageFromFile(file, function(err, image)
@@ -36,7 +40,10 @@ $(function(){
                });
            });
     }
+  function setupPageInit()
+  {
     var isSaving = false;
+    $page.find('input[type=text], textarea').prop('disabled', true);
     $page.find('input[type=text], textarea')
         .bind('focus', function()
            {
@@ -93,13 +100,14 @@ $(function(){
                    }
                }
            });
+  }
     function loadSetupPage(app_dir, $page, cb)
     {
         $page.find('input[type=text], textarea').prop('disabled', true);
         // load setup plist file and set its content in the form
         awsS3.getObject({
             Bucket: config.s3Bucket,
-            Key: app_dir + '/APP_/Uploads/setup.plist',
+            Key: app_dir + '/' + setup_file_path,
             ResponseContentEncoding: 'utf8'
         }, function(err, res)
            {
@@ -159,7 +167,7 @@ $(function(){
         // save setup plist file for input app
         awsS3.putObject({
             Bucket: config.s3Bucket,
-            Key: app_dir + '/APP_/Uploads/setup.plist',
+            Key: app_dir + '/' + setup_file_path,
             Body: body
         }, function(err, res)
            {

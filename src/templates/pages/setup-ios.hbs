@@ -1,0 +1,432 @@
+---
+title: Setup iOS
+icon: fa fa-cogs
+stylesheets:
+- lib/uniform/themes/default/css/uniform.default.css
+- lib/inputlimiter/jquery.inputlimiter.1.0.css
+- lib/chosen/chosen.min.css
+- lib/colorpicker/css/colorpicker.css
+- lib/tagsinput/jquery.tagsinput.css
+- lib/daterangepicker/daterangepicker-bs3.css
+- lib/datepicker/css/datepicker.css
+- lib/timepicker/css/bootstrap-timepicker.min.css
+- lib/switch/build/css/bootstrap3/bootstrap-switch.min.css
+- lib/jasny/css/jasny-bootstrap.min.css
+- lib/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css
+- lib/gritter/css/jquery.gritter.css
+- lib/uniform/themes/default/css/uniform.default.min.css
+- css/bootstrap-fileupload.min.css
+cdnjs:
+- //ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js
+javascripts:
+- lib/uniform/jquery.uniform.min.js
+- lib/inputlimiter/jquery.inputlimiter.1.3.1.min.js
+- lib/chosen/chosen.jquery.min.js
+- lib/colorpicker/js/bootstrap-colorpicker.js
+- lib/tagsinput/jquery.tagsinput.min.js
+- lib/validVal/src/js/jquery.validVal.min.js
+- lib/daterangepicker/daterangepicker.js
+- lib/daterangepicker/moment.min.js
+- lib/datepicker/js/bootstrap-datepicker.js
+- lib/timepicker/js/bootstrap-timepicker.min.js
+- lib/switch/build/js/bootstrap-switch.min.js
+- lib/jquery.dualListbox-1.3/jquery.dualListBox-1.3.min.js
+- lib/autosize/jquery.autosize.min.js
+- lib/jasny/js/jasny-bootstrap.min.js
+- lib/touch-punch/jquery.ui.touch-punch.min.js
+- lib/plupload/js/plupload.full.min.js
+- lib/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js
+- lib/gritter/js/jquery.gritter.min.js
+- lib/uniform/jquery.uniform.min.js
+- lib/form/jquery.form.js
+- lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
+- lib/jquery-validation-1.11.1/localization/messages_ja.js
+- lib/jquery.plist.js
+- js/pages/setup.min.js
+
+scripts: 
+- $(function() { formGeneral(); }); $(function() { metisTable();});
+---
+
+<div class="row" id="setup-wrapper" data-upload-dir="APP_/Uploads/">
+  <div class="col-lg-12">
+    <!-- Launcher Icons fieldset
+          files
+          Icon.png: 57x57 px
+          Icon@2x.png: 114x114 px
+          Icon-60@2x.png: 120x120 px
+          Icon-72.png: 72x72 px
+          Icon-72@2x.png: 144x144 px
+          Icon-76.png: 76x76 px
+          Icon-76@2x.png: 152x152 px
+          Icon-512.png: 512x512 px
+          Icon-512@2x.png: 1024x1024 px
+      -->
+    <div class="box">
+      <header>
+        <h5 localize>Launcher Icons</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- Icon.png: 57x57 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Icon.png 57x57 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Icon.png" data-required-image-width="57" data-required-image-height="57"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+          <!-- Icon@2x.png: 114x114 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Icon@2x.png 114x114 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Icon@2x.png" data-required-image-width="114" data-required-image-height="114"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Icon-60@2x.png: 120x120 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Icon-60@2x.png 120x120 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Icon-60@2x.png" data-required-image-width="120" data-required-image-height="120"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Icon-72.png: 72x72 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Icon-72.png 72x72 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Icon-72.png" data-required-image-width="72" data-required-image-height="72"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Icon-72@2x.png: 144x144 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Icon-72@2x.png 144x144 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Icon-72@2x.png" data-required-image-width="144" data-required-image-height="144"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+          <!-- Icon-76.png: 76x76 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Icon-76.png 76x76 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Icon-76.png" data-required-image-width="76" data-required-image-height="76"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+          <!-- Icon-76@2x.png: 152x152 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Icon-76@2x.png 152x152 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Icon-76@2x.png" data-required-image-width="152" data-required-image-height="152"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+          <!-- Icon-512.png: 512x512 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Icon-512.png 512x512 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Icon-512.png" data-required-image-width="512" data-required-image-height="512"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+          <!-- Icon-512@2x.png: 1024x1024 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Icon-512@2x.png 1024x1024 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Icon-512@2x.png" data-required-image-width="1024" data-required-image-height="1024"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-12">
+    <!-- Splash Screen fieldset
+          files
+          Default.png: splash screen on iPhone 3 - 320x480 px
+          Default@2x.png: splash screen on iPhone 4 retina - 640x960 px
+          Default-568h@2x.png: splash screen on iPhone 5 - 640x1136 px
+          Default-Landscape.png: splash screen on iPad in landscape mode - 1024x768 px
+          Default-Landscape@2x.png: splash screen on iPad Retina in landscape mode - 2048x1536 px
+          Default-Portrait.png: splash screen on iPad in portrait mode - 768x1024 px
+          Default-Portrait@2x.png: splash screen on iPad Retina in portrait mode - 1536x2048 px
+          Default-736h@3x.png: splash screen on iPhone with Retina HD 5.5 - 1242×2208 px
+          Default-Landscape@3x.png: splash screen on iPhone with Retina HD 5.5 2208×1242 px
+          Default-667h@2x.png: splash screen on iPhone with Retina HD 4.7 750×1334 px
+      -->
+    <div class="box">
+      <header>
+        <h5 localize>Splash Screen</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- Default.png: 320x480 px -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Default.png: 320x480 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Default.png" data-required-image-width="320" data-required-image-height="480"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Default-568h@2x.png: 640x1136 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Default-568h@2x.png 640x1136 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Default-568h@2x.png" data-required-image-width="640" data-required-image-height="1136"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Default-Landscape.png: 1024x768 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Default-Landscape.png 1024x768 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Default-Landscape.png" data-required-image-width="1024" data-required-image-height="768"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Default-Landscape@2x.png: 2048x1536 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Default-Landscape@2x.png 2048x1536 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Default-Landscape@2x.png" data-required-image-width="2048" data-required-image-height="1536"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Default-Portrait.png: 768x1024 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Default-Portrait.png 768x1024 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Default-Portrait.png" data-required-image-width="768" data-required-image-height="1024"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Default-Portrait@2x.png: 1536x2048 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Default-Portrait@2x.png 1536x2048 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Default-Portrait@2x.png" data-required-image-width="1536" data-required-image-height="2048"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Default-736h@3x.png: 1242x2208 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Default-736h@3x.png 1242x2208 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Default-736h@3x.png" data-required-image-width="1242" data-required-image-height="2208"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Default-Landscape@3x.png: 2208x1242 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Default-Landscape@3x.png 2208x1242 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Default-Landscape@3x.png" data-required-image-width="2208" data-required-image-height="1242"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- Default-667h@2x.png: 750x1334 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Default-667h@2x.png 750x1334 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Default-667h@2x.png" data-required-image-width="750" data-required-image-height="1334"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-12">
+    <!-- Generic cover fieldset
+          files
+          generic.png: 300 px in larger dimension
+          generic-512@2x.png: 1024 px in larger dimension
+      -->
+    <div class="box">
+      <header>
+        <h5 localize>Generic cover</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+          
+          <!-- generic.png: 300xV -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>generic.png - width should be 300 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="generic.png" data-required-image-width="300"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+          <!-- generic-512@2x.png: 1024xV -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>generic-512@2x.png - width should be 1024 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="generic-512@2x.png" data-required-image-width="1024"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+
+  <div class="col-lg-12">
+    <!-- Grid background fieldset
+          files
+          Magazines_background.png: 1024x1024
+      -->
+    <div class="box">
+      <header>
+        <h5 localize>Grid Background</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+          
+          <!-- Magazines_background.png: 1024x1024 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>Magazines_background.png 1024x1024 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="Magazines_background.png" data-required-image-width="1024" data-required-image-height="1024"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

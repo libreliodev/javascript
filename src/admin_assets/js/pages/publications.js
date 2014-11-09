@@ -5,7 +5,10 @@ $(function() {
     {
         formDisplay();
         $pubDlg.find('.fileinput').each(initUploadEl);
-        updatePubTable();
+        updatePubTable(function()
+          {
+            $('#page-loading-indicator').fadeOut();
+          });
     }
     var $pubTable = $(".publicationDataTable"),
     publicationsTable = $pubTable.dataTable({
