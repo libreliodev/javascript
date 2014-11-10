@@ -1,0 +1,406 @@
+---
+title: Setup Android
+icon: fa fa-cogs
+stylesheets:
+- lib/uniform/themes/default/css/uniform.default.css
+- lib/inputlimiter/jquery.inputlimiter.1.0.css
+- lib/chosen/chosen.min.css
+- lib/colorpicker/css/colorpicker.css
+- lib/tagsinput/jquery.tagsinput.css
+- lib/daterangepicker/daterangepicker-bs3.css
+- lib/datepicker/css/datepicker.css
+- lib/timepicker/css/bootstrap-timepicker.min.css
+- lib/switch/build/css/bootstrap3/bootstrap-switch.min.css
+- lib/jasny/css/jasny-bootstrap.min.css
+- lib/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css
+- lib/gritter/css/jquery.gritter.css
+- lib/uniform/themes/default/css/uniform.default.min.css
+- css/bootstrap-fileupload.min.css
+cdnjs:
+- //ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js
+javascripts:
+- lib/uniform/jquery.uniform.min.js
+- lib/inputlimiter/jquery.inputlimiter.1.3.1.min.js
+- lib/chosen/chosen.jquery.min.js
+- lib/colorpicker/js/bootstrap-colorpicker.js
+- lib/tagsinput/jquery.tagsinput.min.js
+- lib/validVal/src/js/jquery.validVal.min.js
+- lib/daterangepicker/daterangepicker.js
+- lib/daterangepicker/moment.min.js
+- lib/datepicker/js/bootstrap-datepicker.js
+- lib/timepicker/js/bootstrap-timepicker.min.js
+- lib/switch/build/js/bootstrap-switch.min.js
+- lib/jquery.dualListbox-1.3/jquery.dualListBox-1.3.min.js
+- lib/autosize/jquery.autosize.min.js
+- lib/jasny/js/jasny-bootstrap.min.js
+- lib/touch-punch/jquery.ui.touch-punch.min.js
+- lib/plupload/js/plupload.full.min.js
+- lib/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js
+- lib/gritter/js/jquery.gritter.min.js
+- lib/uniform/jquery.uniform.min.js
+- lib/form/jquery.form.js
+- lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
+- lib/jquery-validation-1.11.1/localization/messages_ja.js
+- lib/jquery.plist.js
+- js/pages/setup.min.js
+
+scripts: 
+- $(function() { formGeneral(); }); $(function() { metisTable();});
+---
+
+<div class="row" id="setup-wrapper" data-upload-dir="APP_/Uploads/">
+  <div class="col-lg-12">
+    <!-- Launcher Icons fieldset
+         filename: ic_launcher.png
+         directories
+           drawable-mdpi - 48 x 48px
+           drawable-hdpi - 72 x 72px
+           drawable-xhdpi - 96 x 96px
+           drawable-xxhdpi - 144 x 144px
+           drawable-xxxhdpi - 192 x 192px
+           for upload to Google Play Store (nodir): 512x512px
+      -->
+    <div class="box">
+      <header>
+        <h5 localize>Launcher Icons</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- drawable-mdpi/ic_launcher.png: 48x48 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-mdpi/ic_launcher.png 48x48 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-mdpi/ic_launcher.png" data-required-image-width="48" data-required-image-height="48"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-hdpi/ic_launcher.png: 72x72 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-hdpi/ic_launcher.png 72x72 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-hdpi/ic_launcher.png" data-required-image-width="72" data-required-image-height="72"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-xhdpi/ic_launcher.png: 96x96 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-xhdpi/ic_launcher.png 96x96 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-xhdpi/ic_launcher.png" data-required-image-width="96" data-required-image-height="96"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-xxhdpi/ic_launcher.png: 144x144 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-xxhdpi/ic_launcher.png 144x144 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-xxhdpi/ic_launcher.png" data-required-image-width="144" data-required-image-height="144"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-xxxhdpi/ic_launcher.png: 192x192 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-xxxhdpi/ic_launcher.png 192x192 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-xxxhdpi/ic_launcher.png" data-required-image-width="192" data-required-image-height="192"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- ic_launcher: 512x512 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>ic_launcher 512x512 pixels - For upload to Google Play Store</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="ic_launcher" data-required-image-width="512" data-required-image-height="512"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-12">
+    <!-- Splash Screen fieldset
+          filename: startup_background.png
+          directories          
+            drawable-port-nodpi: 320x480px
+            drawable-normal-port-nodpi: 480x800px
+            drawable-large-port-nodpi: 600x976px
+            drawable-large-land-nodpi: 1024x552px
+            drawable-xlarge-port-nodpi: 800x1232px
+            drawable-xlarge-land-nodpi: 1280x752px
+            
+      -->
+    <div class="box">
+      <header>
+        <h5 localize>Splash Screen</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+         
+          <!-- drawable-port-nodpi/startup_background.png: 320x480 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-port-nodpi/startup_background.png 320x480 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-port-nodpi/startup_background.png" data-required-image-width="320" data-required-image-height="480"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-normal-port-nodpi/startup_background.png: 480x800 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-normal-port-nodpi/startup_background.png 480x800 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-normal-port-nodpi/startup_background.png" data-required-image-width="480" data-required-image-height="800"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-large-port-nodpi/startup_background.png: 600x976 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-large-port-nodpi/startup_background.png 600x976 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-large-port-nodpi/startup_background.png" data-required-image-width="600" data-required-image-height="976"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-large-land-nodpi/startup_background.png: 1024x552 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-large-land-nodpi/startup_background.png 1024x552 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-large-land-nodpi/startup_background.png" data-required-image-width="1024" data-required-image-height="552"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-xlarge-port-nodpi/startup_background.png: 800x1232 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-xlarge-port-nodpi/startup_background.png 800x1232 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-xlarge-port-nodpi/startup_background.png" data-required-image-width="800" data-required-image-height="1232"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-xlarge-land-nodpi/startup_background.png: 1280x752 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-xlarge-land-nodpi/startup_background.png 1280x752 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-xlarge-land-nodpi/startup_background.png" data-required-image-width="1280" data-required-image-height="752"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+ 
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-12">
+    <!-- Grid background fieldset
+          filename: magazines_background.png
+          directories
+            drawable-port-nodpi: 320x480px
+            drawable-land-nodpi: 480x320px
+            drawable-normal-port-nodpi: 480x800px
+            drawable-normal-land-nodpi: 800x480px
+            drawable-large-port-nodpi: 600x976px
+            drawable-large-land-nodpi: 1024x552px
+            drawable-xlarge-port-nodpi: 800x1232px
+            drawable-xlarge-land-nodpi: 1280x752px
+
+      -->
+    <div class="box">
+      <header>
+        <h5 localize>Grid Background</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- drawable-port-nodpi/magazines_background.png: 320x480 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-port-nodpi/magazines_background.png 320x480 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-port-nodpi/magazines_background.png" data-required-image-width="320" data-required-image-height="480"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-land-nodpi/magazines_background.png: 480x320 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-land-nodpi/magazines_background.png 480x320 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-land-nodpi/magazines_background.png" data-required-image-width="480" data-required-image-height="320"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-normal-port-nodpi/magazines_background.png: 480x800 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-normal-port-nodpi/magazines_background.png 480x800 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-normal-port-nodpi/magazines_background.png" data-required-image-width="480" data-required-image-height="800"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-normal-land-nodpi/magazines_background.png: 800x480 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-normal-land-nodpi/magazines_background.png 800x480 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-normal-land-nodpi/magazines_background.png" data-required-image-width="800" data-required-image-height="480"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-large-port-nodpi/magazines_background.png: 600x976 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-large-port-nodpi/magazines_background.png 600x976 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-large-port-nodpi/magazines_background.png" data-required-image-width="600" data-required-image-height="976"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-large-land-nodpi/magazines_background.png: 1024x552 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-large-land-nodpi/magazines_background.png 1024x552 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-large-land-nodpi/magazines_background.png" data-required-image-width="1024" data-required-image-height="552"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-xlarge-port-nodpi/magazines_background.png: 800x1232 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-xlarge-port-nodpi/magazines_background.png 800x1232 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-xlarge-port-nodpi/magazines_background.png" data-required-image-width="800" data-required-image-height="1232"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- drawable-xlarge-land-nodpi/magazines_background.png: 1280x752 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>drawable-xlarge-land-nodpi/magazines_background.png 1280x752 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="drawable-xlarge-land-nodpi/magazines_background.png" data-required-image-width="1280" data-required-image-height="752"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

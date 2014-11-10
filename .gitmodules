@@ -1,69 +1,73 @@
-[submodule "src/assets/submodule/magic"]
-	path = src/assets/submodule/magic
+[submodule "src/admin_assets/submodule/magic"]
+	path = src/admin_assets/submodule/magic
 	url = https://github.com/miniMAC/magic.git
-[submodule "src/assets/submodule/flot"]
-	path = src/assets/submodule/flot
+[submodule "src/admin_assets/submodule/flot"]
+	path = src/admin_assets/submodule/flot
 	url = https://github.com/flot/flot.git
-[submodule "src/assets/submodule/mousewheel"]
-	path = src/assets/submodule/mousewheel
+[submodule "src/admin_assets/submodule/mousewheel"]
+	path = src/admin_assets/submodule/mousewheel
 	url = https://github.com/brandonaaron/jquery-mousewheel.git
-[submodule "src/assets/submodule/tablesorter"]
-	path = src/assets/submodule/tablesorter
+[submodule "src/admin_assets/submodule/tablesorter"]
+	path = src/admin_assets/submodule/tablesorter
 	url = https://github.com/Mottie/tablesorter.git
-[submodule "src/assets/submodule/countdown"]
-	path = src/assets/submodule/countdown
+[submodule "src/admin_assets/submodule/countdown"]
+	path = src/admin_assets/submodule/countdown
 	url = https://github.com/kbwood/countdown.git
-[submodule "src/assets/submodule/uniform"]
-	path = src/assets/submodule/uniform
+[submodule "src/admin_assets/submodule/uniform"]
+	path = src/admin_assets/submodule/uniform
 	url = https://github.com/pixelmatrix/uniform.git
-[submodule "src/assets/submodule/cssbeautify"]
-	path = src/assets/submodule/cssbeautify
+[submodule "src/admin_assets/submodule/cssbeautify"]
+	path = src/admin_assets/submodule/cssbeautify
 	url = https://github.com/senchalabs/cssbeautify.git
-[submodule "src/assets/submodule/timepicker"]
-	path = src/assets/submodule/timepicker
+[submodule "src/admin_assets/submodule/timepicker"]
+	path = src/admin_assets/submodule/timepicker
 	url = https://github.com/jdewit/bootstrap-timepicker.git
-[submodule "src/assets/submodule/daterangepicker"]
-	path = src/assets/submodule/daterangepicker
+[submodule "src/admin_assets/submodule/daterangepicker"]
+	path = src/admin_assets/submodule/daterangepicker
 	url = https://github.com/dangrossman/bootstrap-daterangepicker.git
-[submodule "src/assets/submodule/autosize"]
-	path = src/assets/submodule/autosize
+[submodule "src/admin_assets/submodule/autosize"]
+	path = src/admin_assets/submodule/autosize
 	url = https://github.com/jackmoore/autosize.git
-[submodule "src/assets/submodule/wysihtml5"]
-	path = src/assets/submodule/wysihtml5
+[submodule "src/admin_assets/submodule/wysihtml5"]
+	path = src/admin_assets/submodule/wysihtml5
 	url = https://github.com/jhollingworth/bootstrap-wysihtml5.git
-[submodule "src/assets/submodule/plupload"]
-	path = src/assets/submodule/plupload
+[submodule "src/admin_assets/submodule/plupload"]
+	path = src/admin_assets/submodule/plupload
 	url = https://github.com/moxiecode/plupload.git
-[submodule "src/assets/submodule/animate"]
-	path = src/assets/submodule/animate
+[submodule "src/admin_assets/submodule/animate"]
+	path = src/admin_assets/submodule/animate
 	url = https://github.com/daneden/animate.css.git
-[submodule "src/assets/submodule/validationengine"]
-	path = src/assets/submodule/validationengine
+[submodule "src/admin_assets/submodule/validationengine"]
+	path = src/admin_assets/submodule/validationengine
 	url = https://github.com/posabsolute/jQuery-Validation-Engine.git
-[submodule "src/assets/submodule/pagedown"]
-	path = src/assets/submodule/pagedown
+[submodule "src/admin_assets/submodule/pagedown"]
+	path = src/admin_assets/submodule/pagedown
 	url = https://github.com/samwillis/pagedown-bootstrap.git
-[submodule "src/assets/submodule/formwizard"]
-	path = src/assets/submodule/formwizard
+[submodule "src/admin_assets/submodule/formwizard"]
+	path = src/admin_assets/submodule/formwizard
 	url = https://github.com/thecodemine/formwizard.git
-[submodule "src/assets/submodule/touch-punch"]
-	path = src/assets/submodule/touch-punch
+[submodule "src/admin_assets/submodule/touch-punch"]
+	path = src/admin_assets/submodule/touch-punch
 	url = https://github.com/furf/jquery-ui-touch-punch.git
-[submodule "src/assets/submodule/switch"]
-	path = src/assets/submodule/switch
+[submodule "src/admin_assets/submodule/switch"]
+	path = src/admin_assets/submodule/switch
 	url = https://github.com/nostalgiaz/bootstrap-switch.git
-[submodule "src/assets/submodule/gritter"]
-	path = src/assets/submodule/gritter
+[submodule "src/admin_assets/submodule/gritter"]
+	path = src/admin_assets/submodule/gritter
 	url = https://github.com/jboesch/Gritter.git
-[submodule "src/assets/submodule/form"]
-	path = src/assets/submodule/form
+[submodule "src/admin_assets/submodule/form"]
+	path = src/admin_assets/submodule/form
 	url = https://github.com/malsup/form.git
-[submodule "src/assets/submodule/tagsinput"]
-	path = src/assets/submodule/tagsinput
+[submodule "src/admin_assets/submodule/tagsinput"]
+	path = src/admin_assets/submodule/tagsinput
 	url = https://github.com/xoxco/jQuery-Tags-Input.git
-[submodule "src/assets/submodule/validVal"]
-	path = src/assets/submodule/validVal
+[submodule "src/admin_assets/submodule/validVal"]
+	path = src/admin_assets/submodule/validVal
 	url = https://github.com/BeSite/jQuery.validVal.git
-[submodule "src/assets/submodule/epub.js"]
-	path = src/assets/submodule/epub.js
+[submodule "src/admin_assets/submodule/epub.js"]
+	path = src/admin_assets/submodule/epub.js
 	url = https://github.com/futurepress/epub.js.git
+
+[submodule "src/admin_assets/submodule/mouseweel"]
+	path = src/admin_assets/submodule/mouseweel
+	url = https://github.com/brandonaaron/jquery-mousewheel.git

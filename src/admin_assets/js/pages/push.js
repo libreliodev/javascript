@@ -7,14 +7,17 @@ $(function(){
     if(!app_name)
         return;
     
-    updateMessagesSentTable(app_name, $messages_table, messages_tableData);
 
-    $("#notification-form input[type=submit]").click(function()
-        {
+    awsS3Ready(function()
+      {
+        updateMessagesSentTable(app_name, $messages_table, messages_tableData);
+
+        $("#notification-form input[type=submit]").click(function()
+          {
             return confirm(_("Are you sure you want to send this message?"));
-        });
-    $("#notification-form").bind('submit', function()
-       {
+          });
+        $("#notification-form").bind('submit', function()
+         {
 
            var form = this;
 
@@ -71,7 +74,9 @@ $(function(){
                   });
            }
            return false;
-       });
+         });
+
+      });
     
     function updateMessagesSentTable(app_name, $table, tableData)
     {

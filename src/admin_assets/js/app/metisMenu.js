@@ -1,13 +1,21 @@
-;(function ($, window, document, undefined) {
+/*
+ * metismenu - v1.1.3
+ * Easy menu jQuery plugin for Twitter Bootstrap 3
+ * https://github.com/onokumus/metisMenu
+ *
+ * Made by Osman Nuri Okumus
+ * Under MIT License
+ */
+;(function($, window, document, undefined) {
 
     var pluginName = "metisMenu",
         defaults = {
             toggle: true,
-            hidingClass: 'u-isHiddenVisually'
+            doubleTapToGo: false
         };
 
     function Plugin(element, options) {
-        this.element = element;
+        this.element = $(element);
         this.settings = $.extend({}, defaults, options);
         this._defaults = defaults;
         this._name = pluginName;
@@ -15,80 +23,98 @@
     }
 
     Plugin.prototype = {
-        init: function () {
+        init: function() {
 
-            var $this = $(this.element),
+            var $this = this.element,
                 $toggle = this.settings.toggle,
-                $hidingClass = this.settings.hidingClass,
-                resizeTimer;
-            
-            function resizedw(){
-                $('body').removeClass('mini-sidebar');
-                
-                $this.find('li.active').has('ul').children('ul').addClass('collapse in');
-            $this.find('li').not('.active').has('ul').children('ul').addClass('collapse');
-            
-            $this.find('li').has('ul').children('a').on('click', function (e) {
+                obj = this;
+
+            if (this.isIE() <= 9) {
+                $this.find("li.active").has("ul").children("ul").collapse("show");
+                $this.find("li").not(".active").has("ul").children("ul").collapse("hide");
+            } else {
+                $this.find("li.active").has("ul").children("ul").addClass("collapse in");
+                $this.find("li").not(".active").has("ul").children("ul").addClass("collapse");
+            }
+
+            //add the "doubleTapToGo" class to active items if needed
+            if (obj.settings.doubleTapToGo) {
+                $this.find("li.active").has("ul").children("a").addClass("doubleTapToGo");
+            }
+
+            $this.find("li").has("ul").children("a").on("click" + "." + pluginName, function(e) {
                 e.preventDefault();
 
-                $(this).parent('li').toggleClass('opened').children('ul').collapse('toggle');
+                //Do we need to enable the double tap
+                if (obj.settings.doubleTapToGo) {
+
+                    //if we hit a second time on the link and the href is valid, navigate to that url
+                    if (obj.doubleTapToGo($(this)) && $(this).attr("href") !== "#" && $(this).attr("href") !== "") {
+                        e.stopPropagation();
+                        document.location = $(this).attr("href");
+                        return;
+                    }
+                }
+
+                $(this).parent("li").toggleClass("active").children("ul").collapse("toggle");
 
                 if ($toggle) {
-                    $(this).parent('li').siblings().removeClass('opened').children('ul.in').collapse('hide');
+                    $(this).parent("li").siblings().removeClass("active").children("ul.in").collapse("hide");
                 }
-            });
-            }
-            function removeHidden() {
-                $this.find('li').has('ul').children('ul').removeClass('collapse in').css('height','inherit');
-                if(!$this.hasClass('affix')) {
-                    $this.find('li').has('ul').children('a').off('click');
-                }
-            }
-            
-            function allFunc() {
-                if($(window).width() < 992) {
-                    resizedw();
-                } else {
-                    removeHidden();
-                }
-            }
-            
-            allFunc();
-            
-            $this.on('affix.bs.affix', function(){
-                //resizedw();
-                console.log('affix.bs.affix');
-            });
-            
-            $this.on('affix-top.bs.affix',function(){
-                //removeHidden();
-                console.log('affix-top.bs.affix');
-            });
-            
-            $this.on('affixed.bs.affix', function(){
-                resizedw();
-                console.log('affixed.bs.affix');
-            });
-            
-            $this.on('affixed-top.bs.affix',function(){
-                removeHidden();
-                console.log('affixed-top.bs.affix');
-            });
-            
-            $(window).resize(function() {
-                clearTimeout(resizeTimer);
-                resizeTimer = setTimeout(allFunc, 250);
-            });
 
+            });
+        },
+
+        isIE: function() { //https://gist.github.com/padolsey/527683
+            var undef,
+                v = 3,
+                div = document.createElement("div"),
+                all = div.getElementsByTagName("i");
+
+            while (
+                div.innerHTML = "<!--[if gt IE " + (++v) + "]><i></i><![endif]-->",
+                all[0]
+            ) {
+                return v > 4 ? v : undef;
+            }
+        },
+
+        //Enable the link on the second click.
+        doubleTapToGo: function(elem) {
+            var $this = this.element;
+
+            //if the class "doubleTapToGo" exists, remove it and return
+            if (elem.hasClass("doubleTapToGo")) {
+                elem.removeClass("doubleTapToGo");
+                return true;
+            }
+
+            //does not exists, add a new class and return false
+            if (elem.parent().children("ul").length) {
+                 //first remove all other class
+                $this.find(".doubleTapToGo").removeClass("doubleTapToGo");
+                //add the class on the current element
+                elem.addClass("doubleTapToGo");
+                return false;
+            }
+        },
+
+        remove: function() {
+            this.element.off("." + pluginName);
+            this.element.removeData(pluginName);
         }
+
     };
 
-    $.fn[ pluginName ] = function (options) {
-        return this.each(function () {
-            if (!$.data(this, "plugin_" + pluginName)) {
-                $.data(this, "plugin_" + pluginName, new Plugin(this, options));
+    $.fn[pluginName] = function(options) {
+        this.each(function () {
+            var el = $(this);
+            if (el.data(pluginName)) {
+                el.data(pluginName).remove();
             }
+            el.data(pluginName, new Plugin(this, options));
         });
+        return this;
     };
 
 })(jQuery, window, document);

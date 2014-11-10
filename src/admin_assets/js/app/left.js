@@ -32,17 +32,4 @@ function leftStatusBarUpdate()
                });
            });
     }
-    if(s3AuthObj.type == 'idFed')
-    {
-        $(function(){
-            // show some of menu items
-            var show_links = [ 'setup.html', 'publications.html', 'tracking.html', 'users.html' ];
-            $('#menu > li > a').each(function()
-                {
-                    var $a = $(this);
-                    if(show_links.indexOf($a.attr('href')) == -1)
-                        $a.parent().remove();
-                });
-        });
-    }
 }

@@ -278,8 +278,8 @@ msgid "Free"
 msgstr "Free"
 
 #: templates/pages/publications.hbs:103
-msgid "Paid"
-msgstr "Paid"
+msgid "Protected"
+msgstr "Protected"
 
 #: templates/pages/publications.hbs:111
 msgid "Free version"
@@ -290,8 +290,8 @@ msgid "Edit SVG"
 msgstr "Edit SVG"
 
 #: templates/pages/publications.hbs:127
-msgid "Paid version"
-msgstr "Paid version"
+msgid "Protected version"
+msgstr "Protected version"
 
 #: templates/pages/publications.hbs:143
 msgid "Medium res cover"
@@ -530,3 +530,35 @@ msgstr "Librelio"
 #: templates/layouts/default.hbs:179
 msgid "2014 © Librelio Admin"
 msgstr "2014 © Librelio Admin"
+
+#: admin_assets/js/pages/tracking.js:65
+msgid "Analytics data not yet available"
+msgstr ""
+
+#: admin_assets/js/utils.js:189
+msgid "Invalid image size!"
+msgstr ""
+
+#: admin_assets/js/utils.js:189
+msgid "Invalid image size!"
+msgstr ""
+
+#: templates/pages/setup.hbs:105
+msgid "Image size should be 1024x1024"
+msgstr ""
+
+#: templates/pages/publications.hbs:151
+msgid "height should be 1024px"
+msgstr ""
+
+#: templates/pages/publications.hbs:159
+msgid "Image height should be 1024 pixels"
+msgstr ""
+
+#: templates/pages/publications.hbs:168
+msgid "height should be 300px"
+msgstr ""
+
+#: templates/pages/publications.hbs:176
+msgid "Image height should be 300 pixels"
+msgstr ""

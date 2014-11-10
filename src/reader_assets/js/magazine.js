@@ -24,9 +24,38 @@ $(function(){
        magazines_load(data, magazines_list, magazines_loaded_handle);
 
        // set background
-       if(data.background)
-         $('.reader-background').css('backgroundImage', 
-                  'url("' + magazine_file_url(data, data.background) +'")');
+       if(data.BackgroundColor)
+       {
+           var color = new RGBColor(data.BackgroundColor),
+           invert_color;
+           if(color.ok)
+           {
+             var bright = ((color.r + color.g + color.b) / 255 / 3) > 0.5;
+             $('body').toggleClass('light-bkg', bright)
+               .toggleClass('dark-bkg', !bright);
+             invert_color = 'rgb(' + (255 - color.r) + ',' + (255 - color.g) +
+               ',' + (255 - color.b) + ')';
+           }
+           $('<style type="text/css" />').html(
+             'body, .headline, .label-default { background-color:' + data.BackgroundColor + ' !important; }' +
+              (invert_color ? '.label-default[href]:hover, .label-default[href]:focus { background-color:' + invert_color + ' !important; }' : '')).appendTo('head');
+       }
+       $('.reader-background').css('backgroundImage', 
+              'url("' + magazine_file_url(data, 'APP_/Uploads/Magazines_background.png') +'")');
+
+       $('#logo-btn img').attr('src', magazine_file_url(data, 'APP_/Uploads/logo'));
+
+       // links to sites
+       var $logo_dropdown_list = $("#logo-btn").parent().find('.dropdown-menu'),
+       sites_to_class = { WebSite: 'site-item', Facebook: 'facebook-item' };
+       for(var site in sites_to_class)
+       {
+         var $site_li = $logo_dropdown_list.find('.' + sites_to_class[site]);
+         if(data[site])
+           $site_li.find('a').attr('href', data[site]);
+         else
+           $site_li.hide();
+       }
      });
   function magazines_loaded_handle(err)
   {

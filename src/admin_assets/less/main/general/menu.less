@@ -30,7 +30,7 @@
     color: #fff;
     .box-shadow(0px 1px 3px rgba(0, 0, 0, 0.3) inset);
   }
-  &:hover > a, &:focus > a {
+   > a:hover, > a:focus {
     background-color: #404040;
     color: #fff;
     outline: none;
@@ -38,6 +38,12 @@
   }
 }
 
+// sub Levels
+#menu > li li.active > a {
+    background-color: #1a1a1a;
+    color: #fff;
+    .box-shadow(0px 1px 3px rgba(0, 0, 0, 0.3) inset);
+}
 // Second, Third, ... level
 #menu > li ul {
   border: 1px solid rgba(0, 0, 0, 0.3);
@@ -68,7 +74,7 @@
 }
 
 // Hiding Level 2
-
+/*
 @media (min-width: @screen-md-min) {
     
     body:not(.mini-sidebar) #menu li.active > ul, #menu.affix li > ul {
@@ -146,6 +152,7 @@
         right: 100%;
     }
 }
+*/
 
 
 body:not(.mini-sidebar) #menu {
@@ -188,14 +195,4 @@ body:not(.mini-sidebar) #menu {
     margin-right: 15px;
   }
 
-  .fa.arrow:before {
-    content: "\f104";
-  }
-
-  .active > a > .fa.arrow:before {
-    content: "\f107";
-  }
-
 }
-
-

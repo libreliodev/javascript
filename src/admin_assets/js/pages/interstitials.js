@@ -7,11 +7,8 @@ $(function(){
     $adDlg = $('#adModal');
     if(!app_name)
         return;
-
-    if(awsS3)
-        workOnAwsS3();
-    else
-        $(document).bind('awsS3Initialized', workOnAwsS3);
+  
+    awsS3Ready(workOnAwsS3);
 
     function workOnAwsS3()
     {

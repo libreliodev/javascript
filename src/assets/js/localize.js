@@ -51,10 +51,7 @@
         {
           try {
             var ret = $this.dhtml('eval', val, localize_ctx);
-            if(typeof ret == 'string')
-              $this.text(localize(ret));
           } catch(e) {
-            $this.text(localize(val));
           }
         }
       });

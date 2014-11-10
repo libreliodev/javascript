@@ -5,9 +5,11 @@ $(function() {
     {
         formDisplay();
         $pubDlg.find('.fileinput').each(initUploadEl);
-        updatePubTable();
+        updatePubTable(function()
+          {
+            $('#page-loading-indicator').fadeOut();
+          });
     }
-
     var $pubTable = $(".publicationDataTable"),
     publicationsTable = $pubTable.dataTable({
         "aaSorting": [[ 0, "desc" ]]
@@ -280,6 +282,18 @@ $(function() {
                     pubDlgUpdateType();
                 }
             },
+            checkBeforeUpload: function(inp_el, file, cb)
+            {
+              makeImageFromFile(file, function(err, image)
+                {
+                  if(err)
+                    return notifyUserError(err);
+                  var m = validateImageSizeByElementAttrs(inp_el, image);
+                  cb(!m);
+                  if(m)
+                    notifyUserError(m);
+                });
+            },
             onerror: handleAWSS3Error,
             loadnow: false
         });
@@ -323,7 +337,9 @@ $(function() {
              title_val = $title_inp.val();
              if(!title_val)
                  return false;
-             if(illegalPubs.indexOf(title_val) >= 0)                
+             var allowed_pattrn = /^[a-z0-9\-_]+$/;
+             if(illegalPubs.indexOf(title_val) >= 0 ||
+                !allowed_pattrn.test(title_val))
              {
                  notifyUserError(_('Invalid publication name!'));
                  return false;
@@ -509,7 +525,7 @@ $(function() {
     }
 
     
-    function updatePubTable()
+    function updatePubTable(callback)
     {
         s3ListAllObjects(awsS3, {
                 Bucket: config.s3Bucket,
@@ -673,6 +689,8 @@ $(function() {
 
                     
                     $pubTable.on('click', 'tbody > tr', pubTRClick)
+
+                    callback && callback();
                 });
             });
     }

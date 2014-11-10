@@ -308,7 +308,7 @@ msgid "Free"
 msgstr ""
 
 #: templates/pages/publications.hbs:103
-msgid "Paid"
+msgid "Protected"
 msgstr ""
 
 #: templates/pages/publications.hbs:111
@@ -320,7 +320,7 @@ msgid "Edit SVG"
 msgstr ""
 
 #: templates/pages/publications.hbs:127
-msgid "Paid version"
+msgid "Protected version"
 msgstr ""
 
 #: templates/pages/publications.hbs:143
@@ -369,6 +369,7 @@ msgstr ""
 
 #. Page subheading
 #: templates/pages/setup.hbs:55
+#: templates/partials/left.hbs:29
 msgid "General"
 msgstr ""
 
@@ -585,4 +586,36 @@ msgstr ""
 
 #: templates/pages/setup.hbs:105
 msgid "Image size should be 1024x1024"
+msgstr ""
+
+#: templates/pages/publications.hbs:151
+msgid "height should be 1024px"
+msgstr ""
+
+#: templates/pages/publications.hbs:159
+msgid "Image height should be 1024 pixels"
+msgstr ""
+
+#: templates/pages/publications.hbs:168
+msgid "height should be 300px"
+msgstr ""
+
+#: templates/pages/publications.hbs:176
+msgid "Image height should be 300 pixels"
+msgstr ""
+
+#: templates/pages/publications.hbs:89
+msgid "Allowed characters"
+msgstr ""
+
+#: templates/partials/left.hbs:30
+msgid "iOS"
+msgstr ""
+
+#: templates/partials/left.hbs:31
+msgid "Android"
+msgstr ""
+
+#: templates/partials/left.hbs:32
+msgid "Windows 8"
 msgstr ""

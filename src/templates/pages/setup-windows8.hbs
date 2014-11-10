@@ -1,0 +1,454 @@
+---
+title: Setup Windows 8
+icon: fa fa-cogs
+stylesheets:
+- lib/uniform/themes/default/css/uniform.default.css
+- lib/inputlimiter/jquery.inputlimiter.1.0.css
+- lib/chosen/chosen.min.css
+- lib/colorpicker/css/colorpicker.css
+- lib/tagsinput/jquery.tagsinput.css
+- lib/daterangepicker/daterangepicker-bs3.css
+- lib/datepicker/css/datepicker.css
+- lib/timepicker/css/bootstrap-timepicker.min.css
+- lib/switch/build/css/bootstrap3/bootstrap-switch.min.css
+- lib/jasny/css/jasny-bootstrap.min.css
+- lib/plupload/js/jquery.plupload.queue/css/jquery.plupload.queue.css
+- lib/gritter/css/jquery.gritter.css
+- lib/uniform/themes/default/css/uniform.default.min.css
+- css/bootstrap-fileupload.min.css
+cdnjs:
+- //ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js
+javascripts:
+- lib/uniform/jquery.uniform.min.js
+- lib/inputlimiter/jquery.inputlimiter.1.3.1.min.js
+- lib/chosen/chosen.jquery.min.js
+- lib/colorpicker/js/bootstrap-colorpicker.js
+- lib/tagsinput/jquery.tagsinput.min.js
+- lib/validVal/src/js/jquery.validVal.min.js
+- lib/daterangepicker/daterangepicker.js
+- lib/daterangepicker/moment.min.js
+- lib/datepicker/js/bootstrap-datepicker.js
+- lib/timepicker/js/bootstrap-timepicker.min.js
+- lib/switch/build/js/bootstrap-switch.min.js
+- lib/jquery.dualListbox-1.3/jquery.dualListBox-1.3.min.js
+- lib/autosize/jquery.autosize.min.js
+- lib/jasny/js/jasny-bootstrap.min.js
+- lib/touch-punch/jquery.ui.touch-punch.min.js
+- lib/plupload/js/plupload.full.min.js
+- lib/plupload/js/jquery.plupload.queue/jquery.plupload.queue.min.js
+- lib/gritter/js/jquery.gritter.min.js
+- lib/uniform/jquery.uniform.min.js
+- lib/form/jquery.form.js
+- lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
+- lib/jquery-validation-1.11.1/localization/messages_ja.js
+- lib/jquery.plist.js
+- js/pages/setup.min.js
+
+scripts: 
+- $(function() { formGeneral(); }); $(function() { metisTable();});
+---
+
+<div class="row" id="setup-wrapper" data-upload-dir="APP_/Uploads/">
+  <div class="col-lg-12">
+    <!-- Start Screen fieldset
+          files          
+          Logo inside tile:
+            - logo.scale-80.png - 120 x 120 px
+            - logo.scale-100.png - 150 x 150 px
+            - logo.scale-140.png - 210 x 210 px
+            - logo.scale-180.png - 270 x 270 px
+          Wide Tile:
+            - WideLogo.scale-80.png - 248 x 120 px
+            - WideLogo.scale-100.png - 310 x 150 px
+            - WideLogo.scale-140.png: 434 x 210 px
+            - WideLogo.scale-180.png - 558 x 270 px
+          Small Tile:
+            - icon.scale-80.png - 24 x 24 px
+            - icon.scale-100.png - 30 x 30 px
+            - icon.scale-140.png - 42 x 42 px
+            - icon.scale-180.png - 54 x 54 px
+          Store Logo:
+            - StoreLogo.scale-100.png - 50 x 50 px - madatory
+            - StoreLogo.scale-140.png - 70 x 70 px
+            - StoreLogo.scale-180.png - 90 x 90 px
+
+      -->
+    <div class="box">
+      <header>
+        <h4 localize>Start Screen</h4>
+      </header>
+      <header>
+        <h5 localize>Logo inside tile</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- logo.scale-80.png: 120x120 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>logo.scale-80.png 120x120 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="logo.scale-80.png" data-required-image-width="120" data-required-image-height="120"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- logo.scale-100.png: 150x150 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>logo.scale-100.png 150x150 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="logo.scale-100.png" data-required-image-width="150" data-required-image-height="150"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- logo.scale-140.png: 210x210 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>logo.scale-140.png 210x210 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="logo.scale-140.png" data-required-image-width="210" data-required-image-height="210"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- logo.scale-180.png: 270x270 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>logo.scale-180.png 270x270 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="logo.scale-180.png" data-required-image-width="270" data-required-image-height="270"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+      <header>
+        <h5 localize>Wide Tile</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- WideLogo.scale-80.png: 248x120 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>WideLogo.scale-80.png 248x120 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="WideLogo.scale-80.png" data-required-image-width="248" data-required-image-height="120"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- WideLogo.scale-100.png: 310x150 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>WideLogo.scale-100.png 310x150 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="WideLogo.scale-100.png" data-required-image-width="310" data-required-image-height="150"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- WideLogo.scale-140.png: 434x210 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>WideLogo.scale-140.png 434x210 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="WideLogo.scale-140.png" data-required-image-width="434" data-required-image-height="210"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- WideLogo.scale-180.png: 558x270 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>WideLogo.scale-180.png 558x270 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="WideLogo.scale-180.png" data-required-image-width="558" data-required-image-height="270"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+      
+      <header>
+        <h5 localize>Small Tile</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- icon.scale-80.png: 24x24 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>icon.scale-80.png 24x24 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="icon.scale-80.png" data-required-image-width="24" data-required-image-height="24"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- icon.scale-100.png: 30x30 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>icon.scale-100.png 30x30 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="icon.scale-100.png" data-required-image-width="30" data-required-image-height="30"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- icon.scale-140.png: 42x42 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>icon.scale-140.png 42x42 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="icon.scale-140.png" data-required-image-width="42" data-required-image-height="42"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- icon.scale-180.png: 54x54 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>icon.scale-180.png 54x54 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="icon.scale-180.png" data-required-image-width="54" data-required-image-height="54"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+        </form>
+      </div>
+
+      <header>
+        <h5 localize>Store Logo</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- StoreLogo.scale-100.png: 50x50 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>StoreLogo.scale-100.png 50x50 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="StoreLogo.scale-100.png" data-required-image-width="50" data-required-image-height="50"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- StoreLogo.scale-140.png: 70x70 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>StoreLogo.scale-140.png 70x70 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="StoreLogo.scale-140.png" data-required-image-width="70" data-required-image-height="70"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- StoreLogo.scale-180.png: 90x90 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>StoreLogo.scale-180.png 90x90 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="StoreLogo.scale-180.png" data-required-image-width="90" data-required-image-height="90"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="col-lg-12">
+    <!-- Splash Screen fieldset
+          files
+            - startup_background.scale-100.png - 620 x 300 px - mandatory
+            - startup_background.scale-140.png - 868 x 420 px
+            - startup_background.scale-180.png - 1116 x 540 px
+
+      -->
+    <div class="box">
+      <header>
+        <h5 localize>Splash Screen</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- startup_background.scale-100.png: 620x300 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>startup_background.scale-100.png 620x300 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="startup_background.scale-100.png" data-required-image-width="620" data-required-image-height="300"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- startup_background.scale-140.png: 868x420 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>startup_background.scale-140.png 868x420 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="startup_background.scale-140.png" data-required-image-width="868" data-required-image-height="420"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- startup_background.scale-180.png: 1116x540 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>startup_background.scale-180.png 1116x540 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="startup_background.scale-180.png" data-required-image-width="1116" data-required-image-height="540"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col-lg-12">
+    <!-- Grid background fieldset
+          files
+            - background.png - 1366 x 768 px
+            - backgroundMin.png - 1024 x 768 px - optional
+            - backgroundLarge.png - 1920 x 1200 px - optional
+            
+      -->
+    <div class="box">
+      <header>
+        <h5 localize>Grid Background</h5>
+      </header>
+      <div id="collapse4" class="body">
+        <form class="form-horizontal">
+
+          <!-- background.png: 1366x768 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>background.png 1366x768 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="background.png" data-required-image-width="1366" data-required-image-height="768"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- backgroundMin.png: 1024x768 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>backgroundMin.png 1024x768 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="backgroundMin.png" data-required-image-width="1024" data-required-image-height="768"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+          <!-- backgroundLarge.png: 1920x1200 -->
+          <div class="form-group">
+            <label class="control-label col-lg-4" localize>backgroundLarge.png 1920x1200 pixels</label>
+            <div class="col-lg-8">
+              <div class="fileinput fileinput-new" data-provides="fileinput">
+				        <div class="fileinput-preview thumbnail" data-trigger="fileinput" style="width: 200px; height: 150px;"></div>
+				        <div>
+				          <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input type="file" name="backgroundLarge.png" data-required-image-width="1920" data-required-image-height="1200"></span>
+				          <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
+				        </div>
+			        </div>
+            </div>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
