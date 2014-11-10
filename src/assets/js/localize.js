@@ -78,6 +78,7 @@
       dataType: 'json',
       success: function(res)
       {
+        $(document).trigger('localize-locale-changed');
         _.setTranslation(res);
         if(opts.update === undefined || opts.update)
             localize_eval_all();
