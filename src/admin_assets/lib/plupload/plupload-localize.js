@@ -1,0 +1,1 @@
+plupload.translate = localize;

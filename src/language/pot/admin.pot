@@ -619,3 +619,101 @@ msgstr ""
 #: templates/partials/left.hbs:32
 msgid "Windows 8"
 msgstr ""
+
+
+#: dataTables.js
+msgid "dataTables_oAria_sSortAscending"
+msgstr ": activate to sort column ascending"
+
+#: dataTables.js
+msgid "dataTables_oAria_sSortDescending"
+msgstr ": activate to sort column descending"
+
+#: dataTables.js
+msgid "dataTables_oPaginate_sFirst"
+msgstr "First"
+
+#: dataTables.js
+msgid "dataTables_oPaginate_sLast"
+msgstr "Last"
+
+#: dataTables.js
+msgid "dataTables_oPaginate_sNext"
+msgstr "Next"
+
+#: dataTables.js
+msgid "dataTables_oPaginate_sPrevious"
+msgstr "Previous"
+
+#: dataTables.js
+msgid "dataTables_sEmptyTable"
+msgstr "No data available in table"
+
+#: dataTables.js
+msgid "dataTables_sInfo"
+msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
+
+#: dataTables.js
+msgid "dataTables_sInfoEmpty"
+msgstr "Showing 0 to 0 of 0 entries"
+
+#: dataTables.js
+msgid "dataTables_sInfoFiltered"
+msgstr "(filtered from _MAX_ total entries)"
+
+#: dataTables.js
+msgid "dataTables_sInfoThousands"
+msgstr ","
+
+#: dataTables.js
+msgid "dataTables_sLengthMenu"
+msgstr "Show _MENU_ entries"
+
+#: dataTables.js
+msgid "dataTables_sLoadingRecords"
+msgstr "Loading..."
+
+#: dataTables.js
+msgid "dataTables_sProcessing"
+msgstr "Processing..."
+
+#: dataTables.js
+msgid "dataTables_sSearch"
+msgstr "Search:"
+
+#: dataTables.js
+msgid "dataTables_sZeroRecords"
+msgstr "No matching records found"
+
+#: plupload
+msgid "Select files"
+msgstr ""
+
+#: plupload
+msgid "Add files to the upload queue and click the start button."
+msgstr ""
+
+#: plupload
+msgid "Filename"
+msgstr ""
+
+#: plupload
+msgid "Size"
+msgstr ""
+
+#: plupload
+msgid "Status"
+msgstr ""
+
+#: plupload
+msgid "Drag files here."
+msgstr ""
+
+#: plupload
+msgid "Add Files"
+msgstr ""
+
+#: plupload
+msgid "Start Upload"
+msgstr ""
+
