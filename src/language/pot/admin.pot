@@ -369,6 +369,7 @@ msgstr ""
 
 #. Page subheading
 #: templates/pages/setup.hbs:55
+#: templates/partials/left.hbs:29
 msgid "General"
 msgstr ""
 
@@ -605,4 +606,16 @@ msgstr ""
 
 #: templates/pages/publications.hbs:89
 msgid "Allowed characters"
+msgstr ""
+
+#: templates/partials/left.hbs:30
+msgid "iOS"
+msgstr ""
+
+#: templates/partials/left.hbs:31
+msgid "Android"
+msgstr ""
+
+#: templates/partials/left.hbs:32
+msgid "Windows 8"
 msgstr ""
