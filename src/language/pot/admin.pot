@@ -588,16 +588,12 @@ msgstr ""
 msgid "Image size should be 1024x1024"
 msgstr ""
 
-#: templates/pages/publications.hbs:151
-msgid "height should be 1024px"
-msgstr ""
-
 #: templates/pages/publications.hbs:159
 msgid "Image height should be 1024 pixels"
 msgstr ""
 
 #: templates/pages/publications.hbs:168
-msgid "height should be 300px"
+msgid "px height"
 msgstr ""
 
 #: templates/pages/publications.hbs:176

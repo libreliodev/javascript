@@ -803,7 +803,8 @@ function activeServerRequest(obj, publicationsTable) {
         Bucket: window.config.s3Bucket,
         Key: appDir+'/Magazines.plist'
     }, function(err, activated) {
-
+        if(err)
+          return handleAWSS3Error(err);
         //var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
         var activeList;
         try {
@@ -814,7 +815,7 @@ function activeServerRequest(obj, publicationsTable) {
         is_paid_pub(obj.data('filename'), function(err, is_paid)
           {
             if(err)
-              return console.error(err);
+              return handleAWSS3Error(err);
             var pub = {
               FileName: obj.data("filename") + "/" + obj.data("filename") + 
                 (is_paid ? '_' : '') + ".pdf",
@@ -827,14 +828,14 @@ function activeServerRequest(obj, publicationsTable) {
         
 
             var params = {
-              Bucket: window.config.s3Bucket, // required
+              Bucket: config.s3Bucket, // required
               Key: appDir+'/Magazines.plist',
               //Body: PlistParser.toPlist(activeList)
               Body: body
             };
-            window.awsS3.putObject(params, function(err, data) {
+            awsS3.putObject(params, function(err, data) {
               if (err) {
-                alert(Error);
+                return handleAWSS3Error(err);
               } else {
                 //obj.addClass("btnInactive").addClass("btn-danger").removeClass("btnActive").removeClass("btn-success").html("Inactive").data("id", activeListLength);
                 //publicationsTable.fnGetPosition( obj.parents('tr').closest('.ttitle')[0]).html(pTitle);
