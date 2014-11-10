@@ -3,7 +3,6 @@ update();
 $(document).on('localize-locale-changed', update);
 function update()
 {
-  console.log('update oLang');
   var oLang = $.fn.dataTable.defaults.oLanguage;
   if(oLang)
     oLangLocalize(oLang, 'dataTables');

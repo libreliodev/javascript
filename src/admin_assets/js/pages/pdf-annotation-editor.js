@@ -193,6 +193,11 @@ $(function(){
              });
         });
     });
+  $('#revert-btn').click(function()
+    {
+      localStorage.setItem(annots_key, '');
+      location.reload();
+    });
   $('#preview-btn').click(function()
     {
       var enabled = this._enabled = !this._enabled;
@@ -517,17 +522,17 @@ $(function(){
       data.linktype = data.linktype || (data.dest ? 'page' : 'url');
       if(data.linktype == 'page')
       {
-        if(data.dest)
+        switch(typeof data.dest)
         {
-          try {
+          case 'string':
+          case 'object':
             var dest = typeof data.dest == 'string' ? 
               pdfdoc_dests[data.dest][0] : data.dest[0];
-            doc.getPageIndex(dest).then(function(index)
+            pdfdoc.getPageIndex(dest).then(function(index)
               {
                 data.dest_bk = data.dest = index + 1;
               });
-          }catch(e) {
-          }
+          break;
         }
       }
       else
