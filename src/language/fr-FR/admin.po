@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Login"
-msgstr "Mes identifiants d'abonné"
+msgstr "Connexion"
 
 msgid "password_placeholder"
 msgstr "Mot de passe"
@@ -107,13 +107,13 @@ msgid "foldername_placeholder"
 msgstr "Nom du dossier"
 
 msgid "Free"
-msgstr "Gratuits"
+msgstr "Gratuit"
 
 msgid "Free Downloads"
 msgstr "Téléchargements gratuits"
 
 msgid "Free version"
-msgstr "Version gratite"
+msgstr "Version gratuite"
 
 msgid "ga_code_placeholder"
 msgstr "Code GA"
@@ -143,7 +143,7 @@ msgid "Invalid directory!"
 msgstr "Dossier invalide"
 
 msgid "Invalid publication name!"
-msgstr "Publication invalide"
+msgstr "Nom de parution invalide"
 
 msgid "la_code_placeholder"
 msgstr "Code LA"
@@ -170,10 +170,10 @@ msgid "longname_placeholder"
 msgstr "Nom long"
 
 msgid "Low res cover"
-msgstr "Couverture basse résolution"
+msgstr "Couv 300px"
 
 msgid "Medium res cover"
-msgstr "Couverture moyenne résolution"
+msgstr "Couv 1024 px"
 
 msgid "Menu"
 msgstr "Menu"
@@ -209,7 +209,7 @@ msgid "New message"
 msgstr "Nouveau message"
 
 msgid "New publication"
-msgstr "Nouvelle publication"
+msgstr "Nouvelle parution"
 
 msgid "New user"
 msgstr "Nouvel utilisateur"
@@ -236,7 +236,7 @@ msgid "Please wait.."
 msgstr "Veuillez patienter"
 
 msgid "Publications"
-msgstr "Publications"
+msgstr "Parutions"
 
 msgid "Publisher"
 msgstr "Editeur"
@@ -326,7 +326,7 @@ msgid "Update ad"
 msgstr "Mettre à jour l'annonce"
 
 msgid "Update publication"
-msgstr "Mettre à jour la publication"
+msgstr "Mettre à jour la parution"
 
 msgid "Update user"
 msgstr "Mettre à jour l'utilisateur"
@@ -363,3 +363,20 @@ msgstr "Votre navigateur n'est pas compatible"
 
 msgid "Preview"
 msgstr "Prévisualisation"
+
+msgid "Password"
+msgstr "Mot de passe"
+
+msgid "New to Librelio?"
+msgstr "Nouveau chez Librelio?"
+
+msgid "Sign-in with Google or Facebook!"
+msgstr "Identifiez-vous avec Google ou Facebook!"
+
+msgid "Otherwise, please enter your credentials:"
+msgstr "Sinon, veuillez entrer vos identifiants:"
+
+msgid "Download"
+msgstr "Télécharger"
+
+
