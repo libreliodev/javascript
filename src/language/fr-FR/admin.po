@@ -220,13 +220,13 @@ msgstr "Aucun fichier n'est sélectionné"
 msgid "Open"
 msgstr "Ouvrir"
 
-msgid "Protected"
+msgid "Paid"
 msgstr "Payant"
 
 msgid "Paid Downloads"
 msgstr "Téléchargements payants"
 
-msgid "Protected version"
+msgid "Paid version"
 msgstr "Version payante"
 
 msgid "Please select application before sending notification"
@@ -363,4 +363,20 @@ msgstr "Votre navigateur n'est pas compatible"
 
 msgid "Preview"
 msgstr "Prévisualisation"
+
+msgid "Password"
+msgstr "Mot de passe"
+
+msgid "New to Librelio?"
+msgstr "Nouveau chez Librelio?"
+
+msgid "Sign-in with Google or Facebook!"
+msgstr "Identifiez-vous avec Google ou Facebook!"
+
+msgid "Otherwise, please enter your credentials:"
+msgstr "Sinon, veuillez entrer vos identifiants:"
+
+msgid "Download"
+msgstr "Télécharger"
+
 
