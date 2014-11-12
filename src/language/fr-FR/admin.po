@@ -17,7 +17,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=(n != 1);\n"
 
 msgid "Login"
-msgstr "Mes identifiants d'abonné"
+msgstr "Connexion"
 
 msgid "password_placeholder"
 msgstr "Mot de passe"
@@ -107,13 +107,13 @@ msgid "foldername_placeholder"
 msgstr "Nom du dossier"
 
 msgid "Free"
-msgstr "Gratuits"
+msgstr "Gratuit"
 
 msgid "Free Downloads"
 msgstr "Téléchargements gratuits"
 
 msgid "Free version"
-msgstr "Version gratite"
+msgstr "Version gratuite"
 
 msgid "ga_code_placeholder"
 msgstr "Code GA"
@@ -143,7 +143,7 @@ msgid "Invalid directory!"
 msgstr "Dossier invalide"
 
 msgid "Invalid publication name!"
-msgstr "Publication invalide"
+msgstr "Nom de parution invalide"
 
 msgid "la_code_placeholder"
 msgstr "Code LA"
@@ -170,10 +170,10 @@ msgid "longname_placeholder"
 msgstr "Nom long"
 
 msgid "Low res cover"
-msgstr "Couverture basse résolution"
+msgstr "Couv 300px"
 
 msgid "Medium res cover"
-msgstr "Couverture moyenne résolution"
+msgstr "Couv 1024 px"
 
 msgid "Menu"
 msgstr "Menu"
@@ -209,7 +209,7 @@ msgid "New message"
 msgstr "Nouveau message"
 
 msgid "New publication"
-msgstr "Nouvelle publication"
+msgstr "Nouvelle parution"
 
 msgid "New user"
 msgstr "Nouvel utilisateur"
@@ -236,7 +236,7 @@ msgid "Please wait.."
 msgstr "Veuillez patienter"
 
 msgid "Publications"
-msgstr "Publications"
+msgstr "Parutions"
 
 msgid "Publisher"
 msgstr "Editeur"
@@ -326,7 +326,7 @@ msgid "Update ad"
 msgstr "Mettre à jour l'annonce"
 
 msgid "Update publication"
-msgstr "Mettre à jour la publication"
+msgstr "Mettre à jour la parution"
 
 msgid "Update user"
 msgstr "Mettre à jour l'utilisateur"
@@ -363,144 +363,4 @@ msgstr "Votre navigateur n'est pas compatible"
 
 msgid "Preview"
 msgstr "Prévisualisation"
-
-#: admin_assets/js/pages/tracking.js:65
-msgid "Analytics data not yet available"
-msgstr ""
-
-#: admin_assets/js/utils.js:189
-msgid "Invalid image size!"
-msgstr ""
-
-#: admin_assets/js/utils.js:189
-msgid "Invalid image size!"
-msgstr ""
-
-#: templates/pages/setup.hbs:105
-msgid "Image size should be 1024x1024"
-
-#: templates/pages/publications.hbs:159
-msgid "Image height should be 1024 pixels"
-msgstr ""
-
-#: templates/pages/publications.hbs:168
-msgid "px height"
-msgstr ""
-
-#: templates/pages/publications.hbs:176
-msgid "Image height should be 300 pixels"
-msgstr ""
-
-#: templates/pages/publications.hbs:89
-msgid "Allowed characters"
-msgstr ""
-
-#: templates/partials/left.hbs:30
-msgid "iOS"
-msgstr ""
-
-#: templates/partials/left.hbs:31
-msgid "Android"
-msgstr ""
-
-#: templates/partials/left.hbs:32
-msgid "Windows 8"
-msgstr ""
-
-
-#: dataTables.js
-msgid "dataTables_oAria_sSortAscending"
-msgstr ": activate to sort column ascending"
-
-#: dataTables.js
-msgid "dataTables_oAria_sSortDescending"
-msgstr ": activate to sort column descending"
-
-#: dataTables.js
-msgid "dataTables_oPaginate_sFirst"
-msgstr "First"
-
-#: dataTables.js
-msgid "dataTables_oPaginate_sLast"
-msgstr "Last"
-
-#: dataTables.js
-msgid "dataTables_oPaginate_sNext"
-msgstr "Next"
-
-#: dataTables.js
-msgid "dataTables_oPaginate_sPrevious"
-msgstr "Previous"
-
-#: dataTables.js
-msgid "dataTables_sEmptyTable"
-msgstr "No data available in table"
-
-#: dataTables.js
-msgid "dataTables_sInfo"
-msgstr "Showing _START_ to _END_ of _TOTAL_ entries"
-
-#: dataTables.js
-msgid "dataTables_sInfoEmpty"
-msgstr "Showing 0 to 0 of 0 entries"
-
-#: dataTables.js
-msgid "dataTables_sInfoFiltered"
-msgstr "(filtered from _MAX_ total entries)"
-
-#: dataTables.js
-msgid "dataTables_sInfoThousands"
-msgstr ","
-
-#: dataTables.js
-msgid "dataTables_sLengthMenu"
-msgstr "Show _MENU_ entries"
-
-#: dataTables.js
-msgid "dataTables_sLoadingRecords"
-msgstr "Loading..."
-
-#: dataTables.js
-msgid "dataTables_sProcessing"
-msgstr "Processing..."
-
-#: dataTables.js
-msgid "dataTables_sSearch"
-msgstr "Search:"
-
-#: dataTables.js
-msgid "dataTables_sZeroRecords"
-msgstr "No matching records found"
-
-#: plupload
-msgid "Select files"
-msgstr ""
-
-#: plupload
-msgid "Add files to the upload queue and click the start button."
-msgstr ""
-
-#: plupload
-msgid "Filename"
-msgstr ""
-
-#: plupload
-msgid "Size"
-msgstr ""
-
-#: plupload
-msgid "Status"
-msgstr ""
-
-#: plupload
-msgid "Drag files here."
-msgstr ""
-
-#: plupload
-msgid "Add Files"
-msgstr ""
-
-#: plupload
-msgid "Start Upload"
-msgstr ""
 
