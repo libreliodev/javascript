@@ -803,12 +803,10 @@ function activeServerRequest(obj, publicationsTable) {
         Bucket: window.config.s3Bucket,
         Key: appDir+'/Magazines.plist'
     }, function(err, activated) {
-        if(err)
-          return handleAWSS3Error(err);
         //var activeList = PlistParser.parse($.parseXML(activated.Body.toString()));
         var activeList;
         try {
-            activeList = $.plist($.parseXML(activated.Body.toString()));
+            activeList = $.plist($.parseXML(activated.Body.toString())) || [];
         }catch(e) {
             activeList = [];
         }

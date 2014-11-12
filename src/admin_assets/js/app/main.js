@@ -1,6 +1,9 @@
 function handleAWSS3Error(err)
 {
-    alert(err);
+    if(err.code == 'NotImplemented')
+        alert(err + ', This feature is available in  IE, Firefox or Chrome.');
+    else
+        alert(err);
     if(err.code == 'InvalidAccessKeyId')
     {
         userLogout();
