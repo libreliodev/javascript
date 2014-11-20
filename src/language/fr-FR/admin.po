@@ -379,4 +379,75 @@ msgstr "Sinon, veuillez entrer vos identifiants:"
 msgid "Download"
 msgstr "Télécharger"
 
+msgid "See in fullscreen"
+msgstr "Voir en plein écran"
+
+msgid "Background image"
+msgstr "Image de fond"
+
+msgid "dataTables_oAria_sSortDescending"
+msgstr "activer pour trier"
+
+msgid "dataTables_oPaginate_sFirst"
+msgstr "Premier"
+
+msgid "dataTables_oPaginate_sLast"
+msgstr "Suivant"
+
+msgid "dataTables_oPaginate_sNext"
+msgstr "Dernier"
+
+msgid "dataTables_oPaginate_sPrevious"
+msgstr "Précédent"
+
+msgid "dataTables_sEmptyTable"
+msgstr "Aucune donnée disponible"
+
+msgid "dataTables_sInfo"
+msgstr "Enregistrements _START_ à _END_ d'un total de _TOTAL_ "
+
+msgid "dataTables_sInfoEmpty"
+msgstr "Aucune donnée affichée"
+
+msgid "dataTables_sInfoFiltered"
+msgstr "(filtré de _MAX_ total enregistrements)"
+
+msgid "dataTables_sLengthMenu"
+msgstr "Montrer enregistrements  _MENU_ "
+
+msgid "dataTables_sLoadingRecords"
+msgstr "Chargement ..."
+
+msgid "dataTables_sProcessing"
+msgstr "Traitement en cours ..."
+
+msgid "dataTables_sSearch"
+msgstr "Rechercher:"
+
+msgid "dataTables_sZeroRecords"
+msgstr "Aucun résultat"
+
+msgid "Select files"
+msgstr "Sélectionner les fichiers"
+
+msgid "Add files to the upload queue and click the start button."
+msgstr "Ajouter les fichiers à la liste de chargement,  et cliquez sur démarrer"
+
+msgid "Filename"
+msgstr "Non de fichier"
+
+msgid "Size"
+msgstr "Taille"
+
+msgid "Status"
+msgstr "Statut"
+
+msgid "Drag files here."
+msgstr "Glisser des fichiers ici"
+
+msgid "Add Files"
+msgstr "Ajouter des fichiers"
+
+msgid "Start Upload"
+msgstr "Démarrer le chargement"
 
