@@ -1,0 +1,88 @@
+---
+title: Triggers
+icon: fa fa-clock-o
+stylesheets:
+- lib/inputlimiter/jquery.inputlimiter.1.0.css
+- lib/chosen/chosen.min.css
+- lib/colorpicker/css/colorpicker.css
+- lib/datepicker/css/datepicker.css
+- lib/jasny/css/jasny-bootstrap.min.css
+- lib/datatables/css/demo_page.css
+- lib/datatables/css/DT_bootstrap.css
+- lib/plupload/jquery.plupload.queue/css/jquery.plupload.queue.css
+- css/bootstrap-fileupload.min.css
+- css/pages/publications.min.css
+cdnjs:
+- //ajax.googleapis.com/ajax/libs/jqueryui/1.10.3/jquery-ui.min.js
+javascripts:
+- lib/inputlimiter/jquery.inputlimiter.1.3.1.min.js
+- lib/chosen/chosen.jquery.min.js
+- lib/colorpicker/js/bootstrap-colorpicker.js
+- lib/datepicker/js/bootstrap-datepicker.js
+- lib/jquery.dualListbox-1.3/jquery.dualListBox-1.3.min.js
+- lib/jasny/js/jasny-bootstrap.min.js
+- lib/plupload/plupload.full.min.js
+- lib/plupload/jquery.plupload.queue/jquery.plupload.queue.min.js
+- lib/plupload/plupload-localize.js
+- lib/jquery-validation-1.11.1/dist/jquery.validate.min.js
+- lib/jquery-validation-1.11.1/localization/messages_ja.js
+- lib/datatables/jquery.dataTables.js
+- lib/datatables/DT_bootstrap.js
+- lib/datatables/dataTablesLocalize.js
+- lib/jquery.plist.js
+- lib/crypto/core-min.js
+- lib/crypto/hmac-sha1.min.js
+- lib/crypto/enc-base64-min.js
+- js/pages/publications.min.js
+
+scripts:
+- $(function() { formGeneral(); });
+---
+
+<div class="row">
+  <div class="col-lg-12">
+        <div class="box">
+            <header>
+                <div class="icons"><i class="fa fa-table"></i></div>
+                <h5 localize>Triggers</h5>
+            </header>
+            <div id="collapse4" class="body">
+            	<p><a data-toggle="modal" data-original-title="New" data-placement="bottom" class="btn btn-primary new-pub-btn" href="#pubModal" localize>New trigger</a></p>
+
+              <div id="page-loading-indicator">
+                <img src="{{ assets }}/img/loader-big-snake.gif" alt="Loading..." />
+              </div>
+                <table id="dataTable" class="table table-bordered table-condensed table-hover table-striped triggerDataTable">
+					<thead>
+					<tr>
+						<th localize>Trigger name</th>
+						<th localize>Trigger parameters</th>
+						<th localize>Action name</th>
+						<th localize>Action parameters</th>
+						<th class="text-center" style="width: 90px;" localize>Status</th>
+					</tr>
+					</thead>
+					<tbody>
+					</tbody>                
+				</table>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- modal-->
+<div id="pubModal" class="modal fade new-pub-dlg">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="btn btn-success" style="float:right;" data-dismiss="modal" aria-hidden="true">Done</button>
+        <h4 class="modal-title">
+          <span class="pub-dlg-new" localize>New trigger</span>
+          <span class="pub-dlg-update" localize>Update trigger</span>
+        </h4>
+      </div>
+      <div class="modal-body">
+      	<!-- from here it should be possible to add new triggers (choose from a list based on http://download.librelio.com/queues/Triggers.plist) and corresponding actions (based on http://download.librelio.com/queues/Triggers.plist). Once a trigger and action have been selected, it should be possible to enter parameters, as listed on the plist  -->
+      </div><!-- modal-body -->
+    </div><!-- /.modal-content -->
+  </div><!-- /.modal-dialog -->
+</div><!-- /.modal --><!-- /#helpModal -->
