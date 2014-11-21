@@ -364,3 +364,6 @@ msgstr "Votre navigateur n'est pas compatible"
 msgid "Preview"
 msgstr "Prévisualisation"
 
+#: admin_assets/js/pages/tracking.js:65
+msgid "Analytics data not yet available"
+msgstr ""
