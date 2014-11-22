@@ -77,6 +77,18 @@ $(function(){
   
   function load_doc()
   {
+
+    // loading screen
+    var pdf_filename = url('filename', pdf_url); // with no extension
+    if(pdf_filename[pdf_filename - 1] == '_')
+      pdf_filename = pdf_filename.substr(0, pdf_filename.length - 1);
+    var cl = new CanvasLoader('canvasloader');
+    cl.setColor('#ffffff');
+    cl.show();
+
+    $('.pdfviewer-loadingscreen .cover-img').attr('src', pdf_url_dir +  '/' + 
+                                                  pdf_filename + '.png');
+
     PDFJS.disableRange = false;
     page_size_els_resize();
     pdf_viewer.trigger('sizechanged');
@@ -131,6 +143,8 @@ $(function(){
       if(pages)
         annotations_render_page();
       pdf_viewer.bind('render', annotations_render_page);
+      // remove canvasloader
+      cl.hide();
       $elements_has_target_to($('.pdfviewer-loadingscreen'), self[0])
         .fadeOut();
     }

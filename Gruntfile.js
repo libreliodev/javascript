@@ -248,6 +248,18 @@ module.exports = function (grunt) {
                         cwd: pdfreader_assets, src: ['lib/**','js/**'],
                         dest: admin_assets_dist_dir + '/'
                     },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/canvasloader/js/',
+                        src: 'heartcode-canvasloader-min.js',
+                        dest: admin_assets_dist_dir + '/lib/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/canvasloader/js/',
+                        src: 'heartcode-canvasloader-min.js',
+                        dest: reader_assets_dist_dir + '/lib/'
+                    },
                   /* copy csvreader assets */
                     {
                         expand: true,
@@ -283,6 +295,12 @@ module.exports = function (grunt) {
                         cwd: admin_assets_src_dir + '/img',
                         src: ['./**/*.*'],
                         dest: admin_assets_dist_dir + '/img'
+                    },
+                    {
+                        expand: true,
+                        cwd: admin_assets_src_dir + '/data',
+                        src: ['./**/*.*'],
+                        dest: admin_assets_dist_dir + '/data'
                     },
                     {
                         expand: true,
@@ -362,6 +380,12 @@ module.exports = function (grunt) {
                      cwd: 'node_modules/screenfull/dist/',
                      src: ['./**/*.*'],
                      dest: admin_assets_dist_dir + '/lib/screenfull/'
+                    },
+                    {
+                       expand: true,
+                     cwd: 'bower_components/bootstrap-datepicker/',
+                     src: ['./css/*', './js/*'],
+                     dest: admin_assets_dist_dir + '/lib/bootstrap-datepicker/'
                     },
                     // formbuilder
                     { expand:true, cwd:'bower_components/jquery-ui/ui/minified',

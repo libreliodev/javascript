@@ -8,7 +8,15 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
   pdf_target_page = parseInt(url('#', document.location+'') || 
                              pdf_url_lquery.wapage);
 
-
+  var pdf_filename = url('filename', pdf_url); // with no extension
+  if(pdf_filename[pdf_filename - 1] == '_')
+    pdf_filename = pdf_filename.substr(0, pdf_filename.length - 1);
+  var cl = new CanvasLoader('canvasloader');
+  cl.setColor('#ffffff');
+  cl.show();
+  $('.pdfviewer-loadingscreen .cover-img').attr('src', pdf_url_dir +  '/' + 
+                                              pdf_filename + '.png');
+  
   PDFJS.disableRange = false;
   if(!isNaN(pdf_target_page))
     pdf_viewer.pdfviewer('set', 'curPageIndex', pdf_target_page);
@@ -16,6 +24,11 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
     {
       if(err)
         return notifyError(err);
+      pdf_viewer.bind('render', function()
+        {
+          cl.hide();
+          pdf_viewer.unbind('render', arguments.callee);
+        });
     });
   pdf_viewer.bind('new-link', function(ev, data, page)
      {

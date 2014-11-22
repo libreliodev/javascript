@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<array>
+	<dict>
+		<key>Name</key>
+		<string>Timer</string>
+		<key>Parameters</key>
+		<array>
+			<dict>
+				<key>Name</key>
+				<string>Date</string>
+				<key>Type</key>
+				<string>Date</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Time</string>
+				<key>Type</key>
+				<string>Time</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Repetition (mn)</string>
+				<key>Type</key>
+				<string>Number</string>
+			</dict>
+		</array>
+	</dict>
+	<dict>
+		<key>Name</key>
+		<string>User Did Download Paid Content</string>
+		<key>Parameters</key>
+		<array>
+			<dict>
+				<key>Name</key>
+				<string>Date</string>
+				<key>Type</key>
+				<string>Date</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Time</string>
+				<key>Type</key>
+				<string>Time</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Url</string>
+				<key>Type</key>
+				<string>Text</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>Content</string>
+				<key>Type</key>
+				<string>Text</string>
+			</dict>
+			<dict>
+				<key>Name</key>
+				<string>UserID</string>
+				<key>Type</key>
+				<string>Text</string>
+			</dict>
+		</array>
+	</dict>
+</array>
+</plist>

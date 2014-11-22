@@ -12,6 +12,7 @@ javascripts:
 - lib/video-js/video.dev.js
 - lib/flexslider/jquery.flexslider-min.js
 - lib/jquery.plist.js
+- lib/heartcode-canvasloader-min.js
 - js/helper.js
 - js/pagecurl.js
 - js/pdfviewer.js
@@ -131,6 +132,12 @@ empty_page: 1
   <div class="progress pdfviewer-progress" data-target=".pdfviewer">
     <div class="progress-bar" role="progressbar" style="width:0%;"></div>
   </div>
-  <div class="pdfviewer-loadingscreen" data-target=".pdfviewer"><span localize>Loading...</span></div>
+  <div class="pdfviewer-loadingscreen" data-target=".pdfviewer">
+    <div class="cover-img-wrp">
+      <img class="cover-img" />
+      <div class="loader-wrp" id="canvasloader">
+      </div>
+    </div>
+  </div>
 </div>
 {{> open_publication_dialog }}

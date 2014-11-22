@@ -10,6 +10,7 @@ javascripts:
 - lib/tween.min.js
 - lib/video-js/video.dev.js
 - lib/flexslider/jquery.flexslider-min.js
+- lib/heartcode-canvasloader-min.js
 - js/sharelist.js
 - js/pagecurl.js
 - js/pdfviewer.js
@@ -48,6 +49,12 @@ theme: dark-bkg
 <div class="progress pdfviewer-progress" data-target=".pdfviewer">
   <div class="progress-bar" role="progressbar" style="width:0%;"></div>
 </div>
-<div class="pdfviewer-loadingscreen" data-target=".pdfviewer"><span localize>Loading...</span></div>
+<div class="pdfviewer-loadingscreen" data-target=".pdfviewer">
+  <div class="cover-img-wrp">
+    <img class="cover-img" />
+    <div class="loader-wrp" id="canvasloader">
+    </div>
+  </div>
+</div>
 {{> purchase_dialog }}
 {{> sharelist_template }}

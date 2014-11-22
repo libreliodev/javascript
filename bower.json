@@ -39,7 +39,9 @@
     "formbuilder": ">=0.2.0",
     "handsontable": "~0.10.5",
     "taffydb": "*",
-    "jssor-slider": "*"
+    "jssor-slider": "*",
+    "bootstrap-datepicker": "~1.3.0",
+    "canvasloader": "~0.9.1"
   },
   "resolutions": {
     "font-awesome": ">=4.2.0"

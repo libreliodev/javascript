@@ -6,16 +6,46 @@ $(function()
     return;
   awsS3Ready(function()
     {
-      s3ObjectExists(awsS3, {
+      awsS3.getObject({
         Bucket: config.s3Bucket,
         Key: app_dir + '/APP_/Uploads/setup.plist',
-      }, function(err, exist)
+      }, function(err, res)
          {
-           if(err)
+           if(err && err.code != 'NoSuchKey')
              return handleAWSS3Error(err);
-
-           if(!exist)
+           if(err)
              return notifyUserError("You should setup app first! <a href=\"setup.html\">Click Here!</a>");
+           var setup_obj = res ? $.plist($.parseXML(res.Body.toString())) : {};
+           // set app active state
+           function set_toggle_name()
+           {
+             if(setup_obj.Active)
+               this.text(_('Deactivate'));
+             else
+               this.text(_('Activate'));
+             return this;
+           }
+           set_toggle_name.call($('#toggle-app')).bind('click', function()
+             {
+               var $this = $(this);
+               $this.prop('disabled', true);
+               setup_obj.Active = !setup_obj.Active;
+               awsS3.putObject({
+                 Bucket: config.s3Bucket,
+                 Key: app_dir + '/APP_/Uploads/setup.plist',
+                 Body: $.plist('toString', setup_obj)
+               }, function(err)
+                  {
+                    if(err)
+                    {
+                      setup_obj.Active = !setup_obj.Active;
+                      handleAWSS3Error(err);
+                    }
+                    $this.prop('disabled', false);
+                    set_toggle_name.call($this);
+                  });
+             });
+           
            $('#reader-link').attr('href', 'http://reader.librelio.com?' + 
                                              querystring.stringify({
                                                wapublisher: 

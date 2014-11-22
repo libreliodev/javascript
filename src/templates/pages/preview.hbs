@@ -4,12 +4,16 @@ stylesheets:
 - css/pages/preview.min.css
 javascripts:
 - lib/querystring.min.js
+- lib/jquery.plist.js
 - js/pages/preview.min.js
 
 ---
 <p>
   <a id="reader-link" href="">See in fullscreen</a>
 </p>
+<div class="btn-group" role="group">
+  <button id="toggle-app" type="button" class="btn btn-default" localize>Toggle App</button>
+</div>
 <div id="reader-wrapper">
   <!-- index.js should add iframe in here -->
 </div>

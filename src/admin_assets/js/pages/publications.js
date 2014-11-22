@@ -936,22 +936,15 @@ function cleanKeys(obj) {
 
 function insertPubInList(pub, list)
 {
-    var pubfn = pub.FileName,
-    replaced;
+    var pubfn = pub.FileName;
     // replace publications or add it
-    for(var i = 0, l = list.length; i < l; ++i)
+    for(var i = 0, l = list.length; i < l; )
     {
         var item = list[i];
         if(item && item.FileName == pubfn)
-        {
-            list[i] = pub;
-            replaced = true;
-            break;
-        }
+            list.splice(i, 1);
+        else
+            i += 1;
     }
-    if(!replaced)
-    {
-        list.push(pub);
-        return true;
-    }
+    list.unshift(pub);
 }
