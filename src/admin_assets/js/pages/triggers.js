@@ -233,41 +233,50 @@ $(function(){
         trigger = trigger_name ? findByName(triggersPlist, trigger_name) : null,
         action_name = $('#select-action').val(),
         action = action_name ? findByName(actionsPlist, action_name) : null,
-        params = ([]).concat(trigger ? prefix_params_name('trigger_', trigger.Parameters || []) : [], 
-                             action ? prefix_params_name('action_', action.Parameters || []) : []),
+        ctrs_params = [trigger ? prefix_params_name('trigger_', trigger.Parameters || []) : [],
+                  action ? prefix_params_name('action_', action.Parameters || []) : []],
         values = rowObj ? rowObj.Parameters : {};
-        if(params.length > 0 && trigger)
+        if(trigger)
         {
             var $trigger_params = $('#trigger-custom-params');
-            $trigger_params.children().remove();
-            for(var i = 0; i < params.length; ++i)
+            $ctrs_params = [$trigger_params, $('#action-custom-params')];
+            for(var c = 0; c < $ctrs_params.length; ++c)
             {
-                var param = params[i],
-                type = param.Type || 'Text',
-                $el = $trigger_params.dhtml('list_new_item', type),
-                ctx = { Value: typeof values[param.Key] != 'undefined' ? values[param.Key]+'' : undefined };
-                if($el)
+                var $ctr_params = $ctrs_params[c],
+                params = ctrs_params[c];
+                $ctr_params.children().remove();
+                for(var i = 0; i < params.length; ++i)
                 {
-                    $el.dhtml('item_init', [ ctx, param ], { recursive: true });
-                    $trigger_params.append($el);
-                    if(type == 'Date')
-                        $el.find('.input-group.date').datepicker({ });
-                    else if(type == 'Time')
-                        $el.find('.timepicker').timepicker({ });
+                    var param = params[i],
+                    type = param.Type || 'Text',
+                    $el = $trigger_params.dhtml('list_new_item', type),
+                    ctx = { Value: typeof values[param.Key] != 'undefined' ? values[param.Key]+'' : undefined };
+                    if($el)
+                    {
+                        $el.dhtml('item_init', [ ctx, param ], { recursive: true });
+                        $ctr_params.append($el);
+                        if(type == 'Date')
+                            $el.find('.input-group.date').datepicker({
+                                format: 'dd-mm-yyyy'
+                            });
+                        else if(type == 'Time')
+                            $el.find('.timepicker').timepicker({ });
+                    }
                 }
             }
             $infoDlg.find('.action-btn').prop('disabled', !(trigger && action));
         }
         else
         {
-            $('#trigger-custom-params').html('');
+            $('#trigger-custom-params,#action-custom-params').html('');
             $infoDlg.find('.action-btn').prop('disabled', true);
         }
     }
     function triggerParamsGetValues()
     {
         var ret = {};
-        $('#trigger-custom-params').find('input').each(function()
+        $('#trigger-custom-params,#action-custom-params').find('input')
+            .each(function()
             {
                 ret[this.name] = this.value;
             });

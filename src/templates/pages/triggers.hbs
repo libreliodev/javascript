@@ -106,6 +106,38 @@ scripts:
               </select>
             </div>
 		      </div>
+          <div id="trigger-custom-params">
+            <div data-id="Text" class="form-group">
+              <label class="control-label col-lg-4" data-content="Name"></label>
+              <div class="col-lg-6">
+                <input type="text" data-attrs="name=Key;value=Value" class="form-control" />
+              </div>
+            </div>
+            <div data-id="Number" class="form-group">
+              <label class="control-label col-lg-4" data-content="Name"></label>
+              <div class="col-lg-6">
+                <input type="number" data-attrs="name=Key;value=Value" class="form-control" />
+              </div>
+            </div>
+            <div data-id="Date" class="form-group">
+              <label class="control-label col-lg-4" data-content="Name"></label>
+              <div class="col-lg-6">
+                <div class="input-group date">
+                  <input type="text" class="form-control" data-attrs="name=Key;value=Value"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
+                </div>
+              </div>
+            </div>
+            <div data-id="Time" class="form-group">
+              <label class="control-label col-lg-4" data-content="Name"></label>
+              <div class="col-lg-6">
+                <div class="input-append bootstrap-timepicker">
+                  <input type="text" class="timepicker form-control" data-attrs="name=Key;value=Value">
+                </div>
+              </div>
+            </div>
+          </div>
+
+
           <div class="form-group">
             <label for="action" class="control-label col-lg-4" localize>Action</label>
             <div class="col-lg-6">
@@ -114,36 +146,7 @@ scripts:
               </select>
             </div>
 		      </div>
-          
-          <div id="trigger-custom-params">
-            <div data-id="Text" class="form-group">
-              <label class="control-label col-lg-4" data-content="Name"></label>
-              <div class="col-lg-3">
-                <input type="text" data-attrs="name=Key;value=Value" class="form-control" />
-              </div>
-            </div>
-            <div data-id="Number" class="form-group">
-              <label class="control-label col-lg-4" data-content="Name"></label>
-              <div class="col-lg-3">
-                <input type="number" data-attrs="name=Key;value=Value" class="form-control" />
-              </div>
-            </div>
-            <div data-id="Date" class="form-group">
-              <label class="control-label col-lg-4" data-content="Name"></label>
-              <div class="col-lg-3">
-                <div class="input-group date">
-                  <input type="text" class="form-control" data-attrs="name=Key;value=Value"><span class="input-group-addon"><i class="glyphicon glyphicon-th"></i></span>
-                </div>
-              </div>
-            </div>
-            <div data-id="Time" class="form-group">
-              <label class="control-label col-lg-4" data-content="Name"></label>
-              <div class="col-lg-3">
-                <div class="input-append bootstrap-timepicker">
-                  <input type="text" class="timepicker form-control" data-attrs="name=Key;value=Value">
-                </div>
-              </div>
-            </div>
+          <div id="action-custom-params">
           </div>
           
 		      <div class="form-group">
