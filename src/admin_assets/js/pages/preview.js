@@ -45,6 +45,8 @@ $(function()
                     }
                     $this.prop('disabled', false);
                     set_toggle_name.call($this);
+                    if(!err)
+                      reader.prop('src', reader.attr('src'));
                   });
              });
            
