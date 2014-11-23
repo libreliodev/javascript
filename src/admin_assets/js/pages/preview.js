@@ -1,5 +1,6 @@
 $(function()
 {
+  $('#preview-content').hide();
   var app_name = storage.getItem(config.storageAppNameKey),
   app_dir = get_app_dir(app_name);
   if(!app_name)
@@ -15,6 +16,7 @@ $(function()
              return handleAWSS3Error(err);
            if(err)
              return notifyUserError("You should setup app first! <a href=\"setup.html\">Click Here!</a>");
+           $('#preview-content').show();
            var setup_obj = res ? $.plist($.parseXML(res.Body.toString())) : {};
            // set app active state
            function set_toggle_name()
