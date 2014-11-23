@@ -298,12 +298,6 @@ module.exports = function (grunt) {
                     },
                     {
                         expand: true,
-                        cwd: admin_assets_src_dir + '/data',
-                        src: ['./**/*.*'],
-                        dest: admin_assets_dist_dir + '/data'
-                    },
-                    {
-                        expand: true,
                         cwd: admin_assets_src_dir + '/submodule',
                         src: ['./*/*.*','./*/css/*.*','./*/build/css/bootstrap3/*.*','./*/js/*.*','./*/src/js/*.*','./*/build/js/*.*','./*/reader/**/*.*','./*/themes/**'],
                         filter: 'isFile',

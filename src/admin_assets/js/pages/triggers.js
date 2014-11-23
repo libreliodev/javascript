@@ -18,7 +18,7 @@ $(function(){
           async.parallel([
               function(cb)
               {
-                  ajaxLoadPlistFile(assets + '/data/Actions.plist',
+                  ajaxLoadPlistFile('http://librelio-europe.s3.amazonaws.com/AAS_/Actions.plist',
                                     function(err, data)
                       {
                           if(err)
@@ -45,7 +45,7 @@ $(function(){
               },
               function(cb)
               {
-                  ajaxLoadPlistFile(assets + '/data/Triggers.plist',
+                  ajaxLoadPlistFile('http://librelio-europe.s3.amazonaws.com/AAS_/Triggers.plist',
                                     function(err, data)
                     {
                         if(err)
