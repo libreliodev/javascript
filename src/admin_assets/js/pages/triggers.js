@@ -239,7 +239,8 @@ $(function(){
         if(trigger)
         {
             var $trigger_params = $('#trigger-custom-params');
-            $ctrs_params = [$trigger_params, $('#action-custom-params')];
+            $ctrs_params = [$trigger_params, $('#action-custom-params')],
+            form_values = triggerParamsGetValues();
             for(var c = 0; c < $ctrs_params.length; ++c)
             {
                 var $ctr_params = $ctrs_params[c],
@@ -250,10 +251,11 @@ $(function(){
                     var param = params[i],
                     type = param.Type || 'Text',
                     $el = $trigger_params.dhtml('list_new_item', type),
-                    ctx = { Value: typeof values[param.Key] != 'undefined' ? values[param.Key]+'' : undefined };
+                    ctx = { Value: typeof values[param.Key] != 'undefined' ? values[param.Key]+'' : undefined },
+                    ctx2 = { Value: typeof form_values[param.Key] != 'undefined' ? form_values[param.Key]+'' : undefined };
                     if($el)
                     {
-                        $el.dhtml('item_init', [ ctx, param ], { recursive: true });
+                        $el.dhtml('item_init', [ ctx2, ctx, param ], { recursive: true });
                         $ctr_params.append($el);
                         if(type == 'Date')
                             $el.find('.input-group.date').datepicker({
