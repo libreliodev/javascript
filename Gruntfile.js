@@ -381,6 +381,13 @@ module.exports = function (grunt) {
                      src: ['./css/*', './js/*'],
                      dest: admin_assets_dist_dir + '/lib/bootstrap-datepicker/'
                     },
+                    {
+                      expand: true,
+                      cwd: 'bower_components/bootstrap-timepicker/',
+                      src: ['./css/bootstrap-timepicker.min.css', 
+                            './js/bootstrap-timepicker.min.js'],
+                      dest: admin_assets_dist_dir + '/lib/bootstrap-timepicker/'
+                    },
                     // formbuilder
                     { expand:true, cwd:'bower_components/jquery-ui/ui/minified',
                       src: [ "jquery.ui.core.min.js", "jquery.ui.widget.min.js",
