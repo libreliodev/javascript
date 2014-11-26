@@ -312,7 +312,10 @@ $(function(){
            {
                if(err)
                {
-                   handleAWSS3Error(err)
+                   if(err.code == 'AccessDeniedException')
+                       notifyUserError(_("Your subscription does not include triggers. Please contact Librelio for more details"));
+                   else
+                       handleAWSS3Error(err)
                    return;
                }
                function getItemByRowId(id)

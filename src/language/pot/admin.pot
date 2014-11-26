@@ -713,3 +713,6 @@ msgstr ""
 msgid "Start Upload"
 msgstr ""
 
+#: templates/pages/triggers.hbs:316
+msgid "Your subscription does not include triggers. Please contact Librelio for more details"
+msgstr ""
