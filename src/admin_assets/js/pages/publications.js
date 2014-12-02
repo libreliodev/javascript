@@ -284,15 +284,22 @@ $(function() {
             },
             checkBeforeUpload: function(inp_el, file, cb)
             {
-              makeImageFromFile(file, function(err, image)
-                {
-                  if(err)
-                    return notifyUserError(err);
-                  var m = validateImageSizeByElementAttrs(inp_el, image);
-                  cb(!m);
-                  if(m)
-                    notifyUserError(m);
-                });
+              if($(inp_el).data('type') == 'Image')
+              {
+                makeImageFromFile(file, function(err, image)
+                  {
+                    if(err)
+                      return notifyUserError(err);
+                    var m = validateImageSizeByElementAttrs(inp_el, image);
+                    cb(!m);
+                    if(m)
+                      notifyUserError(m);
+                  });
+              }
+              else
+              {
+                cb(true);
+              }
             },
             onerror: handleAWSS3Error,
             loadnow: false
