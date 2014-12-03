@@ -1,0 +1,126 @@
+body {
+  background: #3cc533; /* Old browsers */
+  background: -moz-linear-gradient(top, #3cc533 0%, #ecfad1 100%); /* FF3.6+ */
+  background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#3cc533), color-stop(100%,#ecfad1)); /* Chrome,Safari4+ */
+  background: -webkit-linear-gradient(top, #3cc533 0%,#ecfad1 100%); /* Chrome10+,Safari5.1+ */
+  background: -o-linear-gradient(top, #3cc533 0%,#ecfad1 100%); /* Opera 11.10+ */
+  background: -ms-linear-gradient(top, #3cc533 0%,#ecfad1 100%); /* IE10+ */
+  background: linear-gradient(to bottom, #3cc533 0%,#ecfad1 100%); /* W3C */
+  filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#3cc533', endColorstr='#ecfad1',GradientType=0 ); /* IE6-9 */
+}
+
+#covers-wrp {
+  height: 700px;
+  overflow: hidden;
+  padding-top: 60px;
+}
+
+#featured-cover {
+  height: 410px;
+  overflow: hidden;
+}
+
+#featured-cover .left-side {
+  float: left;
+  width: 400px;
+  padding-left: 60px;
+}
+
+#featured-cover .right-side {
+  margin-left: 420px;
+  padding-right: 80px;
+}
+
+#featured-cover .cover-image-wrp {
+  overflow: hidden;
+  height: 410px;
+}
+
+#featured-cover .cover-image-wrp img {
+  height: 100%;
+}
+
+#featured-cover .right-side .info {
+  float:left;
+  width: 200px;
+}
+
+#featured-cover .right-side .info .title {
+  margin-top: 6px;
+  margin-bottom: 5px;
+  font-size: 25px;
+  font-weight: normal;
+}
+#featured-cover .right-side .info .date {
+
+}
+
+#featured-cover .right-side .preview-btn-wrp {
+  margin-left: 200px;
+  height: 70px;
+}
+
+#featured-cover .right-side > div {
+  margin-bottom: 15px;
+}
+
+.subs-btn {
+  background: none;
+  color: black;
+  padding: 6px;
+  border: 1px solid black;
+  display: block;
+  width: 100%;
+  height: 65px;
+  border-radius: 14px;
+}
+
+.subs-btn .single-label {
+  font-size: 20px;
+}
+
+.subs-btn .price,
+.subs-btn .label-big {
+  font-size: 18px;
+}
+
+.subs-btn .price,
+.subs-btn .label-big,
+.subs-btn .label {
+  display: block;
+  color: black;
+  text-weight: normal;
+}
+
+.clearb {
+  clear: both;
+}
+
+#covers-list {
+  height: 170px;
+  overflow: hidden;
+  overflow-x: auto;
+  white-space: nowrap;
+  list-style: none;
+  margin: 0px;
+  padding: 0px;
+  margin-top: 50px;
+}
+
+#covers-list li {
+  width: 110px;
+  height: 170px;
+  margin: 0px 40px;
+  display: inline-block;
+  text-align: center;
+  vertical-align: top;
+}
+
+#covers-list img {
+  width: 100%;
+}
+
+#covers-list span {
+  display: block;
+  white-space: normal;
+}

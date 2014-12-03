@@ -14,6 +14,7 @@ module.exports = function (grunt) {
     var src_dir = 'src',
     shared_assets = src_dir + '/assets',
     csvreader_assets = src_dir + '/csvreader_assets',
+    tsvreader_assets = src_dir + '/tsvreader_assets',
     pdfreader_assets = src_dir + '/pdfreader_assets',
     reader_assets_src_dir = src_dir + '/reader_assets',
     admin_assets_src_dir = src_dir + '/admin_assets',
@@ -269,6 +270,17 @@ module.exports = function (grunt) {
                     {
                         expand: true,
                         cwd: csvreader_assets, src: ['js/**'],
+                        dest: webviews_assets_dist_dir + '/'
+                    },
+                  /* copy tsvreader assets */
+                    {
+                        expand: true,
+                        cwd: tsvreader_assets, src: ['js/**','tsvreader_modules/**'],
+                        dest: reader_assets_dist_dir + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: tsvreader_assets, src: ['js/**','tsvreader_modules/**'],
                         dest: webviews_assets_dist_dir + '/'
                     },
                   /* admin assets */

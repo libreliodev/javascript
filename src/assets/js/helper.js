@@ -10,7 +10,7 @@ function forEach(a, each_cb)
 }
 function s3bucket_file_url(key)
 {
-  return '//' + config.s3Bucket + '.s3.amazonaws.com' + 
+  return '//' + config.s3Bucket + '.s3-eu-west-1.amazonaws.com' + 
     (key[0] == '/' ? '' : '/') + key;
 }
 function librelio_pdf_resolve_url(s, relto)

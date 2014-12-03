@@ -1,0 +1,51 @@
+<link type="text/css" rel="stylesheet" class="tsvinit" data-attrs="href=tmplrelpath('covers.css')" data-init="ready_after_load()" />
+<div id="covers-wrp">
+  <div id="featured-cover">
+    <div class="left-side">
+      <div class="cover-image-wrp">
+        <img data-attrs="src=row.img_thumbnail_url" />
+      </div>
+    </div>
+    <div class="right-side">
+      <div>
+        <div class="info">
+          <h3 class="title" data-content="row.title"></h3>
+          <p class="date" data-content="row.date"></p>
+        </div>
+        <div class="preview-btn-wrp">
+          <button class="btn subs-btn" type="button"><span class="single-label">Free Preview</span></button>
+        </div>
+      </div>
+      <div>
+        <button class="btn subs-btn" type="button">
+          <span class="price">3,99&#8364;</span>
+          <span class="label">Buy this issue</span>
+        </button>
+      </div>
+      <div>
+        <button class="btn subs-btn" type="button">
+          <span class="price">13,99&#8364;</span>
+          <span class="label">Subscribe for 3 months</span>
+        </button>
+      </div>
+      <div>
+        <button class="btn subs-btn" type="button">
+          <span class="price">23,99&#8364;</span>
+          <span class="label">Subscribe for 1 year</span>
+        </button>
+      </div>
+      <div>
+        <button class="btn subs-btn" type="button">
+          <span class="label">Already as subscriber?</span>
+          <span class="label-big">Login in</span>
+        </button>
+      </div>
+    </div>
+  </div>
+  <ul id="covers-list"><!-- 
+  --><li data-foreach="rows as i=>row">
+      <img data-attrs="src=row.img_thumbnail_url" />
+      <span data-content="row.date"></span>
+    </li><!-- 
+--></ul>
+</div>
