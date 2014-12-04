@@ -22,14 +22,21 @@ body {
 
 #featured-cover .left-side {
   float: left;
-  width: 400px;
+  width: 380px;
   padding-left: 60px;
 }
 
-#featured-cover .right-side {
-  margin-left: 420px;
-  padding-right: 80px;
+.buttons-list {
+  padding-left: 50px;
+  padding-right: 50px;
 }
+
+#featured-cover .right-side {
+  margin-left: 380px;
+  padding-left: 10px;
+  padding-right: 60px;
+}
+
 
 #featured-cover .cover-image-wrp {
   overflow: hidden;
@@ -40,27 +47,27 @@ body {
   height: 100%;
 }
 
-#featured-cover .right-side .info {
+.buttons-list .info {
   float:left;
   width: 200px;
 }
 
-#featured-cover .right-side .info .title {
+.buttons-list .info .title {
   margin-top: 6px;
   margin-bottom: 5px;
   font-size: 25px;
   font-weight: normal;
 }
-#featured-cover .right-side .info .date {
+.buttons-list .info .date {
 
 }
 
-#featured-cover .right-side .preview-btn-wrp {
+.buttons-list .preview-btn-wrp {
   margin-left: 200px;
   height: 70px;
 }
 
-#featured-cover .right-side > div {
+.buttons-list > div {
   margin-bottom: 15px;
 }
 
@@ -123,4 +130,33 @@ body {
 #covers-list span {
   display: block;
   white-space: normal;
+}
+
+
+#cover-details .modal-dialog {
+  width: 600px;
+}
+
+
+#cover-details .left-img-wrp {
+  padding: 10px;
+  height: 300px;
+  overflow: hidden;
+  float: left;
+  width: 250px;
+}
+#cover-details .left-img-wrp img {
+  height: 100%;
+}
+#cover-details .summary {
+  margin-top: 10px;
+  margin-left: 260px;
+}
+#cover-details .summary .title {
+  font-weight: bold;
+  font-size: 16px;
+}
+#cover-details .summary .summary-list {
+  padding-left: 5px;
+  list-style: none;
 }

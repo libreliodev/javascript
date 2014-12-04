@@ -31,7 +31,9 @@ TSVReaderModule.ready = function()
       var list = document.getElementById('covers-list');
       if(list)
       {
-        reader.update_table(list, { }, 1);
+        reader.update_table(list, {
+          open_cover_details_dialog: open_cover_details_dialog
+        }, 1);
       }
 
       var featured = document.getElementById('featured-cover');
@@ -39,13 +41,34 @@ TSVReaderModule.ready = function()
       {
         featured_html = featured.innerHTML;
         var ctx = {
-          row: reader.rows[0]
+          index: 0,
+          row: reader.rows[0],
+          open_cover_details_dialog: open_cover_details_dialog
         };
         $(featured).dhtml('item_init', [ ctx, reader.global_ctx ], 
                           { recursive: true });
 
       }
     });
+
+  function open_cover_details_dialog(index, row)
+  {
+    var $cover_details = $('#cover-details');
+    if(!$cover_details.data('_original_html'))
+      $cover_details.data('_original_html', $cover_details.html());
+    else
+      $cover_details.html($cover_details.data('_original_html'));
+
+    var ctx = {
+      index: 0,
+      row: row
+    };
+    $cover_details.dhtml('item_init', [ ctx, reader.global_ctx ], 
+                         { recursive: true });
+
+    $cover_details.modal({ });
+    $cover_details.modal('show');
+  }
 
 }
 function paid2free(fn, noext)
