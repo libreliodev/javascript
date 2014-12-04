@@ -168,7 +168,8 @@ $(function(){
         awsS3.putObject({
             Bucket: config.s3Bucket,
             Key: app_dir + '/' + setup_file_path,
-            Body: body
+            Body: body,
+            CacheControl: 'must-revalidate, max-age=0'
         }, function(err, res)
            {
                if(err)

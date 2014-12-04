@@ -35,9 +35,11 @@ $(function()
                awsS3.putObject({
                  Bucket: config.s3Bucket,
                  Key: app_dir + '/APP_/Uploads/setup.plist',
-                 Body: $.plist('toString', setup_obj)
-               }, function(err)
+                 Body: $.plist('toString', setup_obj),
+                 CacheControl: 'must-revalidate, max-age=0'
+               }, function(err, res)
                   {
+
                     if(err)
                     {
                       setup_obj.Active = !setup_obj.Active;
@@ -46,11 +48,11 @@ $(function()
                     $this.prop('disabled', false);
                     set_toggle_name.call($this);
                     if(!err)
-                      reader.prop('src', reader.attr('src'));
+                        reader.prop('src', reader.prop('src'));
                   });
              });
-           
-           $('#reader-link').attr('href', 'http://reader.librelio.com?' + 
+           var base_url = 'http://reader.librelio.com';
+           $('#reader-link').attr('href', base_url + '?' + 
                                              querystring.stringify({
                                                wapublisher: 
                                                      s3AuthObj.rootDirectory,
@@ -58,7 +60,7 @@ $(function()
                                              }));
            var reader = $('<iframe/>');
            reader.prop('id', 'reader');
-           reader.attr('src', 'http://reader.librelio.com?' + 
+           reader.attr('src', base_url + '?' + 
                                              querystring.stringify({
                                                wapublisher: 
                                                      s3AuthObj.rootDirectory,
