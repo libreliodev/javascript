@@ -21,6 +21,8 @@ $(function(){
        _update_every = parseFloat(q.waupdate);
        update_every = (isNaN(_update_every) ? 30 : _update_every)*60*1000;
        app_data = data;
+
+       login_or_out_update();
        magazines_load(data, magazines_list, magazines_loaded_handle);
 
        // set background
@@ -119,7 +121,8 @@ $(function(){
       client: app_data.Publisher,
       app: app_data.Application,
       service: service_name,
-      urlstring: (item.FileName[0] != '/' ? '/' : '') + item.FileName
+      urlstring: (item.FileName[0] != '/' ? '/' : '') + item.FileName,
+      app_data: app_data
     });
   }
   function magazines_create_item(item, data, list)
@@ -194,7 +197,7 @@ $(function(){
   // with these buttons. One of them should be visible at a time.
   // CodeService and UserService does support login choice.
   // login dialog could be the same as purchase dialog with few changes.
-  login_or_out_update();
+  login_or_out_update(false);
   $('#login-btn').click(function()
     {
       var type = app_data.CodeService ? 'code' : 
@@ -208,21 +211,22 @@ $(function(){
         client: app_data.Publisher,
         app: app_data.Application,
         service: service_name,
-        submit_callback: login_or_out_update
+        submit_callback: login_or_out_update,
+        app_data: app_data
       });
       return false;
     });
   $('#logout-btn').click(function()
     {
-      localStorage.setItem('reader-auth', '');
+      localStorage.setItem(reader_auth_key(app_data), '');
       login_or_out_update();
       return false;
     });
-  function login_or_out_update()
+  function login_or_out_update(auth)
   {
-    var auth = !!localStorage.getItem('reader-auth');
+    auth = typeof auth != 'undefined' ? auth : 
+      !!localStorage.getItem(reader_auth_key(app_data));
     $('#login-btn')[!auth ? 'show' : 'hide']();
     $('#logout-btn')[auth ? 'show' : 'hide']();
   }
-
 });

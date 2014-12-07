@@ -7,6 +7,10 @@ function parse_url(url)
 {
   return $('<a/>').prop('href', url)[0].href;
 }
+function reader_auth_key(app_data)
+{
+  return 'reader-auth_' + app_data.Publisher + '/' + app_data.Application;
+}
 function purchase_dialog_open(opts)
 {
   var type = opts.type,
@@ -24,7 +28,7 @@ function purchase_dialog_open(opts)
       {
         if(!success)
         {
-          localStorage.setItem('reader-auth', null)
+          localStorage.setItem(reader_auth_key(opts.app_data), null)
           setup(type);
         }
       });
@@ -134,7 +138,8 @@ function purchase_dialog_submit(opts, cb)
         }
         else if(opts.type == 'code')
           auth_obj.code = query.code;
-         localStorage.setItem('reader-auth', JSON.stringify(auth_obj));
+         localStorage.setItem(reader_auth_key(opts.app_data), 
+                              JSON.stringify(auth_obj));
         if(!opts.urlstring)
           show_login_result();
         else

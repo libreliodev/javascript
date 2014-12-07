@@ -80,7 +80,8 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
              client: app_data.Publisher,
              app: app_data.Application, 
              service: service_name,
-             urlstring: path_str
+             urlstring: path_str,
+             app_data: app_data
            });
          }
          obj.return_value = false;
