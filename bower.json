@@ -45,6 +45,7 @@
     "bootstrap-timepicker": "~0.2.6"
   },
   "resolutions": {
-    "font-awesome": ">=4.2.0"
+    "font-awesome": ">=4.2.0",
+    "bootstrap": ">=3.0 <4.0"
   }
 }
