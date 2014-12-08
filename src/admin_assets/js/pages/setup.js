@@ -132,7 +132,7 @@ $(function(){
                                   $this.val(obj[key] ? 'True' : 'False');
                                   break;
                               default:
-                                  $this.val(obj[key]);
+                                  $this.val(obj[key] || '');
                               }
                           }
                       });
@@ -148,14 +148,16 @@ $(function(){
                 .each(function()
                   {
                       var $this = $(this),
-                      val = $this.data('value') ||
-                          $this.val() || '';
+                      val = typeof $this.data('value') != 'undefined' ? 
+                        $this.data('value') : $this.val() || '';
                       switch($this.data('type'))
                       {
                       case 'BOOL':
                           ret[$this.attr('name')] = val == 'True' ? true : false;
                           break;
                       default:
+                        if(typeof $this.data('null-if-empty') == 'undefined' ||
+                           val.length > 0)
                           ret[$this.attr('name')] = val;
                       }
                   });
