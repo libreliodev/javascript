@@ -42,83 +42,87 @@ $(function(){
     }
   function setupPageInit()
   {
-    var isSaving = false;
-    $page.find('input[type=text], textarea').prop('disabled', true);
-    $page.find('input[type=text], textarea')
-        .bind('focus', function()
-           {
-               $(this).data('prev_value', $(this).val());
-           })
-        .bind('blur', function()
-           {
-               var $this = $(this),
-               prev_val = $this.data('prev_value'),
-               val = $this.val();
-               if(!awsS3)
-                   return;
-               if(prev_val != val)
-               {
-                   $this.prop('disabled', true);
-                   $this.val(_('Saving...'))
-                       .data('value', val);
-                   if(isSaving)
-                   {
-                       var dataSaved;
-                       $page.bind('setupPlistSaved', function()
-                          {
-                              if(!isSaving && !dataSaved)
-                              {
-                                  $page.unbind('setupPlistSaved', 
-                                               arguments.callee);
-                                  isSaving = true;
-                                  saveSetupPlist(app_dir, $page, save_handler);
-                              }
-                              else if(dataSaved)
-                              {
-                                  $this.prop('disabled', false);
-                                  $this.val(val);
-                                  $page.unbind('setupPlistSaved', 
-                                               arguments.callee);
-                              }
-                              else
-                              {       
-                                  dataSaved = true;
-                              }
-                          });
-                       return;
-                   }
-                   isSaving = true;
-                   saveSetupPlist(app_dir, $page, save_handler);
-                   function save_handler(res)
-                   {
-                       $this.prop('disabled', false);
-                       $this.val(val)
-                           .data('value', null);
-                       
-                       isSaving = false;
-                       $page.trigger('setupPlistSaved', res);
-                   }
-               }
-           });
+      var savingObj;
+      $page.find('input[type=text], textarea, select').prop('disabled', true);
+      $page.find('input[type=text], textarea, select')
+          .bind('focus', function()
+            {
+                $(this).data('prev_value', $(this).val());
+            });
+      $page.find('input[type=text], textarea')
+          .bind('blur', input_element_change_check);
+      $page.find('select').bind('change', input_element_change_check);
+      function input_element_change_check()
+      {
+          var $this = $(this),
+          saving_el,
+          prev_val = $this.data('prev_value'),
+          val = $this.val();
+          if(prev_val != val)
+          {
+              $this.prop('disabled', true)
+                  .data('value', val+'');
+              if(this.nodeName == 'SELECT')
+              {
+                  saving_el = $('<option/>');
+                  saving_el.attr('value', '__saving__');
+                  saving_el.text(_('Saving...'));
+                  $this.append(saving_el);
+                  $this.val('__saving__');
+              }
+              else
+              {
+                  $this.val(_('Saving...'))
+              }
+              setupSettingHasChanged(function()
+                {
+                    $this.prop('disabled', false);
+                    $this.val(val)
+                        .data('value', null);
+                    if($this[0].nodeName == 'SELECT')
+                        saving_el.remove();
+                });
+          }
+      }
+    function setupSettingHasChanged(cb)
+    {
+        if(savingObj)
+            savingObj.abort();
+        $(document).bind('setupSettingSaved', saved_cb);
+        savingObj = saveSetupPlist(app_dir, $page, save_handler);
+        function saved_cb()
+        {
+            $(document).unbind('setupSettingSaved', saved_cb);
+            cb && cb();
+        }
+        function save_handler()
+        {
+            savingObj = null;
+            $(document).unbind('setupSettingSaved', saved_cb);
+            $(document).trigger('setupSettingSaved');
+            cb && cb();
+        }
+    }
   }
+  
     function loadSetupPage(app_dir, $page, cb)
     {
         $page.find('input[type=text], textarea').prop('disabled', true);
         // load setup plist file and set its content in the form
-        awsS3.getObject({
+        return awsS3.getObject({
             Bucket: config.s3Bucket,
             Key: app_dir + '/' + setup_file_path,
             ResponseContentEncoding: 'utf8'
         }, function(err, res)
            {
-               $page.find('input[type=text], textarea').prop('disabled', false);
+               $page.find('input[type=text], textarea, select').prop('disabled', false);
                if(err && err.code != 'NoSuchKey')
                {
                    handleAWSS3Error(err)
                    return;
                }
                var obj = res ? $.plist($.parseXML(res.Body.toString())) : {},
-               $inps = $page.find('input[type=hidden], input[type=text], textarea');
+               $inps = $page.find('input[type=hidden], input[type=text], textarea, select');
                for(var key in obj)
                {
                    $inps.each(function()
@@ -144,11 +148,11 @@ $(function(){
         function getObjectOfSetupPage($el)
         {
             var ret = {};
-            $el.find('input[type=hidden], input[type=text], textarea')
+            $el.find('input[type=hidden], input[type=text], textarea, select')
                 .each(function()
                   {
                       var $this = $(this),
-                      val = typeof $this.data('value') != 'undefined' ? 
+                      val = typeof $this.data('value') == 'string' ? 
                         $this.data('value') : $this.val() || '';
                       switch($this.data('type'))
                       {
@@ -167,7 +171,7 @@ $(function(){
         var obj = getObjectOfSetupPage($page),
         body = $.plist('toString', obj);
         // save setup plist file for input app
-        awsS3.putObject({
+        return awsS3.putObject({
             Bucket: config.s3Bucket,
             Key: app_dir + '/' + setup_file_path,
             Body: body,

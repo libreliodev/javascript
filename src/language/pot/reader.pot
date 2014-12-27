@@ -168,3 +168,7 @@ msgstr ""
 #: reader_assets/js/main.js:220
 msgid "This App Does Not Exist"
 msgstr ""
+
+#: reader_assets/js/magazine.js:70
+msgid "File extension not supported: %s"
+msgstr ""

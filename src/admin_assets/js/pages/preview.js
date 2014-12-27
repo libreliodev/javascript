@@ -51,7 +51,7 @@ $(function()
                         reader.prop('src', reader.prop('src'));
                   });
              });
-           var base_url = 'http://reader.librelio.com';
+           var base_url = '//reader.librelio.com';
            $('#reader-link').attr('href', base_url + '?' + 
                                              querystring.stringify({
                                                wapublisher: 

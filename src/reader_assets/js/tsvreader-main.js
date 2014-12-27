@@ -5,7 +5,6 @@ initialize_reader(function(app_data, tsv_url, tsv_url_dir,
       return;
     var tmpl_url = template_url(app_data, tsv_url, tsv_url_dir, 
                                 external_b, doc_query),
-    doc_query = querystring.parse(get_url_query(document.location+'')),
     module_name = doc_query.wamodule,
     tsvreader_el = document.getElementById('tsvreader');
     if(!module_name)

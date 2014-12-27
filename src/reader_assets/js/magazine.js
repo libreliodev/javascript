@@ -2,12 +2,14 @@ $(function(){
   // load application_.json data
   var doc_query = querystring.parse(get_url_query(document.location+'')),
   magazines_list = $('.magazines').eq(0),
+  magazines_container = $('.reader-container').eq(0),
   app_data,
   MAG_TYPE_FREE = 'Free',
   MAG_TYPE_PAID = 'Paid',
   refresh_timeout,
   update_every;
-
+  
+  magazines_container.hide();
   magazines_init(magazines_list);
 
   application_info_load(doc_query, function(err, data)
@@ -17,17 +19,23 @@ $(function(){
        if(err)
          return notifyError(err);
        // get update rate it's in minutes
-       var q = querystring.parse(get_url_query(data.RootView)) || {},
+       var qstr = get_url_query(data.RootView),
+       q = querystring.parse(qstr) || {},
+       ext = path.extname(data.RootView.substr(0, data.RootView.length - qstr.length - 1)),
        _update_every = parseFloat(q.waupdate);
        update_every = (isNaN(_update_every) ? 30 : _update_every)*60*1000;
        app_data = data;
-
-       login_or_out_update();
-       magazines_load(data, magazines_list, magazines_loaded_handle);
-
-       // set background
-       if(data.BackgroundColor)
+       
+       switch(ext)
        {
+       case '.plist':
+         magazines_container.show();
+         login_or_out_update();
+         magazines_load(data, magazines_list, magazines_loaded_handle);
+
+         // set background
+         if(data.BackgroundColor)
+         {
            var color = new RGBColor(data.BackgroundColor),
            invert_color;
            if(color.ok)
@@ -40,23 +48,87 @@ $(function(){
            }
            $('<style type="text/css" />').html(
              'body, .headline, .label-default { background-color:' + data.BackgroundColor + ' !important; }' +
-              (invert_color ? '.label-default[href]:hover, .label-default[href]:focus { background-color:' + invert_color + ' !important; }' : '')).appendTo('head');
-       }
-       $('.reader-background').css('backgroundImage', 
-              'url("' + magazine_file_url(data, 'APP_/Uploads/Magazines_background.png') +'")');
+               (invert_color ? '.label-default[href]:hover, .label-default[href]:focus { background-color:' + invert_color + ' !important; }' : '')).appendTo('head');
+         }
+         $('.reader-background').css('backgroundImage', 
+                                     'url("' + magazine_file_url(data, 'APP_/Uploads/Magazines_background.png') +'")');
 
-       $('#logo-btn img').attr('src', magazine_file_url(data, 'APP_/Uploads/logo'));
+         $('#logo-btn img').attr('src', magazine_file_url(data, 'APP_/Uploads/logo'));
 
-       // links to sites
-       var $logo_dropdown_list = $("#logo-btn").parent().find('.dropdown-menu'),
-       sites_to_class = { WebSite: 'site-item', Facebook: 'facebook-item' };
-       for(var site in sites_to_class)
-       {
-         var $site_li = $logo_dropdown_list.find('.' + sites_to_class[site]);
-         if(data[site])
-           $site_li.find('a').attr('href', data[site]);
-         else
-           $site_li.hide();
+         // links to sites
+         var $logo_dropdown_list = $("#logo-btn").parent().find('.dropdown-menu'),
+         sites_to_class = { WebSite: 'site-item', Facebook: 'facebook-item' };
+         for(var site in sites_to_class)
+         {
+           var $site_li = $logo_dropdown_list.find('.' + sites_to_class[site]);
+           if(data[site])
+             $site_li.find('a').attr('href', data[site]);
+           else
+             $site_li.hide();
+         }
+         break;
+       case '.tsv':
+         function load_scripts(paths, cb)
+         {
+           async.parallel(paths.map(function(p)
+                            {
+                              return function(cb)
+                              {
+                                $.ajax({
+                                  url: p,
+                                  dataType: 'script',
+                                  success: function()
+                                  {
+                                    cb();
+                                  },
+                                  error: function(xhr, err, err_text)
+                                  {
+                                    cb("Couldn't load script: " + p);
+                                  }
+                                });
+                              }
+                            }), function(err)
+             {
+               if(err)
+                 return notifyError(err);
+               cb();
+             });
+         }
+         var scripts = [ 'lib/d3.min.js',
+                         'lib/taffy-min.js',
+                         'js/sharelist.js',
+                         'js/tsvreader.js',
+                         'js/TSVReaderModuleLoader.js',
+                         'js/tsvreader-main.js' ];
+         load_scripts(scripts.map(function(p){ return assets + '/' + p }), 
+                      function()
+           {
+             var tsv_url = magazines_url(data),
+             tsv_url_dir = url_dir(tsv_url);
+             tmpl_url = TSVReader.template_url(tsv_url, tsv_url_dir),
+             module_name = q.wamodule,
+             tsvreader_el = $('<div id="tsvreader"/>')[0];
+             magazines_container.replaceWith(tsvreader_el);
+             $('body').removeClass('dark-bkg').removeClass('light-bkg');
+             if(!module_name)
+               module_name = 'covers';
+             var moduleLoader = new TSVReaderModuleLoader(module_name, 
+                                                          tsvreader_el);
+             moduleLoader.supply = {
+               doc_query: q,
+               tmpl_url: tmpl_url,
+               tsv_url: tsv_url,
+               app_data: app_data
+             };
+             moduleLoader.load(function(err)
+               {
+                 
+               });
+           });
+         break;
+       default:
+         notifyError(sprintf(_('File extension not supported: %s'), 
+                             data.RootView));
        }
      });
   function magazines_loaded_handle(err)
