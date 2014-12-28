@@ -1,3 +1,14 @@
+function path_without_query(s)
+{
+  s = s || '';
+  var qstr = get_url_query(s),
+  ret;
+  if(qstr.length > 0)
+    ret = s.substr(0, s.length - qstr.length - 1);
+  else
+    ret = s;
+  return ret;
+}
 function librelio_url_query(s)
 {
   var idx = (s+'').lastIndexOf('?');

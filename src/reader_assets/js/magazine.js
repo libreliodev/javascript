@@ -19,9 +19,8 @@ $(function(){
        if(err)
          return notifyError(err);
        // get update rate it's in minutes
-       var qstr = get_url_query(data.RootView),
-       q = querystring.parse(qstr) || {},
-       ext = path.extname(data.RootView.substr(0, data.RootView.length - qstr.length - 1)),
+       var q = querystring.parse(get_url_query(data.RootView)) || {},
+       ext = path.extname(path_without_query(data.RootView)),
        _update_every = parseFloat(q.waupdate);
        update_every = (isNaN(_update_every) ? 30 : _update_every)*60*1000;
        app_data = data;

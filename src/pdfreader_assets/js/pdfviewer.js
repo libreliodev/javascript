@@ -842,6 +842,15 @@
         {
           if(xhr.readyState >= 2 && next)
           {
+            if(xhr.status != 206 && xhr.status != 200)
+            {
+              var err = new Error("Error occured while loading pdf file: " + 
+                                  xhr.status);
+              err.status = xhr.status;
+              cb && cb(err);
+              next = null;
+              return;
+            }
             var data = {
               headers: xhrGetResponseHeaders(xhr)
             };
@@ -880,7 +889,7 @@
           }
           return buffer;
         }
-
+        
         PDFJS.getDocument({
           url: pdf_url,
           length: filesize
@@ -915,7 +924,10 @@
               callListeners(progressListeners, this, [ ev.loaded ]);
             };
             xhr.onerror = function(ev) {
-              cb("Error occured while loading pdf file: " + xhr.status);
+              var err = new Error("Error occured while loading pdf file: " + 
+                                  xhr.status);
+              err.status = xhr.status;
+              cb && cb(err);
             };
             xhr.send(null);
           }
