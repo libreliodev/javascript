@@ -11,6 +11,21 @@ function reader_auth_key(app_data)
 {
   return 'reader-auth_' + app_data.Publisher + '/' + app_data.Application;
 }
+
+function purchase_user_login_status(opts, cb)
+{
+  // request for a page on subsription to check login status
+  var app_data = opts.app_data;
+  purchase_dialog_submit({
+    type: 'user',
+    client: app_data.Publisher,
+    app: app_data.Application,
+    service: app_data.UserService,
+    wasession: opts.wasession,
+    silent: true
+  }, cb);
+
+}
 function purchase_dialog_open(opts)
 {
   var type = opts.type,
@@ -18,24 +33,43 @@ function purchase_dialog_open(opts)
   auth;
   if(dlg.length === 0)
     return;
-  try {
-    auth = JSON.parse(localStorage.getItem('reader-auth'));
-  }catch(e) {
-  }
-  if(auth)
+  if(type == 'user')
   {
-    purchase_dialog_submit($.extend({}, opts, auth), function(success)
-      {
-        if(!success)
+    if(opts.user_login_status !== false)
+    {
+      purchase_dialog_submit($.extend(false, { silent: true }, opts), 
+                             function(success)
         {
-          localStorage.setItem(reader_auth_key(opts.app_data), null)
-          setup(type);
-        }
-      });
+          if(!success)
+          {
+            setup();
+          }
+        });
+    }
+    else
+      setup();
   }
   else
-    setup(type);
-  function setup(type)
+  {
+    try {
+      auth = JSON.parse(localStorage.getItem(reader_auth_key(opts.app_data)));
+    }catch(e) {
+    }
+    if(auth && auth.type == type)
+    {
+      purchase_dialog_submit($.extend({}, opts, auth), function(success)
+        {
+          if(!success)
+          {
+            localStorage.setItem(reader_auth_key(opts.app_data), null)
+            setup();
+          }
+        });
+    }
+    else
+      setup();
+  }
+  function setup()
   {
     purchase_dialog_set_page(type);
     dlg.find('input').val('');
@@ -72,24 +106,20 @@ function purchase_dialog_submit(opts, cb)
   switch(opts.type)
   {
   case 'user':
-    if(typeof opts.user != 'undefined')
+    if(opts.user || opts.pswd)
     {
       query.user = opts.user;
       query.pswd = opts.pswd;
     }
-    else
+    else if(opts.wasession)
     {
-      query.user =  $('#purchase-dlg-user-inp').val();
-      query.pswd = $('#purchase-dlg-pass-inp').val();
+      query.wasession = opts.wasession+'';
     }
     url_str = 'http://download.librelio.com/downloads/subscribers.php?' +
       querystring.stringify(query);
     break;
   case 'code':
-    if(typeof opts.code != 'undefined')
-      query.code = opts.code;
-    else
-      query.code = $('#purchase-dlg-code-inp').val();
+    query.code = opts.code;
     url_str = 'http://download.librelio.com/downloads/pswd.php?' +
       querystring.stringify(query);
     break;
@@ -116,6 +146,9 @@ function purchase_dialog_submit(opts, cb)
       purchase_dialog_set_page('result');
   }
   $.ajax(url_str, {
+    xhrFields: {
+      withCredentials: true
+    },
     dataType: 'xml',
     success: function(xmlDoc)
     {
@@ -124,24 +157,25 @@ function purchase_dialog_submit(opts, cb)
       $url = $xmlDoc.find('UrlString');
       if($err.length > 0)
       {
-        show_login_result($err.find('Message').text());
+        if(!opts.silent)
+          show_login_result($err.find('Message').text());
         cb && cb(false);
       }
       else if($url.length > 0)
       {
         var url_str = $url.text(),
         auth_obj = { type: opts.type };
-        if(opts.type == 'user')
+        if(opts.type == 'code')
         {
-          auth_obj.user = query.user;
-          auth_obj.pswd = query.pswd;
-        }
-        else if(opts.type == 'code')
           auth_obj.code = query.code;
-         localStorage.setItem(reader_auth_key(opts.app_data), 
-                              JSON.stringify(auth_obj));
+          localStorage.setItem(reader_auth_key(opts.app_data), 
+                               JSON.stringify(auth_obj));
+        }
         if(!opts.urlstring)
-          show_login_result();
+        {
+          if(!opts.silent)
+            show_login_result();
+        }
         else
         {
           var path_str = url_path_plus(url_str),
@@ -157,14 +191,15 @@ function purchase_dialog_submit(opts, cb)
       {
         cb && cb(false);
         var err = _("Unknown response!");
-        show_login_result(err);
+        if(!opts.silent)
+          show_login_result(err);
       }
     },
-    error: function(xhr, err_text)
+    error: function(xhr, err, err_txt)
     {
       cb && cb(false);
-      var err = sprintf(_("Request has failed: %s"), err_text);
-      show_login_result(err);
+      if(!opts.silent)
+        show_login_result(new Error(err_txt));
     }
   });
 }
@@ -192,7 +227,20 @@ $(function()
         var dlg = $('#purchase-dialog'),
         opts = dlg.data('pdata');
         if(opts)
-          purchase_dialog_submit(opts);
+        {
+          var eopts = $.extend(false, {}, opts);
+          switch(opts.type)
+          {
+          case 'user':
+            eopts.user = $('#purchase-dlg-user-inp').val();
+            eopts.pswd = $('#purchase-dlg-pass-inp').val();
+            break;
+          case 'code':
+            eopts.code = $('#purchase-dlg-code-inp').val();
+            break;
+          }
+          purchase_dialog_submit(eopts);
+        }
         return false;
       });
     $('#purchase-dlg-pass-inp,#purchase-dlg-code-inp')

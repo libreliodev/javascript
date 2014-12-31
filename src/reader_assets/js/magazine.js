@@ -28,8 +28,25 @@ $(function(){
        switch(ext)
        {
        case '.plist':
-         magazines_container.show();
-         login_or_out_update();
+         
+         if(app_data.UserService)
+         {
+           purchase_user_login_status({
+             app_data: app_data,
+             wasession: doc_query.wasession
+           }, function(status)
+             {
+               user_login_status = status;
+               login_status_update();
+               magazines_container.show();
+             });
+         }
+         else
+         {
+           login_status_update();
+           magazines_container.show();
+         }
+         
          magazines_load(data, magazines_list, magazines_loaded_handle);
 
          // set background
@@ -187,13 +204,15 @@ $(function(){
       (app_data.UserService ? app_data.UserService : null);
     if(!type)
       return;
+
     purchase_dialog_open({
       type: type,
       client: app_data.Publisher,
       app: app_data.Application,
       service: service_name,
       urlstring: (item.FileName[0] != '/' ? '/' : '') + item.FileName,
-      app_data: app_data
+      app_data: app_data,
+      user_login_status: user_login_status
     });
   }
   function magazines_create_item(item, data, list)
@@ -268,13 +287,13 @@ $(function(){
   // with these buttons. One of them should be visible at a time.
   // CodeService and UserService does support login choice.
   // login dialog could be the same as purchase dialog with few changes.
-  login_or_out_update(false);
+  var user_login_status = false;
   $('#login-btn').click(function()
     {
       var type = app_data.CodeService ? 'code' : 
         (app_data.UserService ? 'user' : null);
-    var service_name = app_data.CodeService ? app_data.CodeService : 
-      (app_data.UserService ? app_data.UserService : null);
+      var service_name = app_data.CodeService ? app_data.CodeService : 
+        (app_data.UserService ? app_data.UserService : null);
       if(!type)
         return;
       purchase_dialog_open({
@@ -282,21 +301,30 @@ $(function(){
         client: app_data.Publisher,
         app: app_data.Application,
         service: service_name,
-        submit_callback: login_or_out_update,
-        app_data: app_data
+        submit_callback: login_status_update,
+        app_data: app_data,
+        user_login_status: user_login_status
       });
       return false;
     });
   $('#logout-btn').click(function()
     {
-      localStorage.setItem(reader_auth_key(app_data), '');
-      login_or_out_update();
+      if(!app_data.UserService)
+      {
+        //TODO request to remove session from subscription site
+      }
+      else
+      {
+        localStorage.setItem(reader_auth_key(app_data), '');
+        login_status_update(false);
+      }
       return false;
     });
-  function login_or_out_update(auth)
+  function login_status_update(auth)
   {
     auth = typeof auth != 'undefined' ? auth : 
-      !!localStorage.getItem(reader_auth_key(app_data));
+      (app_data.UserService ? user_login_status : 
+       !!localStorage.getItem(reader_auth_key(app_data)));
     $('#login-btn')[!auth ? 'show' : 'hide']();
     $('#logout-btn')[auth ? 'show' : 'hide']();
   }

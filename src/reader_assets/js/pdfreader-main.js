@@ -9,7 +9,7 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
                              pdf_url_lquery.wapage);
 
   var pdf_filename = url('filename', pdf_url); // with no extension
-  if(pdf_filename[pdf_filename - 1] == '_')
+  if(pdf_filename[pdf_filename.length - 1] == '_')
     pdf_filename = pdf_filename.substr(0, pdf_filename.length - 1);
   var cl = new CanvasLoader('canvasloader');
   cl.setColor('#ffffff');
@@ -38,7 +38,8 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
               app: app_data.Application, 
               service: service_name,
               urlstring: path_without_query(doc_query.waurl),
-              app_data: app_data
+              app_data: app_data,
+              wasession: doc_query.wasession
             });
             return;
           }
@@ -102,7 +103,8 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
              app: app_data.Application, 
              service: service_name,
              urlstring: path_str,
-             app_data: app_data
+             app_data: app_data,
+             wasession: doc_query.wasession
            });
          }
          obj.return_value = false;
