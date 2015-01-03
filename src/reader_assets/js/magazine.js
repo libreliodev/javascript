@@ -301,7 +301,11 @@ $(function(){
         client: app_data.Publisher,
         app: app_data.Application,
         service: service_name,
-        submit_callback: login_status_update,
+        submit_callback: function(success)
+        {
+          user_login_status = success;
+          login_status_update();
+        },
         app_data: app_data,
         user_login_status: user_login_status
       });
@@ -309,9 +313,23 @@ $(function(){
     });
   $('#logout-btn').click(function()
     {
-      if(!app_data.UserService)
+      if(app_data.UserService)
       {
-        //TODO request to remove session from subscription site
+        $.ajax({
+          url: 'http://download.librelio.com/downloads/logout.php',
+          xhrFields: {
+            withCredentials: true
+          },
+          success: function()
+          {
+            user_login_status = false;
+            login_status_update();
+          },
+          error: function(xhr, err, err_txt)
+          {
+            notifyError('Logout request error: ' + xhr.status);
+          }
+        });
       }
       else
       {
