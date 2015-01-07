@@ -272,7 +272,7 @@ function application_info_load(opts, cb)
 {
   opts = opts || {};
   var app_url;
-  if(opts.wapublisher && opts.waapp)
+  if(opts.wapublisher && opts.waapp && (document.location+'').match(/(localhost|librelio|serverfire)/))
     app_info_url = s3bucket_file_url(opts.wapublisher + '/' + opts.waapp + 
                                     '/APP_/Uploads/setup.plist');
   else
