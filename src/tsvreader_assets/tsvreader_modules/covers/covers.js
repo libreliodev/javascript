@@ -1,5 +1,5 @@
 var __dirname = TSVReaderModule.dirname;
-default_tmpl_url = __dirname + '/covers.tmpl',
+default_tmpl_url = __dirname + 'covers.tmpl',
 tsv_columns_name = [ 'filename', 'title', 'date' ];
 
 
