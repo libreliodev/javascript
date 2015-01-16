@@ -343,7 +343,7 @@ root.s3UploadInit = function($upload, opts)
               $change_btn.text(_('Uploading...'));
               setPBar(0);
               
-              var request = opts.s3.putObject({
+              var request = opts.s3.upload({
                   Bucket: opts.Bucket,
                   Key: opts.Key ? eval_opts_prop(opts.Key,['upload']) : 
                       eval_opts_prop(opts.Prefix,['upload']) + image_name,
@@ -370,14 +370,14 @@ root.s3UploadInit = function($upload, opts)
                      if(httpRequest.abort)
                          httpRequest.abort();
                  });
-              var httpRequest = request.httpRequest.stream;
-              if(httpRequest.upload)
-                  $(httpRequest.upload).on('progress', function(ev)
-                      {
-                          ev = ev.originalEvent;
-                          var complete = ev.loaded / ev.total;
-                          setPBar(Math.floor(complete * 100))
-                      });
+              request.on('httpUploadProgress', function(progress)
+                {
+                  if(!isNaN(progress.loaded) && !isNaN(progress.total))
+                  {
+                    var complete = progress.loaded / progress.total;
+                    setPBar(Math.floor(complete * 100))
+                  }
+                });
           }
       });
     $upload.find('.fileinput-remove').bind('click', function()

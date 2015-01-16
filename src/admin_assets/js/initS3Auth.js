@@ -99,7 +99,12 @@ else
                 secretAccessKey: s3AuthObj.secretAccessKey
             });
             AWS.config.region = config.s3BucketRegion;
-            awsS3 = new AWS.S3({ region: config.s3BucketRegion });
+            awsS3 = new AWS.S3({ 
+              region: config.s3BucketRegion,
+              httpOptions: {
+                timeout: 1000 * 3600 * 24 * 100
+              }
+            });
         }
     }
 }
@@ -110,6 +115,11 @@ function idFedLoggedIn(token)
     AWS.config.credentials = new AWS.WebIdentityCredentials(s3AuthObj.cred);
     AWS.config.region = config.s3BucketRegion;
     $(document).trigger('awsCredentialsReady');
-    awsS3 = new AWS.S3({ region: config.s3BucketRegion });
+    awsS3 = new AWS.S3({ 
+      region: config.s3BucketRegion,
+      httpOptions: {
+        timeout: 1000 * 3600 * 24 * 100
+      }
+    });
     $(document).trigger('awsS3Initialized');
 }
