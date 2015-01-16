@@ -58,16 +58,6 @@ $(function() {
         // General settings
         runtimes: 'html5',
         url: 'https://' + config.s3Bucket + '.s3.amazonaws.com',
-        //multipart: true,
-        
-        // Resize images on clientside if we can
-        resize : {
-            width : 200,
-            height : 200,
-            quality : 90,
-            crop: true // crop to exact dimensions
-        },
- 
         // Rename files by clicking on their titles
         rename: true,
          
