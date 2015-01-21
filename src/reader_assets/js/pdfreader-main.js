@@ -3,10 +3,12 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
                            external_b, doc_query) {
   if(!pdf_url)
     return;
-  var pdf_filename = url('filename', pdf_url); // with no extension
+  var pdf_filename = url('filename', pdf_url), // with no extension
+  pdf_filename_full = pdf_filename;
   if(pdf_filename[pdf_filename.length - 1] == '_')
     pdf_filename = pdf_filename.substr(0, pdf_filename.length - 1);
-  var pdf_info_name = pdf_filename + '/pdfreader.info',
+
+  var pdf_info_name = pdf_filename_full + '/pdfreader.info',
   pdf_info = JSON.parse(localStorage.getItem(pdf_info_name)) || {};
 
   var pdf_viewer = $('.pdfviewer');
@@ -19,6 +21,20 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
     {
       pdf_info.curPage = pages[0].index;
       localStorage.setItem(pdf_info_name, JSON.stringify(pdf_info));
+    });
+
+
+  // track rendered pages
+  pdf_viewer.bind('render', function()
+    {
+      var curPages = pdf_viewer.pdfviewer('get', 'curPages');
+      for(var i = 0; i < curPages.length; ++i)
+      {
+        var curPage = curPages[i];
+        gaTracker('send', 'pageview', {
+          'page': 'PDFReader/' + pdf_filename_full + '/page' + (curPage.index + 1)
+        });
+      }
     });
 
   var cl = new CanvasLoader('canvasloader');

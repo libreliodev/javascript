@@ -20,11 +20,23 @@ $(function(){
          return notifyError(err);
        // get update rate it's in minutes
        var q = querystring.parse(get_url_query(data.RootView)) || {},
-       ext = path.extname(path_without_query(data.RootView)),
+       basename = path.basename(path_without_query(data.RootView)),
+       ext = path.extname(basename),
        _update_every = parseFloat(q.waupdate);
        update_every = (isNaN(_update_every) ? 30 : _update_every)*60*1000;
        app_data = data;
-       
+       // remove extension from basename
+       basename = path.basename(basename, ext);
+
+        if(data.GACode)
+          googleAnalyticsInit(data.GACode);
+        else // google analytics should be always available
+          window.gaTracker = function() { };
+       // track pageview
+       gaTracker('send', 'pageview', {
+         'page': 'Library/' + basename
+       });
+
        switch(ext)
        {
        case '.plist':
