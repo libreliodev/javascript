@@ -881,7 +881,7 @@ function inactiveServerRequest(obj, publicationsTable) {
             };
             window.awsS3.putObject(params, function(err, data) {
               if (err) {
-                alert(Error);
+                alert();
               } else {
                 //obj.removeClass("btnInactive").removeClass("btn-danger").addClass("btnActive").addClass("btn-success").html("Active").data("id", 0);
                 //publicationsTable.fnGetPosition( obj.parents('tr').closest('.ttitle')[0]).html("");

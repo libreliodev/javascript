@@ -98,13 +98,7 @@ else
                 accessKeyId: s3AuthObj.accessKeyId,
                 secretAccessKey: s3AuthObj.secretAccessKey
             });
-            AWS.config.region = config.s3BucketRegion;
-            awsS3 = new AWS.S3({ 
-              region: config.s3BucketRegion,
-              httpOptions: {
-                timeout: 1000 * 3600 * 24 * 100
-              }
-            });
+            initAWSS3();
         }
     }
 }
@@ -113,13 +107,46 @@ function idFedLoggedIn(token)
     var cred = s3AuthObj.cred;
     cred.WebIdentityToken = token;
     AWS.config.credentials = new AWS.WebIdentityCredentials(s3AuthObj.cred);
-    AWS.config.region = config.s3BucketRegion;
+    initAWSS3();
     $(document).trigger('awsCredentialsReady');
+    $(document).trigger('awsS3Initialized');
+}
+
+function initAWSS3()
+{
+    AWS.config.region = config.s3BucketRegion;
     awsS3 = new AWS.S3({ 
       region: config.s3BucketRegion,
       httpOptions: {
         timeout: 1000 * 3600 * 24 * 100
       }
     });
-    $(document).trigger('awsS3Initialized');
+
+    // solving cache issue of safari on ajax requests for awsS3
+    if((/Safari/).test(navigator.userAgent))
+        awsS3CompatibilityForSafari(awsS3);
+  
+}
+
+function awsS3CompatibilityForSafari(awsS3)
+{
+  function buildRequestForSafari(req)
+  {
+    var httpRequest = req.httpRequest,
+    no_cache_methods = [ 'PUT', 'POST', 'DELETE', 'GET' ];
+    
+    if(httpRequest && no_cache_methods.indexOf(httpRequest.method) != -1)
+    {
+      httpRequest.path += 
+      (httpRequest.path.indexOf('?') == -1 ? '?' : '&') + 
+        '_t=' + (new Date().getTime());
+    }
+  }
+  var setupRequestListeners_method = awsS3.setupRequestListeners;
+  awsS3.setupRequestListeners = function(request)
+  {
+    var ret = setupRequestListeners_method.call(this, request);
+    request.addListener('build', buildRequestForSafari);
+    return ret;
+  }
 }
