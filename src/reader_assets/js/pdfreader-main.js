@@ -3,14 +3,24 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
                            external_b, doc_query) {
   if(!pdf_url)
     return;
-  var pdf_viewer = $('.pdfviewer');
-  pdf_url_lquery = querystring.parse(librelio_url_query(pdf_url));
-  pdf_target_page = parseInt(url('#', document.location+'') || 
-                             pdf_url_lquery.wapage);
-
   var pdf_filename = url('filename', pdf_url); // with no extension
   if(pdf_filename[pdf_filename.length - 1] == '_')
     pdf_filename = pdf_filename.substr(0, pdf_filename.length - 1);
+  var pdf_info_name = pdf_filename + '/pdfreader.info',
+  pdf_info = JSON.parse(localStorage.getItem(pdf_info_name)) || {};
+
+  var pdf_viewer = $('.pdfviewer');
+  pdf_url_lquery = querystring.parse(librelio_url_query(pdf_url));
+  pdf_target_page = parseInt(url('#', document.location+'') || 
+                             pdf_url_lquery.wapage || pdf_info.curPage);
+
+  // save page for next reload
+  pdf_viewer.bind('curPages-changed', function(ev, pages)
+    {
+      pdf_info.curPage = pages[0].index;
+      localStorage.setItem(pdf_info_name, JSON.stringify(pdf_info));
+    });
+
   var cl = new CanvasLoader('canvasloader');
   cl.setColor('#ffffff');
   cl.show();
