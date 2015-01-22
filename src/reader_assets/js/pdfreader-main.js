@@ -8,7 +8,8 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
   if(pdf_filename[pdf_filename.length - 1] == '_')
     pdf_filename = pdf_filename.substr(0, pdf_filename.length - 1);
 
-  var pdf_info_name = pdf_filename_full + '/pdfreader.info',
+  var pdf_info_name = app_data.Publisher + '/' + app_data.Application + 
+                      '/' + pdf_filename_full + '/pdfreader.info',
   pdf_info = JSON.parse(localStorage.getItem(pdf_info_name)) || {};
 
   var pdf_viewer = $('.pdfviewer');
