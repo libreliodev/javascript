@@ -7,7 +7,7 @@ $(function() {
         $pubDlg.find('.fileinput').each(initUploadEl);
         updatePubTable(function()
           {
-            $('#page-loading-indicator').fadeOut();
+            $('#page-loading-indicator2').fadeOut();
           });
     }
     var $pubTable = $(".publicationDataTable"),

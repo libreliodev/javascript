@@ -39,7 +39,7 @@ gapi.analytics.ready(function()
             */
            var authRequest = gapi.analytics.auth.authorize({
              container: 'auth-button-wrp',
-             clientid: '1012641315687.apps.googleusercontent.com'
+             clientid: config.GoogleClientId
            });
            authRequest.on('success', fetchAccount);
            

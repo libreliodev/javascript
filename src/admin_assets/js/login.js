@@ -128,7 +128,7 @@ $(function(){
                  else if($this.hasClass('gp-signin-btn'))
                  {
                      gapi.auth.signIn({
-                         clientid: config.idFedGPAppId,
+                         clientid: config.GoogleClientId,
                          cookiepolicy : 'single_host_origin',
                          scope: 'email',
                          approvalprompt: 'force',

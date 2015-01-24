@@ -10,7 +10,7 @@
     "idFedGPUserDirnamePrefix": "gp_",
     "idFedFBAppId": "201544626555225",
     "idFedFBUsersRoleArn": "arn:aws:iam::105216790221:role/RoleForFacebook",
-    "idFedGPAppId": "1012641315687.apps.googleusercontent.com",
     "idFedGPUsersRoleArn": "arn:aws:iam::105216790221:role/RoleForGoogle",
+    "GoogleClientId": "1012641315687.apps.googleusercontent.com",
     "locale": "en-US"
 }
