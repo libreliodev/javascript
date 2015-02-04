@@ -83,7 +83,7 @@ $(function(){
   }
   function is_slideshow(url_str)
   {
-    var file_ext = path.extname(url_str);
+    var file_ext = path.extname(path_without_query(url_str));
     return img_exts.indexOf(file_ext.toLowerCase()) != -1;
   }
   pdf_viewer.bind('render-link', function(ev, data, page)
