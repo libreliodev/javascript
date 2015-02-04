@@ -856,40 +856,37 @@ function inactiveServerRequest(obj, publicationsTable) {
         }catch(e) {
             activeList = [];
         }
-        is_paid_pub(tmp, function(err, is_paid)
-          {
-            if(err)
-              return console.error(err);
-            var filename = tmp + '/' + tmp + (is_paid ? '_' : '') + '.pdf';
+        var filenames = [
+            tmp + '/' + tmp + '_.pdf',
+            tmp + '/' + tmp + '.pdf'
+        ];
 
-            for(var i = 0; i < activeList.length; )
-              if(activeList[i].FileName == filename)
+        for(var i = 0; i < activeList.length; )
+            if(filenames.indexOf(activeList[i].FileName) != -1)
                 activeList.splice(i, 1);
-              else
-                i++;
+        else
+            i++;
+        var body = $.plist('toString', activeList);
         
-            var body = $.plist('toString', activeList);
-        
-            //var rowIndex = publicationsTable.fnGetPosition( obj.closest('tr')[0] );
-            //publicationsTable.fnDeleteRow(rowIndex);
+        //var rowIndex = publicationsTable.fnGetPosition( obj.closest('tr')[0] );
+        //publicationsTable.fnDeleteRow(rowIndex);
 
-            var params = {
-              Bucket: window.config.s3Bucket, // required
-              Key: appDir+'/Magazines.plist',
-              //Body: PlistParser.toPlist(activeList)
-              Body: cleanKeys($.plist('toString', activeList))
-            };
-            window.awsS3.putObject(params, function(err, data) {
-              if (err) {
+        var params = {
+            Bucket: window.config.s3Bucket, // required
+            Key: appDir+'/Magazines.plist',
+            //Body: PlistParser.toPlist(activeList)
+            Body: cleanKeys($.plist('toString', activeList))
+        };
+        window.awsS3.putObject(params, function(err, data) {
+            if (err) {
                 alert();
-              } else {
+            } else {
                 //obj.removeClass("btnInactive").removeClass("btn-danger").addClass("btnActive").addClass("btn-success").html("Active").data("id", 0);
                 //publicationsTable.fnGetPosition( obj.parents('tr').closest('.ttitle')[0]).html("");
                 //publicationsTable.fnGetPosition( obj.parents('tr').closest('.tsubtitle')[0]).html("");
                 location.reload();
-              }
-            });
-          });
+            }
+        });
     });
 }
 
