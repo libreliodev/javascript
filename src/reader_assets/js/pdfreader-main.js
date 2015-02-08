@@ -1,6 +1,8 @@
 var pdf_url_lquery, pdf_target_page;
 initialize_reader(function(app_data, pdf_url, pdf_url_dir, 
                            external_b, doc_query) {
+  if(!reader_supported())
+    return reader_notify_not_supported(app_data);
   if(!pdf_url)
     return;
   var pdf_filename = url('filename', pdf_url), // with no extension

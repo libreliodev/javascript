@@ -1,6 +1,8 @@
 initialize_reader(function(app_data, csv_url, csv_url_dir, 
                            external_b, doc_query)
   {
+    if(!reader_supported())
+      return reader_notify_not_supported(app_data);
     if(!csv_url)
       return;
     var tmpl_url = template_url(app_data, csv_url, csv_url_dir, 
