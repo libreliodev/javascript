@@ -21,6 +21,14 @@ TSVReaderModule.ready = function()
   }
   tsv_url = TSVReaderModule.tsv_url,
   tmpl_url = TSVReaderModule.tmpl_url;
+  var covers_wrp = $('#covers-wrp'),
+  app_data = TSVReaderModule.app_data;
+  covers_wrp.hide();
+  addCSSFile(app_settings_link(app_data.Publisher, app_data.Application, 
+                               'style_covers.css'), function(err)
+    {
+      covers_wrp.show();
+    });
   reader.load(tsv_url, tmpl_url, function(err)
     {
       if(err)

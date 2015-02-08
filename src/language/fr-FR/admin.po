@@ -454,3 +454,39 @@ msgstr "Démarrer le chargement"
 #: admin_assets/js/pages/tracking.js:65
 msgid "Analytics data not yet available"
 msgstr ""
+
+#: templates/pages/setup-html5.hbs:55
+msgid "StyleSheets"
+msgstr ""
+
+#: templates/pages/setup-html5.hbs:62
+msgid "CSS For Covers Module"
+msgstr ""
+
+#: templates/pages/setup-html5.hbs:66 templates/pages/setup-html5.hbs:79
+msgid "Select css file"
+msgstr ""
+
+#: templates/pages/setup-html5.hbs:75
+msgid "CSS For PDFReader"
+msgstr ""
+
+#: templates/pages/setup-html5.hbs:93
+msgid "Subscriptions"
+msgstr ""
+
+#: templates/pages/setup-html5.hbs:100
+msgid "Subscription 1 title"
+msgstr ""
+
+#: templates/pages/setup-html5.hbs:108
+msgid "Subscription 1 link"
+msgstr ""
+
+#: templates/pages/setup-html5.hbs:116
+msgid "Subscription 2 title"
+msgstr ""
+
+#: templates/pages/setup-html5.hbs:124
+msgid "Subscription 2 link"
+msgstr ""

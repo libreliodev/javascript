@@ -75,6 +75,12 @@ initialize_reader(function(app_data, pdf_url, pdf_url_dir,
         }
         return notifyError(err);
       }
+      pdf_viewer.hide();
+      addCSSFile(app_settings_link(app_data.Publisher, app_data.Application, 
+                                   'style_pdfreader.css'), function(err)
+        {
+          pdf_viewer.show();
+        });
       pdf_viewer.bind('render', function()
         {
           cl.hide();

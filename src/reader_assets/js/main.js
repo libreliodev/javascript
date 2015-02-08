@@ -267,7 +267,10 @@ function magazine_name_free2paid(fn, noext)
   bn = path.join(path.dirname(fn), path.basename(fn, ext));
   return bn + '_'  + (noext ? '' : ext);
 }
-
+function app_settings_link(publisher, app, path)
+{
+  return s3bucket_file_url(publisher + '/' + app + '/APP_/Uploads/' + path);
+}
 function application_info_load(opts, cb)
 {
   opts = opts || {};
@@ -373,4 +376,24 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
 
   gaTracker('create', ga_id, 'auto');
   
+}
+
+function addCSSFile(url, callback)
+{
+  var link = document.createElement('link');
+  link.setAttribute('rel', 'stylesheet');
+  link.setAttribute('type', 'text/css');
+  link.setAttribute('href', url);
+  if(callback)
+  {
+    link.onload = function()
+    {
+      callback();
+    }
+    link.onerror = function()
+    {
+      callback(new Error("An error occurred loading the stylesheet: " + url));
+    }
+  }
+  document.getElementsByTagName('head')[0].appendChild(link);
 }
