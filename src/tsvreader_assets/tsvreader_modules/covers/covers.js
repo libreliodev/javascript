@@ -21,42 +21,47 @@ TSVReaderModule.ready = function()
   }
   tsv_url = TSVReaderModule.tsv_url,
   tmpl_url = TSVReaderModule.tmpl_url;
-  var covers_wrp = $('#covers-wrp'),
+  var wrp_el = $(TSVReaderModule.element),
   app_data = TSVReaderModule.app_data;
-  covers_wrp.hide();
-  addCSSFile(app_settings_link(app_data.Publisher, app_data.Application, 
-                               'style_covers.css'), function(err)
-    {
-      covers_wrp.show();
-    });
+  wrp_el.hide();
   reader.load(tsv_url, tmpl_url, function(err)
     {
+      var covers_wrp = $('#covers-wrp');
       if(err)
       {
+        covers_wrp.show();
         notifyError(err);
         return;
       }
-      var list = document.getElementById('covers-list');
-      if(list)
-      {
-        reader.update_table(list, {
-          open_cover_details_dialog: open_cover_details_dialog
-        }, 1);
-      }
+      addCSSFile(app_settings_link(app_data.Publisher, app_data.Application, 
+                                   'style_covers.css'), wrp_el[0], function(err)
+        {
+          wrp_el.show();
+          var list = document.getElementById('covers-list'),
+          featured = document.getElementById('featured-cover'),
+          has_featured = featured && featured.offsetHeight > 0;
+          covers_wrp.toggleClass('no-featured', !has_featured);
+          reader.global_ctx.has_featured = has_featured;
+          if(list)
+          {
+            reader.update_table(list, {
+              open_cover_details_dialog: open_cover_details_dialog
+            }, has_featured ? 1 : 0);
+          }
 
-      var featured = document.getElementById('featured-cover');
-      if(featured && reader.rows.length > 0)
-      {
-        featured_html = featured.innerHTML;
-        var ctx = {
-          index: 0,
-          row: reader.rows[0],
-          open_cover_details_dialog: open_cover_details_dialog
-        };
-        $(featured).dhtml('item_init', [ ctx, reader.global_ctx ], 
-                          { recursive: true });
+          if(has_featured && reader.rows.length > 0)
+          {
+            featured_html = featured.innerHTML;
+            var ctx = {
+              index: 0,
+              row: reader.rows[0],
+              open_cover_details_dialog: open_cover_details_dialog
+            };
+            $(featured).dhtml('item_init', [ ctx, reader.global_ctx ], 
+                              { recursive: true });
 
-      }
+          }
+        });
     });
 
   function open_cover_details_dialog(index, row)

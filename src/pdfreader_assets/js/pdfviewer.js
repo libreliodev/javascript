@@ -381,12 +381,12 @@
           // set links
           for (var i = 0; i < annotationsData.length; i++) {
             var data = annotationsData[i];
-            var annotation = PDFJS.Annotation.fromData(data);
-            if (!annotation || !annotation.hasHtml()) {
+            //var annotation = PDFJS.Annotation.fromData(data);
+            if (!data || !data.hasHtml) {
               continue;
             }
             //var element = annotation.getHtmlElement(docPage.commonObjs);
-            data = annotation.getData();
+            //data = annotation.getData();
             if(data.subtype !== 'Link')
               continue;
             if(page.extra_links)
@@ -868,7 +868,8 @@
       {
         filesize = filesize[0];
         var rangeListeners = [],
-        progressListeners = [];
+        progressListeners = [],
+        progressiveReadListeners = [];
         function callListeners(listeners, thisArg, args)
         {
           for(var i = 0; i < listeners.length; ++i)
@@ -902,6 +903,14 @@
           {
             progressListeners.push(listener);
           },
+          addProgressiveReadListener: function(listener)
+          {
+              progressiveReadListeners.push(listener);
+          },
+          transportReady: function()
+          {
+
+          },
           requestDataRange: function(begin, end)
           {
             var req_url = pdf_url + (pdf_url.indexOf('?') == -1 ? '?' : '&') + 
@@ -915,8 +924,11 @@
             {
               if(this.status == 200 || this.status == 206)
               {
+                var chunk = getArrayBuffer(xhr);
+                //callListeners(progressiveReadListeners, this,
+                //              [ chunk ]);
                 callListeners(rangeListeners, this, 
-                              [ begin, getArrayBuffer(xhr) ]);
+                              [ begin, chunk ]);
               }
             };
             xhr.onprogress = function(ev)

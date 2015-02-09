@@ -43,9 +43,11 @@
     </div>
   </div>
   <ul id="covers-list"><!-- 
-  --><li data-foreach="rows as i=>row" style="cursor:pointer" data-bind="click=open_cover_details_dialog(i,row)">
-      <img data-attrs="src=row.img_thumbnail_url" />
-      <span data-content="row.date"></span>
+  --><li data-foreach="rows as i=>row" data-init="this.addClass(if(eeq(has_featured,false),'col-xs-6 col-sm-4 col-md-3 col-lg-2','cover-li'))">
+      <div class="cover-item" style="cursor:pointer" data-bind="click=open_cover_details_dialog(i,row)">
+        <img data-attrs="src=row.img_thumbnail_url" />
+        <span data-content="row.date"></span>
+      </div>
     </li><!-- 
 --></ul>
 </div>

@@ -248,7 +248,7 @@
       else
       {
         if(expr.call[2])
-          return m_eval_expr([ expr.call[1] ], contexts, thisarg)[0];
+          return m_eval_expr([ expr.call[2] ], contexts, thisarg)[0];
       }
     }
   };

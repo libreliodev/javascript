@@ -15,22 +15,29 @@ $(function(){
           loadSetupPage(app_dir, $page);
         $page.find('.fileinput').each(function()
            {
+               var $file = $(this).find('input[type=file]'),
+               ftype = $file.data('type') || 'Image';
                s3UploadInit($(this), {
                    s3: awsS3,
-                   type: 'Image',
+                   type: ftype,
                    Bucket: config.s3Bucket,
                    Prefix: app_dir + '/' + upload_dir,
                    checkBeforeUpload: function(inp_el, file, cb)
                    {
-                     makeImageFromFile(file, function(err, image)
-                       {
-                         if(err)
-                           return notifyUserError(err);
-                         var m = validateImageSizeByElementAttrs(inp_el, image);
-                         cb(!m);
-                         if(m)
-                           notifyUserError(m);
-                       });
+                     if(ftype == 'Image')
+                     {
+                       makeImageFromFile(file, function(err, image)
+                         {
+                           if(err)
+                             return notifyUserError(err);
+                           var m = validateImageSizeByElementAttrs(inp_el, image);
+                           cb(!m);
+                           if(m)
+                             notifyUserError(m);
+                         });
+                     }
+                     else
+                       cb(true);
                    },
                    signExpires: function()
                    {

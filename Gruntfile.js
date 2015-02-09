@@ -241,13 +241,37 @@ module.exports = function (grunt) {
                   /* copy pdfreader assets to reader & admin */
                     {
                         expand: true,
-                        cwd: pdfreader_assets, src: ['lib/**','js/**'],
+                        cwd: pdfreader_assets, src: ['js/**'],
                         dest: reader_assets_dist_dir + '/'
                     },
                     {
                         expand: true,
-                        cwd: pdfreader_assets, src: ['lib/**','js/**'],
+                        cwd: pdfreader_assets, src: ['js/**'],
                         dest: admin_assets_dist_dir + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/pdfjs-dist/build/',
+                        src: [ 'pdf.js', 'pdf.worker.js' ],
+                        dest: reader_assets_dist_dir + '/lib/pdf.js/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/pdfjs-dist/build/',
+                        src: [ 'pdf.js', 'pdf.worker.js' ],
+                        dest: admin_assets_dist_dir + '/lib/pdf.js/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/pdfjs-dist/web/',
+                        src: [ 'compatibility.js' ],
+                        dest: reader_assets_dist_dir + '/lib/pdf.js/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/pdfjs-dist/web/',
+                        src: [ 'compatibility.js' ],
+                        dest: admin_assets_dist_dir + '/lib/pdf.js/'
                     },
                     {
                         expand: true,

@@ -378,8 +378,13 @@ m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
   
 }
 
-function addCSSFile(url, callback)
+function addCSSFile(url, appendto, callback)
 {
+  if(!callback && typeof appendto == 'function')
+  {
+    callback = appendto;
+    appendto = null;
+  }
   var link = document.createElement('link');
   link.setAttribute('rel', 'stylesheet');
   link.setAttribute('type', 'text/css');
@@ -395,5 +400,8 @@ function addCSSFile(url, callback)
       callback(new Error("An error occurred loading the stylesheet: " + url));
     }
   }
-  document.getElementsByTagName('head')[0].appendChild(link);
+  if(appendto)
+    appendto.appendChild(link);
+  else
+    document.getElementsByTagName('head')[0].appendChild(link);
 }

@@ -15,14 +15,20 @@ body {
   padding-top: 60px;
 }
 
+#covers-wrp.no-featured {
+  height: auto;
+  padding-top: 0px;
+}
+
 #featured-cover {
-  height: 410px;
+  /* height: 410px; */
+  height: 0px;
   overflow: hidden;
 }
 
 #featured-cover .left-side {
   float: left;
-  width: 380px;
+  width: 370px;
   padding-left: 60px;
 }
 
@@ -114,13 +120,37 @@ body {
   margin-top: 50px;
 }
 
+.no-featured #covers-list {
+  white-space: normal;
+  overflow: visible;
+  height: auto;
+  margin-top: 20px;
+}
+
 #covers-list li {
+  display: inline-block;
+  text-align: center;
+}
+.cover-li {
   width: 110px;
   height: 170px;
   margin: 0px 40px;
-  display: inline-block;
-  text-align: center;
   vertical-align: top;
+}
+
+.no-featured .cover-item {
+  vertical-align: top;
+  overflow: hidden;
+  width: 115px;
+  height: 195px;
+  font-size: 12px;
+  margin: 10px auto;
+}
+
+.no-featured .cover-item img {
+  width: 115px;
+  height: 150px;
+  display: block;
 }
 
 #covers-list img {
