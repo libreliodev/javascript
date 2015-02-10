@@ -213,7 +213,7 @@
         parent = ctx;
       ctx = ctx[_var[i]];
     }
-    if(ctx === undefined || ctx === null)
+    if(!parent && ctx === undefined || ctx === null)
       return;
     return {
       parent: parent,
@@ -355,6 +355,8 @@
       return ret;
     },
     // logical functions
+    and: function(a, b) { return a && b; },
+    or: function(a, b) { return a || b; },
     not: function(a) { return !a; },
     eqci: function(a, b) { return (a+'').toLowerCase() == (b+'').toLowerCase(); },
     eq: function(a, b) { return (a+'') == (b+''); },

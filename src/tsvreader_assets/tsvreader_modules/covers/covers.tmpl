@@ -58,6 +58,7 @@
         <img data-attrs="src=row.img_thumbnail_url" />
       </div>
       
+      <!-- 
       <div class="summary">
         <div class="title">Au sommaire:</div>
         <ul class="summary-list">
@@ -73,6 +74,8 @@
           <li>- replanche</li>
         </ul>
       </div>
+      -->
+      <div class="description" data-content="row.description"></div>
       <div class="clearb"></div>
       <div class="buttons-list">
         <div>
@@ -80,33 +83,17 @@
             <h3 class="title" data-content="row.title"></h3>
             <p class="date" data-content="row.date"></p>
           </div>
-          <div class="preview-btn-wrp">
-            <button class="btn subs-btn" type="button"><span class="single-label">Free Preview</span></button>
+          <div class="open-btn-wrp">
+            <button class="btn subs-btn" type="button" data-init="this.addClass(if(and(row.is_paid,eeq(logged_in,true)),'open-btn-preview','open-btn-full'))" data-bind="click=open()">
+              <span class="single-label">
+                <span class="is-preview">Free Preview</span>
+                <span class="is-full">Read</span>
+              </span>
+            </button>
           </div>
         </div>
-        <div>
-          <button class="btn subs-btn" type="button">
-            <span class="price">3,99&#8364;</span>
-            <span class="label">Buy this issue</span>
-          </button>
-        </div>
-        <div>
-          <button class="btn subs-btn" type="button">
-            <span class="price">13,99&#8364;</span>
-            <span class="label">Subscribe for 3 months</span>
-          </button>
-        </div>
-        <div>
-          <button class="btn subs-btn" type="button">
-            <span class="price">23,99&#8364;</span>
-            <span class="label">Subscribe for 1 year</span>
-          </button>
-        </div>
-        <div>
-          <button class="btn subs-btn" type="button">
-            <span class="label">Already as subscriber?</span>
-            <span class="label-big">Login in</span>
-          </button>
+        <div data-foreach="subscriptions as sub">
+          <a class="btn subs-btn" data-attrs="href=sub.link"><span class="single-label" data-content="sub.title"></span></a>
         </div>
       </div>
     </div>

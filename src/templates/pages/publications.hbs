@@ -1,5 +1,6 @@
 ---
 title: Publications
+page_id: Publications
 icon: fa fa-book
 stylesheets:
 - lib/inputlimiter/jquery.inputlimiter.1.0.css
@@ -58,6 +59,7 @@ scripts:
 						<th localize>Folder name</th>
 						<th localize>Title</th>
 						<th localize>Subtitle</th>
+						<th class="text-center" style="width: 50px;" localize>Edit</th>
 						<th class="text-center" style="width: 90px;" localize>Status</th>
 					</tr>
 					</thead>
@@ -100,77 +102,8 @@ scripts:
       <div class="clearfix"></div>
         <div class="pub-body-form body">
           <form class="form-horizontal">
-            <div class="form-group">
-              <div class="col-sm-offset-1 radio">
-                <label class="control-label col-lg-1">
-                  <input type="radio" name="Type" value="Free">
-                  <span localize>Free</span>
-                </label>
-              </div>
-              <div class="col-sm-offset-1 radio">
-                <label class="control-label col-lg-1">
-                  <input type="radio" name="Type" value="Paid">
-                  <span localize>Protected</span>
-                </label>
-              </div>
-            </div>
             <!-- list of upload items -->
             <ul class="upload-list list-group">
-              <li class="list-group-item">
-                <div class="form-group">
-                  <label class="control-label col-lg-2" localize>Free version</label>
-                  <div class="col-lg-8">
-                    <div class="fileinput fileinput-new" 
-                         data-provides="fileinput">
-				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select file</span><span class="fileinput-exists fileinput-change" localize>Change</span><input class="freefileupload" type="file" name="*FolderName**fileext*"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
-                        <button type="button" class="btn btn-default svgedit-btn fileinput-is-svg"
-                                data-filename="*FolderName*.svg" localize>Edit SVG</button>
-                        <button type="button" class="btn btn-default pdfannotedit-btn fileinput-is-pdf"
-                                data-filename="*FolderName*.pdf" localize>Edit Links</button>
-                        <a href="" class="btn btn-default download-btn" localize>Download</a>
-				      </div>
-			        </div>
-                  </div>
-                </div>
-              </li>
-              <li class="list-group-item paid-elem">
-                <div class="form-group">
-                  <label class="control-label col-lg-2" localize>Protected version</label>
-                  <div class="col-lg-8">
-                    <div class="fileinput fileinput-new" 
-                         data-provides="fileinput">
-				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select file</span><span class="fileinput-exists fileinput-change" localize>Change</span><input class="paidfileupload" type="file" name="*FolderName*_*fileext*"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
-                        <button type="button" class="btn btn-default svgedit-btn fileinput-is-svg"
-                                data-filename="*FolderName*_.svg">Edit SVG</button>
-                        <button type="button" class="btn btn-default pdfannotedit-btn fileinput-is-pdf"
-                                data-filename="*FolderName*_.pdf" localize>Edit Links</button>
-                        <a href="" class="btn btn-default download-btn" localize>Download</a>
-				      </div>
-			        </div>
-                  </div>
-                </div>
-              </li>
-              <li class="list-group-item">
-                <div class="form-group">
-                  <label class="control-label col-lg-4"><span localize>Medium res cover</span> - 1024 <span localize>px height</span></label>
-                  <div class="col-lg-8">
-                    <div class="fileinput fileinput-new" 
-                         data-provides="fileinput">
-				      <div class="fileinput-preview thumbnail" 
-                           data-trigger="fileinput" 
-                           style="width: 200px; height: 150px;"></div>
-				      <div>
-				        <span class="btn btn-default btn-file"><span class="fileinput-new" localize>Select image</span><span class="fileinput-exists fileinput-change" localize>Change</span><input data-type="Image" accept="image/png" type="file" name="*FolderName*_newsstand.png" data-required-image-height="1024" data-required-image-message-localize="Image height should be 1024 pixels"></span>
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput" localize>Remove</a>
-				      </div>
-			        </div>
-                  </div>
-                </div>
-              </li>
               <li class="list-group-item">
                 <div class="form-group">
                   <label class="control-label col-lg-4"><span localize>Low res cover</span> - 300 <span localize>px height</span></label>
@@ -189,9 +122,6 @@ scripts:
                 </div>
               </li>
             </ul>
-            <div id="asset-uploader" data-dir="">
-              <p localize>Your browser doesn't have Flash, Silverlight or HTML5 support.</p>
-            </div>
           </form>
         </div><!-- pub-body-form -->
       </div><!-- modal-body -->

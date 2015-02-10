@@ -17,43 +17,43 @@
 <!-- #menu -->
 <ul id="menu" class="">
     <li class="nav-header" localize>Menu</li>
-	<li{{#is title "Preview"}} class="active"{{/is}}><a href="preview.html"><i class="fa fa-play"></i>
+	<li{{#is page_id "Preview"}} class="active"{{/is}}><a href="preview.html"><i class="fa fa-play"></i>
     <span class="link-title" localize>
      Preview
           </span></a></li>
-	<li{{#contains title "Setup"}} class="active"{{/contains}}><a href="javascript:;"><i class="fa fa-cog"></i>
+	<li{{#if page_id}}{{#contains page_id "Setup"}} class="active"{{/contains}}{{/if}}><a href="javascript:;"><i class="fa fa-cog"></i>
     <span class="link-title" localize>
      Setup
           </span><span class="fa arrow"></span></a>
     <ul>
-      <li{{#is title "Setup"}} class="active"{{/is}}><a href="setup.html"><i class="fa fa-angle-right"></i> <span localize>General</span></a></li>
-      <li{{#is title "Setup iOS"}} class="active"{{/is}}><a href="setup-ios.html"><i class="fa fa-angle-right"></i> <span localize>iOS</span></a></li>
-      <li{{#is title "Setup Android"}} class="active"{{/is}}><a href="setup-android.html"><i class="fa fa-angle-right"></i> <span localize>Android</span></a></li>
-      <li{{#is title "Setup Windows 8"}} class="active"{{/is}}><a href="setup-windows8.html"><i class="fa fa-angle-right"></i> <span localize>Windows 8</span></a></li>
-      <li{{#is title "Setup HTML5"}} class="active"{{/is}}><a href="setup-html5.html"><i class="fa fa-angle-right"></i> <span localize>HTML5</span></a></li>
+      <li{{#is page_id "Setup"}} class="active"{{/is}}><a href="setup.html"><i class="fa fa-angle-right"></i> <span localize>General</span></a></li>
+      <li{{#is page_id "Setup iOS"}} class="active"{{/is}}><a href="setup-ios.html"><i class="fa fa-angle-right"></i> <span localize>iOS</span></a></li>
+      <li{{#is page_id "Setup Android"}} class="active"{{/is}}><a href="setup-android.html"><i class="fa fa-angle-right"></i> <span localize>Android</span></a></li>
+      <li{{#is page_id "Setup Windows 8"}} class="active"{{/is}}><a href="setup-windows8.html"><i class="fa fa-angle-right"></i> <span localize>Windows 8</span></a></li>
+      <li{{#is page_id "Setup HTML5"}} class="active"{{/is}}><a href="setup-html5.html"><i class="fa fa-angle-right"></i> <span localize>HTML5</span></a></li>
     </ul>
   </li>
-	<li{{#is title "Publications"}} class="active"{{/is}}><a href="publications.html"><i class="fa fa-book"></i>
+	<li{{#is page_id "Publications"}} class="active"{{/is}}><a href="publications.html"><i class="fa fa-book"></i>
     <span class="link-title" localize>
      Publications
           </span></a></li>
-    <li{{#is title "Interstitials"}} class="active"{{/is}}><a href="interstitials.html"><i class="fa fa-money"></i>
+    <li{{#is page_id "Interstitials"}} class="active"{{/is}}><a href="interstitials.html"><i class="fa fa-money"></i>
     <span class="link-title" localize>
      Interstitials
           </span></a></li>
-    <li{{#is title "Users"}} class="active" {{/is}}><a href="users.html"><i class="fa fa-user"></i>
+    <li{{#is page_id "Users"}} class="active" {{/is}}><a href="users.html"><i class="fa fa-user"></i>
     <span class="link-title" localize>
             Users
           </span> </a></li>
-    <li{{#is title "Push"}} class="active" {{/is}}><a href="push.html"><i class="fa fa-bell"></i>
+    <li{{#is page_id "Push"}} class="active" {{/is}}><a href="push.html"><i class="fa fa-bell"></i>
     <span class="link-title" localize>
             Push
           </span> </a></li>
-    <li{{#is title "Triggers"}} class="active" {{/is}}><a href="triggers.html"><i class="fa fa-clock-o"></i>
+    <li{{#is page_id "Triggers"}} class="active" {{/is}}><a href="triggers.html"><i class="fa fa-clock-o"></i>
     <span class="link-title" localize>
             Triggers
           </span> </a></li>
-    <li{{#is title "Tracking"}} class="active" {{/is}}><a href="tracking.html"><i class="fa fa fa-bar-chart-o"></i>
+    <li{{#is page_id "Tracking"}} class="active" {{/is}}><a href="tracking.html"><i class="fa fa fa-bar-chart-o"></i>
     <span class="link-title" localize>
             Tracking
           </span></a></li>

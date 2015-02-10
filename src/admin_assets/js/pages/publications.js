@@ -1,14 +1,33 @@
 var appName = storage.getItem(config.storageAppNameKey),
-appDir = get_app_dir(appName);
+appDir = get_app_dir(appName),
+setup_obj;
 $(function() {
     function workOnAwsS3()
     {
         formDisplay();
         $pubDlg.find('.fileinput').each(initUploadEl);
-        updatePubTable(function()
-          {
-            $('#page-loading-indicator2').fadeOut();
-          });
+        awsS3.getObject({
+          Bucket: config.s3Bucket,
+          Key: appDir + '/APP_/Uploads/setup.plist'
+        }, function(err, res)
+           {
+               if(err && err.code != 'NoSuchKey')
+               {
+                   handleAWSS3Error(err)
+                   return;
+               }
+               var obj = res ? $.plist($.parseXML(res.Body.toString())) : {};
+               setup_obj = obj;
+               if(setup_obj.PublicationType != 'multiple')
+               {
+                 document.location = 'issues.html';
+                 return;
+               }
+               updatePubTable(function()
+                 {
+                   $('#page-loading-indicator2').fadeOut();
+                 });
+           });
     }
     var $pubTable = $(".publicationDataTable"),
     publicationsTable = $pubTable.dataTable({
@@ -21,165 +40,8 @@ $(function() {
         return;
     
     awsS3Ready(workOnAwsS3);
-        
-    $('.new-pub-btn').click(function()
-        {
-            if(!awsS3)
-                return false;
-        });
-    $pubDlg.find('.svgedit-btn').bind('click', function()
-          {
-              var pub = $pubDlg.find('input[name=FolderName]').val(),
-              filename = pubDlgEvalAttr($(this).data('filename'));
-              if(filename)
-              {
-                  window.open('svgedit.html?' + path.stringifyQuery({
-                      app: appName,
-                      filename: pub + '/' + filename
-                  }), '_blank');
-                  return false;
-              }
-          });
-    $pubDlg.find('.pdfannotedit-btn').bind('click', function()
-          {
-              var pub = $pubDlg.find('input[name=FolderName]').val(),
-              filename = pubDlgEvalAttr($(this).data('filename'));
-              if(filename)
-              {
-                  window.open('pdf-annotation-editor.html?' + 
-                              path.stringifyQuery({
-                                waurl: appDir + '/' + pub + '/' + filename
-                              }), '_blank');
-                  return false;
-              }
-          });
+    
 
-    $("#asset-uploader").pluploadQueue({
-        // General settings
-        runtimes: 'html5',
-        url: 'https://' + config.s3Bucket + '.s3.amazonaws.com',
-        // Rename files by clicking on their titles
-        rename: true,
-         
-        // Sort files
-        sortable: true,
- 
-        // Enable ability to drag'n'drop files onto the widget (currently only HTML5 supports that)
-        dragdrop: true,
- 
-        // Views to activate
-        views: {
-            list: true,
-            thumbs: true, // Show thumbs
-            active: 'thumbs'
-        },
-
-        multiple_queues: true
-    });
-    var asset_uploader = $("#asset-uploader").pluploadQueue();
-
-    if(s3AuthObj.type == 'idFed')
-    {
-      asset_uploader.unbind('UploadFile');
-	    asset_uploader.bind('UploadFile', function(up, file)
-          {
-              var filename = file.target_name || file.name;
-              function onCancelUpload()
-              {
-                  if(xhr)
-                      xhr.abort();
-              }
-              function unbindEvents()
-              {
-                  up.unbind('CancelUpload', onCancelUpload)
-              }
-		      up.bind('CancelUpload', onCancelUpload);
-              var  pub = $pubDlg.find('input[name=FolderName]').val(),
-              asset_dir = $("#asset-uploader").data('dir'),
-              dir = appDir + '/' + pub + (asset_dir ? '/' + asset_dir : ''),
-              xhr,
-              request = awsS3.putObject({
-                  Bucket: config.s3Bucket,
-                  Key: dir + '/' + filename,
-                  Body: file.getNative()
-              }, function(err, res)
-                 {
-                     unbindEvents();
-                     if(err)
-                     {
-                       console.error(err);
-                       up.trigger('Error', {
-                         code : plupload.HTTP_ERROR,
-                         message : plupload.translate('HTTP Error.'),
-                         file : file,
-                         response: err+'',
-                         status: xhr ? xhr.status : _('Unknown'),
-                         responseHeaders: 
-                               xhr ? xhr.getAllResponseHeaders() : {}
-                       });
-                       return;
-                     }
-                   file.loaded = file.size;
-                   up.trigger('UploadProgress', file);
-                   
-	                 file.status = plupload.DONE;
-                   up.trigger('FileUploaded', file, {
-                     response: 'success',
-                     status: 200,
-                     responseHeaders: {}
-                   });
-                 });
-              xhr = request.httpRequest.stream;
-              if(xhr && xhr.upload)
-                  $(xhr.upload).on('progress', function(ev)
-                     {
-                       ev = ev.originalEvent;
-                       file.loaded = ev.loaded;
-                       up.trigger('UploadProgress', file);
-                     });
-          });
-    }
-    else
-    {
-        asset_uploader.bind("BeforeUpload", function(up, file) {
-            var params = asset_uploader.settings.multipart_params;
-            params.key = $("#asset-uploader").data('current_dir') + file.name;
-            params.Filename = file.name;
-        });
-    }
-    function setPLUploadInfoForPub(pub)
-    {
-        var d = new Date(new Date().getTime() + (60 * 60 * 1000)),
-        asset_dir = $("#asset-uploader").data('dir'),
-        dir = appDir + '/' + pub + '/' + (asset_dir ? asset_dir + '/' : ''),
-        policy = {
-            "expiration": d.toISOString(),
-            "conditions": [ 
-                {"bucket": config.s3Bucket}, 
-                ["starts-with", "$key", dir],
-                {"acl": "private"},
-                ["starts-with", "$Content-Type", ""],
-                ["starts-with", "$name", ""],
-                ["starts-with", "$Filename", ""],
-                ["starts-with", "$success_action_status", ""]
-            ]
-        },
-        policy_str = CryptoJS.enc.Base64.stringify(
-            CryptoJS.enc.Utf8.parse(JSON.stringify(policy))),
-        signature = CryptoJS.HmacSHA1(policy_str, s3AuthObj.secretAccessKey)
-            .toString(CryptoJS.enc.Base64);
-        var post = {
-            acl: 'private',
-            AWSAccessKeyId: s3AuthObj.accessKeyId,
-            policy: policy_str,
-            signature: signature,
-            'Content-Type': '$Content-Type',
-            success_action_status: '201'
-        };
-        $("#asset-uploader").data('current_dir', dir);
-        asset_uploader.setOption('multipart_params', post);
-        asset_uploader.splice(0, asset_uploader.files.length);
-    }
     function uploadElEvalFilename(el, action)
     {
         var pub = $pubDlg.data('pubObj'),
@@ -198,32 +60,6 @@ $(function() {
                 ext || pub.free_ext;
         }
         return pubDlgEvalAttr($this.attr('name'), { fileext: ext });
-    }
-    function uploadFileUpdate($upload)
-    {
-        $upload.find('input[type=file]').each(function()
-            {
-                var file = uploadElEvalFilename(this),
-                extensions = [ 'pdf', 'svg' ];
-                for(var i = 0, l = extensions.length; i < l; ++i)
-                {
-                  var ext = extensions[i];
-                  $upload.toggleClass('fileinput-' + ext, 
-                                      (path.fileExtension(file) == '.' + ext));
-                }
-            });
-    }
-    function uploadFileUpdateExtension(inp)
-    {
-        var pub = $pubDlg.data('pubObj') || {},
-        $inp = $(inp),
-        ext = inp.files && inp.files.length > 0 ?
-            path.fileExtension(inp.files[0].name) : '';
-        if($inp.hasClass('paidfileupload'))
-            pub.paid_ext = ext;
-        else if($inp.hasClass('freefileupload'))
-            pub.free_ext = ext;
-        $pubDlg.data('pubObj', pub);
     }
     function initUploadEl()
     {
@@ -248,29 +84,15 @@ $(function() {
             {
                 pubDlgUpdated = true;
                 uploadFileUpdateExtension(this);
-                // this method should update file ui
-                uploadFileUpdate($upload)
             },
             onRemoveSuccess: function()
             {
                 pubDlgUpdated = true;
                 uploadFileUpdateExtension(this);
-                // this method should update file ui
-                uploadFileUpdate($upload)
             },
             onFileExistCheck: function(exists)
             {
-                if($(this).hasClass('paidfileupload'))
-                {
-                    $pubDlg.find('input[name=Type]').each(function()
-                         {
-                             if(exists)
-                                 this.checked = (this.value == 'Paid');
-                             else
-                                 this.checked = (this.value != 'Paid');
-                         });
-                    pubDlgUpdateType();
-                }
+              
             },
             checkBeforeUpload: function(inp_el, file, cb)
             {
@@ -322,7 +144,6 @@ $(function() {
                         .remove();
                 });
              
-             asset_uploader.stop();
          });
     var illegalPubs = [ "AAD", "APP__", "APP_", "APP_", "APW_" ];
     $pubDlg.find('.set-title-btn').click(function()
@@ -356,10 +177,23 @@ $(function() {
                     }
                     if(!exists)
                     {
-                        $(this).parent().hide();
-                        $pubDlg.find('.pub-body-form').show();
-                        if(s3AuthObj.type != 'idFed')
-                            setPLUploadInfoForPub(title_val);
+                        awsS3.putObject({
+                          Bucket: config.s3Bucket,
+                          Key: appDir + '/' + title_val + '/' + 
+                            title_val + '.plist',
+                          Body: $.plist('toString', [])
+                        }, function(err, data) {
+                          
+                          if(err)
+                          {
+                            $title_inp.prop('disabled', false);
+                            return handleAWSS3Error(err);
+                          }
+                          
+                          pubDlgUpdated = true;
+                          $(this).parent().hide();
+                          $pubDlg.find('.pub-body-form').show();
+                        });
                     }
                     else
                     {
@@ -372,76 +206,18 @@ $(function() {
     $pubDlg.on('show.bs.modal', function()
          {
              pubDlgUpdated = false;
-             var pub = $pubDlg.data('pubObj'),
-             type = 'Free';
-             $pubDlg.find('.uufile').remove();
+             var pub = $pubDlg.data('pubObj');
              $pubDlg.find('input[type=file]').prop('disabled', false);
-             $pubDlg.find('.fileinput').each(function()
-                   {
-                       uploadFileUpdate($(this))
-                   });
              if(pub)
              {
-                 type = '';
                  var pub_name = pub.FileName;
                  $pubDlg.find('.set-title-btn').parent().hide();
                  $pubDlg.find('input[name=FolderName]').prop('disabled', true);
                  $pubDlg.find('.pub-body-form').show();
                  $pubDlg.find('.fileinput').each(function()
                     {
-                      var $upload = $(this),
-                      inp = $upload.find('input[type=file]')[0];
                       if(this._s3Upload)
-                        this._s3Upload.reload();
-                      if(inp)
-                      {
-                        // fileinput download-btn ready
-                        $upload.find('.download-btn').each(function()
-                          {
-                            var title = 
-                              $pubDlg.find('input[name=FolderName]').val(),
-                            file = uploadElEvalFilename(inp),
-                            a_tag = this;
-                            awsS3.getSignedUrl('getObject', {
-                              Bucket: config.s3Bucket,
-                              Key: appDir + '/' + title + '/' + file,
-                              Expires: awsExpireReverse(config.awsExpireReverseInHours)
-                            }, function(err, url)
-                               {
-                                 a_tag.href = !err && url ? url : '';
-                               })
-                          });
-                      }
-                    });
-                 if(s3AuthObj.type != 'idFed')
-                     setPLUploadInfoForPub(pub_name);
-
-                 // list uploaded elements and add them to list
-                 var pubDir = appDir + '/' + pub_name + '/',
-                 excluded_files = [
-                     pub_name + (pub.free_ext || ''),
-                     pub_name + '_' + (pub.paid_ext || ''),
-                     pub_name + '.png',
-                     pub_name + '_newsstand.png'
-                 ];
-                 s3ListAllObjects(awsS3, {
-                     Bucket: config.s3Bucket,
-                     Prefix: pubDir
-                 }, function(err, res)
-                    {
-                        if(err)
-                        {
-                            handleAWSS3Error(err);
-                            return;
-                        }
-                        var contents = res.Contents;
-                        for(var i = 0, l = contents.length; i < l; ++i)
-                        {
-                            var key = contents[i].Key,
-                            fn = key.substr(pubDir.length).replace('*', '\\*');
-                            if(fn && excluded_files.indexOf(fn) == -1)
-                                insertUploadItem(fn, { class_name: 'uufile' });
-                        }
+                          this._s3Upload.reload();
                     });
              }
             else
@@ -450,14 +226,6 @@ $(function() {
                  $pubDlg.find('.set-title-btn').parent().show();
                  $pubDlg.find('.pub-body-form').hide();
              }
-             $pubDlg.find('input[name=Type]').each(function()
-                 {
-                     if(this.value == type)
-                         this.checked = true;
-                     else
-                         this.checked = false;
-                 });
-             pubDlgUpdateType();
          });
     function pubDlgEvalAttr(s, vars)
     {
@@ -481,46 +249,6 @@ $(function() {
         var idx = s.indexOf('*'+vr+'*');
         return idx == 0 || (idx > 0 && s[idx-1] != '\\');
     }
-    $pubDlg.find('input[name=Type]').on('change', pubDlgUpdateType);
-    function pubDlgUpdateType()
-    {
-        var paid_elem = $pubDlg.find('.paid-elem'),
-        paid_radio = $pubDlg.find('input[name=Type]').filter('[value=Paid]');
-        if(paid_radio.prop('checked'))
-            paid_elem.show();
-        else
-            paid_elem.hide();
-    }
-    var img_check_pttrn = /\.(jpe?g|png|gif)$/i;
-    function insertUploadItem(key, opts)
-    {
-        opts = opts || {};
-        var class_name = opts.class_name ? ' ' + opts.class_name : '',
-        isImg = img_check_pttrn.test(key),
-        uploadLI = $('<li class="list-group-item'+class_name+'">\
-                <div class="form-group">\
-                  <label class="control-label col-lg-2">' + key + '</label>\
-                  <div class="clearfix"></div>\
-                  <div class="col-lg-8">\
-                    <div class="fileinput fileinput-new" \
-                         data-provides="fileinput">' + 
-            (isImg ? '<div class="fileinput-preview thumbnail" \
-                           data-trigger="fileinput" \
-                           style="width: 200px; height: 150px;"></div>' : '') +
-				      '<div>\
-				        <span class="btn btn-default btn-file"><span class="fileinput-new">'+_('Select file')+'</span><span class="fileinput-exists fileinput-change">'+_('Change')+'</span><input '+(isImg ? 'data-type="Image" ' : '')+'type="file" name="'+ key + '"></span>\
-				        <a href="#" class="btn btn-default fileinput-exists fileinput-remove" data-dismiss="fileinput">'+_('Remove')+'</a>\
-				      </div>\
-			        </div>\
-                  </div>\
-                </div>\
-              </li>').appendTo($pubDlg.find('.upload-list'));
-        var el = uploadLI.find('.fileinput')[0];
-        initUploadEl.call(el);
-        if(el._s3Upload)
-            el._s3Upload.reload();
-    }
-
     
     function updatePubTable(callback)
     {
@@ -622,10 +350,9 @@ $(function() {
                                 return rowsList[index];
                         }
                     }
-                    function pubTRClick()
+                    function pubEditClick()
                     {
-                        var $this = $(this),
-                        item = getPubByRowId(this.id);
+                        var item = getPubByRowId(this.parentNode.parentNode.id);
                         if(!item)
                             return;
                         awsS3.listObjects({
@@ -672,6 +399,15 @@ $(function() {
                            });
                         return false;
                     }
+                    function pubTRClick()
+                    {
+                        var item = getPubByRowId(this.id);
+                        if(!item)
+                            return;
+                        document.location = 'issues.html?wapublication=' + 
+                            encodeURIComponent(item.FolderName);
+                        return false;
+                    }
                     //---------------------------------------------------
                     // Add the rows to the table
                     //---------------------------------------------------
@@ -685,7 +421,8 @@ $(function() {
                     //---------------------------------------------------
 
                     
-                    $pubTable.on('click', 'tbody > tr', pubTRClick)
+                    $pubTable.on('click', 'tbody > tr', pubTRClick);
+                    $pubTable.on('click', '.edit-btn', pubEditClick);
 
                     callback && callback();
                 });
@@ -784,13 +521,6 @@ function inactivePublication(obj, publicationsTable) {
         }
     });
 }
-function is_paid_pub(filename, cb)
-{
-  s3ObjectExists(awsS3, {
-    Bucket: config.s3Bucket,
-    Key: appDir + '/' + filename + '/' + filename + '_.pdf'
-  }, cb);
-}
 function activeServerRequest(obj, publicationsTable) {
     
     var pTitle = $("input[name='pubTitleInput']").val();
@@ -807,38 +537,32 @@ function activeServerRequest(obj, publicationsTable) {
         }catch(e) {
             activeList = [];
         }
-        is_paid_pub(obj.data('filename'), function(err, is_paid)
-          {
-            if(err)
-              return handleAWSS3Error(err);
-            var pub = {
-              FileName: obj.data("filename") + "/" + obj.data("filename") + 
-                (is_paid ? '_' : '') + ".pdf",
-              Title: pTitle,
-              Subtitle: pSubtitle
-            };
-            insertPubInList(pub, activeList);
+        var pub = {
+          FileName: obj.data("filename"),
+          Title: pTitle,
+          Subtitle: pSubtitle
+        };
+        insertPubInList(pub, activeList);
             
-            var body = $.plist('toString', activeList);
+        var body = $.plist('toString', activeList);
         
 
-            var params = {
-              Bucket: config.s3Bucket, // required
-              Key: appDir+'/Magazines.plist',
-              //Body: PlistParser.toPlist(activeList)
-              Body: body
-            };
-            awsS3.putObject(params, function(err, data) {
-              if (err) {
-                return handleAWSS3Error(err);
-              } else {
-                //obj.addClass("btnInactive").addClass("btn-danger").removeClass("btnActive").removeClass("btn-success").html("Inactive").data("id", activeListLength);
-                //publicationsTable.fnGetPosition( obj.parents('tr').closest('.ttitle')[0]).html(pTitle);
-                //publicationsTable.fnGetPosition( obj.parents('tr').closest('.tsubtitle')[0]).html(pSubtitle);
-                location.reload();
-              }
-            });
-          });
+        var params = {
+          Bucket: config.s3Bucket, // required
+          Key: appDir+'/Magazines.plist',
+          //Body: PlistParser.toPlist(activeList)
+          Body: body
+        };
+        awsS3.putObject(params, function(err, data) {
+          if (err) {
+            return handleAWSS3Error(err);
+          } else {
+            //obj.addClass("btnInactive").addClass("btn-danger").removeClass("btnActive").removeClass("btn-success").html("Inactive").data("id", activeListLength);
+            //publicationsTable.fnGetPosition( obj.parents('tr').closest('.ttitle')[0]).html(pTitle);
+            //publicationsTable.fnGetPosition( obj.parents('tr').closest('.tsubtitle')[0]).html(pSubtitle);
+            location.reload();
+          }
+        });
     });
 }
 
@@ -896,7 +620,8 @@ function addRowToTable(index, data, publicationsTable) {
         '0': data.FileName,
         '1': "<span class='ttitle'>" + data.Title + "</span>",
         '2': "<span class='tsubtitle'>" + data.Subtitle + "</span>",
-        '3': data.statusBtn
+        '3': '<a class="edit-btn btn-lg"><i class="glyphicon glyphicon-edit"></i></a>',
+        '4': data.statusBtn
     });
 }
 

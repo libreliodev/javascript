@@ -68,7 +68,7 @@ body {
 
 }
 
-.buttons-list .preview-btn-wrp {
+.buttons-list .open-btn-wrp {
   margin-left: 200px;
   height: 70px;
 }
@@ -90,6 +90,10 @@ body {
 
 .subs-btn .single-label {
   font-size: 20px;
+}
+a.subs-btn .single-label {
+  display: inline-block;
+  margin-top: 10px;
 }
 
 .subs-btn .price,
@@ -178,7 +182,8 @@ body {
 #cover-details .left-img-wrp img {
   height: 100%;
 }
-#cover-details .summary {
+#cover-details .summary,
+#conve-details .description {
   margin-top: 10px;
   margin-left: 260px;
 }
@@ -190,3 +195,10 @@ body {
   padding-left: 5px;
   list-style: none;
 }
+
+.is-preview, .is-full {
+  display: none;
+}
+.open-btn-full .is-full, .open-btn-preview .is-preview {
+  display: block;
+} 

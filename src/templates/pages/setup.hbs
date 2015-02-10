@@ -1,5 +1,6 @@
 ---
 title: Setup
+page_id: Setup
 icon: fa fa-cogs
 stylesheets:
 - lib/uniform/themes/default/css/uniform.default.css
@@ -55,6 +56,7 @@ scripts:
       <input type="hidden" name="Active" value="True" data-type="BOOL" />
       <input type="hidden" name="CodeService" value="" data-null-if-empty="1" />
       <input type="hidden" name="UserService" value="DynamoDb" data-null-if-empty="1" />
+      <input type="hidden" name="RootView" value="Magazines.plist?waupdate=30" />
     </div>
         <div class="box">
             <header>
@@ -135,11 +137,11 @@ scripts:
             <div id="collapse4" class="body">
               <form class="form-horizontal">
                  <div class="form-group">
-                    <label for="website" class="control-label col-lg-4" localize>Publications</label>
+                    <label for="PublicationType" class="control-label col-lg-4" localize>Publications</label>
                      <div class="col-lg-6">
-                        <select name="RootView" class="form-control">
-                          <option value="Magazines.plist?waupdate=30" localize>Standard template</option>
-                          <option value="Magazines.tsv?waupdate=30" localize>Specific template</option>
+                        <select id="PublicationType" name="PublicationType" class="form-control">
+                          <option value="single" localize>Single</option>
+                          <option value="multiple" localize>Multiple</option>
                         </select>
                      </div>
                     </div>

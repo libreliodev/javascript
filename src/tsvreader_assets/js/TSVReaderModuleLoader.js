@@ -24,21 +24,20 @@ var TSVReaderModule;
           dirname: prefix
         };
         TSVReaderModule = $.extend(false, TSVReaderModule, self.supply);
-        $.ajax({
-          url: prefix + self.module_name + '.js',
-          dataType: 'script',
-          success: function()
-          {
-            
-            cb();
-          },
-          error: function(xhr, err, err_text)
-          {
-            var err = sprintf(_("Request for module has failed: %s"), 
-                              err_text);
-            cb(err);
-          }
-        });
+        var s = document.createElement('script');
+        s.type = 'text/javascript';
+        s.async = true;
+        s.src = prefix + self.module_name + '.js';
+        document.getElementsByTagName('head')[0].appendChild(s);
+        s.onload = function()
+        {
+          cb();
+        };
+        s.onerror = function()
+        {
+          var err = sprintf(_("Request for module has failed!"));
+          cb(err);
+        }
       }
     ], function(err)
        {
