@@ -1,0 +1,47 @@
+---
+title: Publications
+javascripts:
+- lib/RGBColor.js
+- lib/querystring.min.js
+- lib/path.min.js
+- lib/async.js
+- js/magazine.js
+theme: dark-bkg
+scripts:
+- window.show_publications = 1;
+---
+<div class="reader-container">
+  <div class="reader-background"></div>
+  <div class="headline">
+    <h4 class="text-center upperbar" localize>{{title}}</h4>
+    <div class="upper-left">
+      <div class="dropdown">
+        <div id="logo-btn" class="dropdown-toggle" data-toggle="dropdown">
+          <img src="" alt="Logo">
+        </div>
+        <ul class="dropdown-menu" role="menu" aria-labelledby="logo-btn">
+          <li class="site-item" role="presentation"><a role="menuitem" tabindex="-1" href="#" localize>WebSite</a></li>
+          <li class="facebook-item" role="presentation"><a role="menuitem" tabindex="-1" href="#" localize>Facebook</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="upper-right-buttons">
+      <button id="login-btn" type="button"
+              class="btn btn-success" localize>Login</button>
+      <button id="logout-btn" type="button"
+              class="btn btn-default" localize>Logout</button>
+    </div>
+  </div>
+  <div class="reader-content container">
+    <ul class="magazines">
+      <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2" data-id="default" style="cursor:pointer;" data-bind="click=open_pub(FileName)">
+        <div class="mag-item">
+          <div class="mag-title" data-content="Title"></div>
+          <div class="mag-subtitle" data-content="Subtitle"></div>
+          <img class="mag-thumbnail" data-attrs="src=ThumbnailUrl" />
+        </div>
+      </li>
+    </ul>
+  </div>
+</div>
+{{> purchase_dialog }}

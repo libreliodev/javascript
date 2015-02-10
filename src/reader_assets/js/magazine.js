@@ -7,20 +7,35 @@ $(function(){
   MAG_TYPE_FREE = 'Free',
   MAG_TYPE_PAID = 'Paid',
   refresh_timeout,
-  update_every;
+  update_every,
+  pub_name = window.accept_wapublication ? doc_query.wapublication || '' : '',
+  pub_prefix = pub_name ? pub_name + '/' : '';
   
   magazines_container.hide();
   magazines_init(magazines_list);
 
   application_info_load(doc_query, function(err, data)
      {
+       if(window.redirect_to_pages)
+       {
+         var query = $.extend(false, {}, doc_query), url_str,
+         query_str = querystring.stringify(query);
+         query_str = query_str ? '?' + query_str : '';
+         if(data.PublicationType == 'multiple' && !query.wapublication)
+           url_str = 'publications.html' + query_str;
+         else
+           url_str = 'issues.html' + query_str;
+         document.location = url_str;
+         return;
+       }
        if(!reader_supported())
          return reader_notify_not_supported(data);
        if(err)
          return notifyError(err);
        // get update rate it's in minutes
-       var q = querystring.parse(get_url_query(data.RootView)) || {},
-       basename = path.basename(path_without_query(data.RootView)),
+       var rootView = pub_name ? pub_name + '.plist' : data.RootView,
+       q = querystring.parse(get_url_query(rootView)) || {},
+       basename = path.basename(path_without_query(rootView)),
        ext = path.extname(basename),
        _update_every = parseFloat(q.waupdate);
        update_every = (isNaN(_update_every) ? 30 : _update_every)*60*1000;
@@ -34,13 +49,12 @@ $(function(){
           window.gaTracker = function() { };
        // track pageview
        gaTracker('send', 'pageview', {
-         'page': 'Library/' + basename
+         'page': 'Library/' + pub_prefix + basename
        });
 
        switch(ext)
        {
-       case '.plist':
-         
+       case '.plist':         
          if(app_data.UserService)
          {
            purchase_user_login_status({
@@ -156,7 +170,7 @@ $(function(){
          break;
        default:
          notifyError(sprintf(_('File extension not supported: %s'), 
-                             data.RootView));
+                             rootView));
        }
      });
   function magazines_loaded_handle(err)
@@ -198,7 +212,7 @@ $(function(){
         else
         {
           if(ext == '.pdf')
-            url = magazine_pdfreader_link_for(fn)
+            url = magazine_pdfreader_link_for(pub_prefix + fn);
           else
             return false; // do nothing url = magazine_file_url(app_data, fn);
         
@@ -208,34 +222,45 @@ $(function(){
       });
   }
   function read_paid_file(item)
-  {
-  
+  {  
     var type = app_data.CodeService ? 'code' : 
       (app_data.UserService ? 'user' : null);
     var service_name = app_data.CodeService ? app_data.CodeService : 
       (app_data.UserService ? app_data.UserService : null);
     if(!type)
       return;
-
+    var key = pub_prefix + item.FileName;
     purchase_dialog_open({
       type: type,
       client: app_data.Publisher,
       app: app_data.Application,
       service: service_name,
-      urlstring: (item.FileName[0] != '/' ? '/' : '') + item.FileName,
+      urlstring: (key[0] != '/' ? '/' : '') + key,
       app_data: app_data,
       user_login_status: user_login_status
     });
   }
+  function open_pub(pubname)
+  {
+    var query = $.extend(false, {}, doc_query);
+    query.wapublication = pubname;
+    var query_str = querystring.stringify(query);
+    query_str = query_str ? '?' + query_str : '';
+    document.location = 'issues.html' + query_str;
+    return false;
+  }
   function magazines_create_item(item, data, list)
   {
-    var li = list.dhtml('list_new_item', null, item);
+    var li = list.dhtml('list_new_item', null, [ item, {
+      open_pub: open_pub
+    } ]);
     li.addClass('mag-type-' + (item.type == MAG_TYPE_PAID ? 'paid' : 'free'));
     return li;
   }
   function magazines_load(data, list, cb)
   {
-    var filename = data.RootView;
+    var rootView = pub_name ? pub_name + '.plist' : data.RootView,
+    filename = rootView;
     $.ajax(magazines_url(data), {
       dataType: 'xml'
     }).success(function(xml)
@@ -251,7 +276,7 @@ $(function(){
              fn = item.FileName;
              item.type = magazine_type(fn);
              item.ThumbnailUrl = 
-               magazine_file_url(data, magazine_get_thumbnail_by_filename(fn))
+               magazine_file_url(data, magazine_get_thumbnail_by_filename(fn));
              list.append(magazines_create_item(item, data, list)
                          .data('item', item));
            }
@@ -274,11 +299,13 @@ $(function(){
   }
   function magazines_url(data)
   {
-    return  magazine_file_url(data, data.RootView);
+    var rootView = pub_name ? pub_name + '.plist' : data.RootView;
+    return  magazine_file_url(data, pub_prefix + rootView);
   }
   function magazine_get_thumbnail_by_filename(fn)
   {
-    return paid2free(fn, true) + '.png';
+    return window.show_publications ? fn + '/' + fn + '.png' : 
+      paid2free(fn, true) + '.png';
   }
   function magazine_type(fn)
   {

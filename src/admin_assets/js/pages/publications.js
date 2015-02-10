@@ -324,8 +324,7 @@ $(function() {
                             // and status
                             //---------------------------------------------------
 
-                            if (isolateFolderName2(activeList[j].FileName) == temp[count].FileName ||
-                                isolateFolderName3(activeList[j].FileName) == temp[count].FileName) {
+                            if (activeList[j].FileName == temp[count].FileName) {
                                 temp[count].Title = activeList[j].Title;
                                 temp[count].Subtitle = activeList[j].Subtitle;
                                 temp[count].status = "active";
