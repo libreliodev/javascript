@@ -123,7 +123,7 @@ gapi.analytics.ready(function()
                  metrics: 'ga:sessions',
                  dimensions: 'ga:mobileDeviceModel',
                  sort: '-ga:sessions',
-                 'max-results': 6
+                 'max-results': 10
                },
                chart: {
                  container: 'device-chart',
@@ -133,8 +133,61 @@ gapi.analytics.ready(function()
                  }
                }
              });
-             deviceDataChart.execute();
+             deviceDataChart.execute(); 
+             
+             var report = new gapi.analytics.report.Data({
+				  query: {
+					ids: 'ga:' + ga_profile.id,
+					metrics: 'ga:totalEvents',
+					dimensions: 'ga:eventLabel',
+					filters: 'ga:eventAction=@Succeeded'
+				  }
+				});
+				report.on('success', function(response) {
 
+				  
+				  //var data = [4, 8, 15, 16, 23, 42];
+				  var data = response.rows;
+				  	data.forEach(function(d, i) { 
+				  		d.filePath=d[0].match(/\/\/?(.[^\?]+)(.*)/)[1]; 
+				  		parts  = (d.filePath).match(/(.*)\/(.*)\.(.*)/);
+				  		if (parts){
+				  			d.folderName = parts[1];
+				  			d.fileName = parts[2];
+				  			d.fileExtension = parts[3];
+
+				  		}
+				  	});
+				  	
+				  	var publications = data.filter(function(d) { 
+				  		return (d.fileName&&((d.folderName == d.fileName)|| (d.folderName+'_' == d.fileName)));
+				  	});
+				  	
+				  	var paidPublications = data.filter(function(d) { 
+				  		return ((d.fileName.indexOf('_.') > -1));
+				  	});
+				  	
+				  	var paidPublications = data.filter(function(d) { 
+				  		return ((d.fileName.indexOf('_.') == -1));
+				  	});
+				  	console.log(publications);
+					var x = d3.scale.linear()
+						.domain([0, d3.max(data, function(d) { return +d[1]; })])
+						.range([0, 420]);
+
+					d3.select(".chart")
+					  .selectAll("div")
+						.data(data)
+					  .enter().append("div")
+						.style("width", function(d) { return x(d[1]) + "px"; })
+						.text(function(d) { 
+							var publication = d.filePath;
+							return publication+':'+d[1]; 
+						});
+
+				});
+
+				report.execute();            
            }
          });
     });
@@ -197,3 +250,5 @@ function responseCompleteProcessGetItems(cb, noerror)
     }
   };
 }
+
+;
