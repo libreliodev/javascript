@@ -161,28 +161,46 @@ gapi.analytics.ready(function()
 				  	
 				  	var publications = data.filter(function(d) { 
 				  		return (d.fileName&&((d.folderName == d.fileName)|| (d.folderName+'_' == d.fileName)));
-				  	});
+				  	});//Publications are inside directories having the same name as the file
 				  	
-				  	var paidPublications = data.filter(function(d) { 
+				  	var paidPublications = publications.filter(function(d) { 
+				  		if (!d.fileName) return false;
 				  		return ((d.fileName.indexOf('_.') > -1));
-				  	});
+				  	});//Paid publications have a file name ending with _
 				  	
-				  	var paidPublications = data.filter(function(d) { 
+				  	var freePublications = publications.filter(function(d) { 
+				  		if (!d.fileName) return false;
 				  		return ((d.fileName.indexOf('_.') == -1));
 				  	});
-				  	console.log(publications);
+				  	
+				  	paidPublications.forEach(function(d, i) { 
+				  		d.paidQuantity=d[1]; 
+				  	});
+
+				  	freePublications.forEach(function(d, i) { 
+				  		d.freeQuantity=d[1]; 
+				  	});
+				  	
+				  	var allPublications = d3.merge([paidPublications,freePublications]);
+				  	var paidAndFreePublications = d3.nest()
+						.key(function(d) { return d.folderName; })
+						.rollup(function(leaves) { return {"paidQuantity": d3.sum(leaves, function(d) {return d.paidQuantity;}), "freeQuantity": d3.sum(leaves, function(d) {return d.freeQuantity;})} })
+						.entries(allPublications);
+
+				  	
+				  	
+				  	console.log(paidAndFreePublications);
 					var x = d3.scale.linear()
 						.domain([0, d3.max(data, function(d) { return +d[1]; })])
 						.range([0, 420]);
 
 					d3.select(".chart")
 					  .selectAll("div")
-						.data(data)
+						.data(paidAndFreePublications)
 					  .enter().append("div")
 						.style("width", function(d) { return x(d[1]) + "px"; })
 						.text(function(d) { 
-							var publication = d.filePath;
-							return publication+':'+d[1]; 
+							return d.key+':'+d.values.freeQuantity+','+d.values.paidQuantity; 
 						});
 
 				});
