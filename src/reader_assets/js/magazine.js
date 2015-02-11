@@ -9,13 +9,16 @@ $(function(){
   refresh_timeout,
   update_every,
   pub_name = window.accept_wapublication ? doc_query.wapublication || '' : '',
-  pub_prefix = pub_name ? pub_name + '/' : '';
+  pub_prefix = pub_name ? pub_name + '/' : '',
+  reader_wrp = $('.reader-container');
   
   magazines_container.hide();
   magazines_init(magazines_list);
 
+  $('body').hide();
   application_info_load(doc_query, function(err, data)
      {
+       app_data = data;
        if(window.redirect_to_pages)
        {
          var query = $.extend(false, {}, doc_query), url_str,
@@ -29,9 +32,15 @@ $(function(){
          return;
        }
        if(!reader_supported())
+       {
+         $('body').show();
          return reader_notify_not_supported(data);
+       }
        if(err)
+       {
+         $('body').show();
          return notifyError(err);
+       }
        // get update rate it's in minutes
        var rootView = pub_name ? pub_name + '.plist' : data.RootView,
        q = querystring.parse(get_url_query(rootView)) || {},
@@ -39,7 +48,6 @@ $(function(){
        ext = path.extname(basename),
        _update_every = parseFloat(q.waupdate);
        update_every = (isNaN(_update_every) ? 30 : _update_every)*60*1000;
-       app_data = data;
        // remove extension from basename
        basename = path.basename(basename, ext);
 
@@ -54,62 +62,70 @@ $(function(){
 
        switch(ext)
        {
-       case '.plist':         
-         if(app_data.UserService)
-         {
-           purchase_user_login_status({
-             app_data: app_data,
-             wasession: doc_query.wasession
-           }, function(status)
+       case '.plist':
+         addCSSFile(app_settings_link(app_data.Publisher, app_data.Application, 
+                                      'style_covers.css'), reader_wrp[0], 
+           function(err)
+           {
+             $('body').show();
+             
+             if(app_data.UserService)
              {
-               user_login_status = status;
+               purchase_user_login_status({
+                 app_data: app_data,
+                 wasession: doc_query.wasession
+               }, function(status)
+                  {
+                    user_login_status = status;
+                    login_status_update();
+                    magazines_container.show();
+                  });
+             }
+             else
+             {
                login_status_update();
                magazines_container.show();
-             });
-         }
-         else
-         {
-           login_status_update();
-           magazines_container.show();
-         }
-         
-         magazines_load(data, magazines_list, magazines_loaded_handle);
+             }
+             
+             magazines_load(data, magazines_list, magazines_loaded_handle);
 
-         // set background
-         if(data.BackgroundColor)
-         {
-           var color = new RGBColor(data.BackgroundColor),
-           invert_color;
-           if(color.ok)
-           {
-             var bright = ((color.r + color.g + color.b) / 255 / 3) > 0.5;
-             $('body').toggleClass('light-bkg', bright)
-               .toggleClass('dark-bkg', !bright);
-             invert_color = 'rgb(' + (255 - color.r) + ',' + (255 - color.g) +
-               ',' + (255 - color.b) + ')';
-           }
-           $('<style type="text/css" />').html(
-             'body, .headline, .label-default { background-color:' + data.BackgroundColor + ' !important; }' +
-               (invert_color ? '.label-default[href]:hover, .label-default[href]:focus { background-color:' + invert_color + ' !important; }' : '')).appendTo('head');
-         }
-         $('.reader-background').css('backgroundImage', 
-                                     'url("' + magazine_file_url(data, 'APP_/Uploads/Magazines_background.png') +'")');
+             // set background
+             if(data.BackgroundColor)
+             {
+               var color = new RGBColor(data.BackgroundColor),
+               invert_color;
+               if(color.ok)
+               {
+                 var bright = ((color.r + color.g + color.b) / 255 / 3) > 0.5;
+                 $('body').toggleClass('light-bkg', bright)
+                   .toggleClass('dark-bkg', !bright);
+                 invert_color = 'rgb(' + (255 - color.r) + ',' + (255 - color.g) +
+                   ',' + (255 - color.b) + ')';
+               }
+               $('<style type="text/css" />').html(
+                 'body, .headline, .label-default { background-color:' + data.BackgroundColor + ' !important; }' +
+                   (invert_color ? '.label-default[href]:hover, .label-default[href]:focus { background-color:' + invert_color + ' !important; }' : '')).appendTo('head');
+             }
+             $('.reader-background').css('backgroundImage', 
+                                         'url("' + magazine_file_url(data, 'APP_/Uploads/Magazines_background.png') +'")');
 
-         $('#logo-btn img').attr('src', magazine_file_url(data, 'APP_/Uploads/logo'));
+             $('#logo-btn img').attr('src', magazine_file_url(data, 'APP_/Uploads/logo'));
 
-         // links to sites
-         var $logo_dropdown_list = $("#logo-btn").parent().find('.dropdown-menu'),
-         sites_to_class = { WebSite: 'site-item', Facebook: 'facebook-item' };
-         for(var site in sites_to_class)
-         {
-           var $site_li = $logo_dropdown_list.find('.' + sites_to_class[site]);
-           if(data[site])
-             $site_li.find('a').attr('href', data[site]);
-           else
-             $site_li.hide();
-         }
+             // links to sites
+             var $logo_dropdown_list = $("#logo-btn").parent().find('.dropdown-menu'),
+             sites_to_class = { WebSite: 'site-item', Facebook: 'facebook-item' };
+             for(var site in sites_to_class)
+             {
+               var $site_li = $logo_dropdown_list.find('.' + sites_to_class[site]);
+               if(data[site])
+                 $site_li.find('a').attr('href', data[site]);
+               else
+                 $site_li.hide();
+             }
+           });
          break;
        case '.tsv':
+         $('body').show();
          function load_scripts(paths, cb)
          {
            async.parallel(paths.map(function(p)
@@ -169,6 +185,7 @@ $(function(){
            });
          break;
        default:
+         $('body').show();
          notifyError(sprintf(_('File extension not supported: %s'), 
                              rootView));
        }
