@@ -32,6 +32,48 @@ scripts:
     </div>
   </div>
   <div class="reader-content container">
+  <div id="featured-cover">
+    <div class="left-side" style="cursor:pointer">
+      <div class="cover-image-wrp">
+        <img data-attrs="src=row.ThumbnailUrl" />
+      </div>
+    </div>
+    <div class="right-side buttons-list">
+      <div>
+        <div class="info">
+          <h3 class="title" data-content="row.Title"></h3>
+          <p class="date" data-content="row.Subtitle"></p>
+        </div>
+        <div class="preview-btn-wrp">
+          <button class="btn subs-btn" type="button" data-bind="click=magazine_open(row,true)"><span class="single-label">Free Preview</span></button>
+        </div>
+      </div>
+      <div>
+        <button class="btn subs-btn" type="button">
+          <span class="price">3,99&#8364;</span>
+          <span class="label">Buy this issue</span>
+        </button>
+      </div>
+      <div>
+        <button class="btn subs-btn" type="button">
+          <span class="price">13,99&#8364;</span>
+          <span class="label">Subscribe for 3 months</span>
+        </button>
+      </div>
+      <div>
+        <button class="btn subs-btn" type="button">
+          <span class="price">23,99&#8364;</span>
+          <span class="label">Subscribe for 1 year</span>
+        </button>
+      </div>
+      <div>
+        <button class="btn subs-btn" type="button">
+          <span class="label">Already as subscriber?</span>
+          <span class="label-big">Login in</span>
+        </button>
+      </div>
+    </div>
+  </div>
     <ul class="magazines">
       <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2" data-id="default">
         <div class="mag-item">

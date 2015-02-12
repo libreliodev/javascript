@@ -10,7 +10,16 @@ $(function(){
   update_every,
   pub_name = window.accept_wapublication ? doc_query.wapublication || '' : '',
   pub_prefix = pub_name ? pub_name + '/' : '',
-  reader_wrp = $('.reader-container');
+  reader_wrp = $('.reader-container'),
+  featured = $('#featured-cover'),
+  featured_html,
+  subscriptions = [],
+  subscriptions_names = [ 'Subscription_1', 'Subscription_2' ],
+  global_ctx = {
+    open_pub: open_pub,
+    subscriptions: subscriptions,
+    magazine_open: magazine_open
+  };
   
   magazines_container.hide();
   magazines_init(magazines_list);
@@ -63,9 +72,42 @@ $(function(){
        switch(ext)
        {
        case '.plist':
-         addCSSFile(app_settings_link(app_data.Publisher, app_data.Application, 
-                                      'style_covers.css'), reader_wrp[0], 
-           function(err)
+         async.parallel([
+           function(callback)
+           {
+             $.ajax(app_settings_link(app_data.Publisher, app_data.Application, 
+                                      'setup-html5.plist'), {
+               dataType: 'xml'
+             }).success(function(xml)
+                 {
+                   var info = $.plist(xml);
+                   if(info)
+                     html5_info = info;
+                   // init subscriptions
+                   for(var i = 0; i < subscriptions_names.length; ++i)
+                   {
+                     var name = subscriptions_names[i];
+                     if(html5_info[name + '_Title'])
+                       subscriptions.push({
+                         'title': html5_info[name + '_Title'],
+                         'link': html5_info[name + '_Link'] || ''
+                       });
+                   }
+                   callback()
+                 })
+               .fail(function(xhr, textStatus, err)
+                 {
+                   callback();
+                 });
+           },
+           function(callback)
+           {
+             addCSSFile(app_settings_link(app_data.Publisher, 
+                                          app_data.Application, 
+                                          'style_covers.css'), reader_wrp[0], 
+               function(err) { callback(); });
+           }
+         ],function()
            {
              $('body').show();
              
@@ -219,24 +261,29 @@ $(function(){
         var li = catchLIElement(this)
         if(!li)
           return;
-        var item = li.data('item'),
-        fn = paid2free(item.FileName),
-        ext = path.extname(fn), url;
-        if($(this).hasClass('mag-read-btn') && item.type != MAG_TYPE_FREE)
-        {
-          read_paid_file(item);
-        }
-        else
-        {
-          if(ext == '.pdf')
-            url = magazine_pdfreader_link_for(pub_prefix + fn);
-          else
-            return false; // do nothing url = magazine_file_url(app_data, fn);
-        
-          document.location = url;
-        }
+        var item = li.data('item');
+        if(item)
+          magazine_open(item, !$(this).hasClass('mag-read-btn'));
         return false;
       });
+  }
+  function magazine_open(item, for_sample)
+  {
+    var fn = paid2free(item.FileName),
+    ext = path.extname(fn), url;
+    if(!for_sample && item.type != MAG_TYPE_FREE)
+    {
+      read_paid_file(item);
+    }
+    else
+    {
+      if(ext == '.pdf')
+        url = magazine_pdfreader_link_for(pub_prefix + fn);
+      else
+        return false; // do nothing url = magazine_file_url(app_data, fn);
+      
+      document.location = url;
+    }
   }
   function read_paid_file(item)
   {  
@@ -268,9 +315,7 @@ $(function(){
   }
   function magazines_create_item(item, data, list)
   {
-    var li = list.dhtml('list_new_item', null, [ item, {
-      open_pub: open_pub
-    } ]);
+    var li = list.dhtml('list_new_item', null, [ item, global_ctx ]);
     li.addClass('mag-type-' + (item.type == MAG_TYPE_PAID ? 'paid' : 'free'));
     return li;
   }
@@ -286,6 +331,11 @@ $(function(){
            if(!items)
              return cb && cb(new Error(_(sprintf("Counldn't parse `%s`"), 
                                          filename)));
+
+           var has_featured = featured && featured.height() > 0;
+           reader_wrp.toggleClass('no-featured', !has_featured);
+           global_ctx.has_featured = has_featured;
+
            list.html('');
            for(var i = 0, l = items.length; i < l; ++i)
            {
@@ -294,9 +344,29 @@ $(function(){
              item.type = magazine_type(fn);
              item.ThumbnailUrl = 
                magazine_file_url(data, magazine_get_thumbnail_by_filename(fn));
+             item.index = i;
+           }
+           for(var i = has_featured ? 1 : 0, l = items.length; i < l; ++i)
+           {
+             var item = items[i];
              list.append(magazines_create_item(item, data, list)
                          .data('item', item));
            }
+
+          if(has_featured && items.length > 0)
+          {
+            if(!featured_html)
+              featured_html = featured.html();
+            else
+              featured.html(featured_html);
+            var ctx = {
+              index: 0,
+              row: items[0]
+            };
+            featured.dhtml('item_init', [ ctx, global_ctx ], 
+                              { recursive: true });
+          }
+
            cb && cb(null, items);
          })
       .fail(function(xhr, textStatus, err)
@@ -396,6 +466,7 @@ $(function(){
     });
   function login_status_update(auth)
   {
+    global_ctx.logged_in = user_login_status;
     auth = typeof auth != 'undefined' ? auth : 
       (app_data.UserService ? user_login_status : 
        !!localStorage.getItem(reader_auth_key(app_data)));
