@@ -33,7 +33,7 @@ scripts:
   </div>
   <div class="reader-content container">
   <div id="featured-cover">
-    <div class="left-side" style="cursor:pointer">
+    <div class="left-side" style="cursor:pointer" data-bind="click=open_cover_details_dialog(index,row)">
       <div class="cover-image-wrp">
         <img data-attrs="src=row.ThumbnailUrl" />
       </div>
@@ -77,16 +77,54 @@ scripts:
     <ul class="magazines">
       <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2" data-id="default">
         <div class="mag-item">
-          <div class="mag-title" data-content="Title"></div>
-          <div class="mag-subtitle" data-content="Subtitle"></div>
-          <img class="mag-thumbnail" data-attrs="src=ThumbnailUrl" />
+          <div style="cursor:pointer" data-bind="click=open_cover_details_dialog(index,row)">
+            <div class="mag-title" data-content="row.Title"></div>
+            <div class="mag-subtitle" data-content="row.Subtitle"></div>
+            <img class="mag-thumbnail" data-attrs="src=row.ThumbnailUrl" />
+          </div>
           <a href="#" class="label label-default mag-read-btn"
              localize="'magazine_read_btn'">Read</a>
           <a href="#" class="label label-default mag-sample-btn mag-paid-type"
-             localize="'magazine_sample_btn'" data-init="if(Description,this.remove())">Sample</a>
+             localize="'magazine_sample_btn'" data-init="if(row.Description,this.remove())">Sample</a>
         </div>
       </li>
     </ul>
+  </div>
+</div>
+<div id="cover-details" class="modal fade">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="left-img-wrp">
+        <img data-attrs="src=row.ThumbnailUrl" />
+      </div>
+      
+      <div class="description" data-content="row.Description"></div>
+      <div class="clearb"></div>
+      <!-- 
+      <div class="buttons-list">
+        <div>
+          <div class="info">
+            <h3 class="title" data-content="row.Title"></h3>
+            <p class="date" data-content="row.Subtitle"></p>
+          </div>
+          <div class="open-btn-wrp">
+          </div>
+        </div>
+        -->
+      <div class="buttons-list">
+        <div>
+          <button class="btn subs-btn" type="button" data-init="this.addClass(if(and(eeq(row.type,MAG_TYPE_PAID),eeq(logged_in,true)),'open-btn-full','open-btn-preview'))" data-bind="click=magazine_open(row,not(and(eeq(row.type,MAG_TYPE_PAID),eeq(logged_in,true))))">
+            <span class="single-label">
+              <span class="is-preview">Free Preview</span>
+              <span class="is-full">Read</span>
+            </span>
+          </button>
+        </div>
+        <div data-foreach="subscriptions as sub">
+          <a class="btn subs-btn" data-attrs="href=sub.link"><span class="single-label" data-content="sub.title"></span></a>
+        </div>
+      </div>
+    </div>
   </div>
 </div>
 {{> purchase_dialog }}

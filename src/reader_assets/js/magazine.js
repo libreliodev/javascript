@@ -16,9 +16,12 @@ $(function(){
   subscriptions = [],
   subscriptions_names = [ 'Subscription_1', 'Subscription_2' ],
   global_ctx = {
+    MAG_TYPE_PAID: MAG_TYPE_PAID,
+    MAG_TYPE_FREE: MAG_TYPE_FREE,
     open_pub: open_pub,
     subscriptions: subscriptions,
-    magazine_open: magazine_open
+    magazine_open: magazine_open,
+    open_cover_details_dialog: open_cover_details_dialog
   };
   
   magazines_container.hide();
@@ -313,9 +316,30 @@ $(function(){
     document.location = 'issues.html' + query_str;
     return false;
   }
-  function magazines_create_item(item, data, list)
+  function open_cover_details_dialog(index, row)
   {
-    var li = list.dhtml('list_new_item', null, [ item, global_ctx ]);
+    var $cover_details = $('#cover-details');
+    if(!$cover_details.data('_original_html'))
+      $cover_details.data('_original_html', $cover_details.html());
+    else
+      $cover_details.html($cover_details.data('_original_html'));
+
+    var ctx = {
+      index: 0,
+      row: row
+    };
+    $cover_details.dhtml('item_init', [ ctx, global_ctx ], 
+                         { recursive: true });
+
+    $cover_details.modal({ });
+    $cover_details.modal('show');
+  }
+  function magazines_create_item(index, item, data, list)
+  {
+    var li = list.dhtml('list_new_item', null, [ {
+      index: index,
+      row: item
+    }, global_ctx ]);
     li.addClass('mag-type-' + (item.type == MAG_TYPE_PAID ? 'paid' : 'free'));
     return li;
   }
@@ -344,12 +368,11 @@ $(function(){
              item.type = magazine_type(fn);
              item.ThumbnailUrl = 
                magazine_file_url(data, magazine_get_thumbnail_by_filename(fn));
-             item.index = i;
            }
            for(var i = has_featured ? 1 : 0, l = items.length; i < l; ++i)
            {
              var item = items[i];
-             list.append(magazines_create_item(item, data, list)
+             list.append(magazines_create_item(i, item, data, list)
                          .data('item', item));
            }
 
