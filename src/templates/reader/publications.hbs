@@ -33,11 +33,11 @@ scripts:
   </div>
   <div class="reader-content container">
     <ul class="magazines">
-      <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2" data-id="default" style="cursor:pointer;" data-bind="click=open_pub(FileName)">
+      <li class="col-xs-6 col-sm-4 col-md-3 col-lg-2" data-id="default" style="cursor:pointer;" data-bind="click=open_pub(row.FileName)">
         <div class="mag-item">
-          <div class="mag-title" data-content="Title"></div>
-          <div class="mag-subtitle" data-content="Subtitle"></div>
-          <img class="mag-thumbnail" data-attrs="src=ThumbnailUrl" />
+          <div class="mag-title" data-content="row.Title"></div>
+          <div class="mag-subtitle" data-content="row.Subtitle"></div>
+          <img class="mag-thumbnail" data-attrs="src=row.ThumbnailUrl" />
         </div>
       </li>
     </ul>

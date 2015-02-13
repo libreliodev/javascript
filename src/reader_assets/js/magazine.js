@@ -10,7 +10,6 @@ $(function(){
   update_every,
   pub_name = window.accept_wapublication ? doc_query.wapublication || '' : '',
   pub_prefix = pub_name ? pub_name + '/' : '',
-  reader_wrp = $('.reader-container'),
   featured = $('#featured-cover'),
   featured_html,
   subscriptions = [],
@@ -24,7 +23,6 @@ $(function(){
     open_cover_details_dialog: open_cover_details_dialog
   };
   
-  magazines_container.hide();
   magazines_init(magazines_list);
 
   $('body').hide();
@@ -107,7 +105,8 @@ $(function(){
            {
              addCSSFile(app_settings_link(app_data.Publisher, 
                                           app_data.Application, 
-                                          'style_covers.css'), reader_wrp[0], 
+                                          'style_covers.css'), 
+                        magazines_container[0], 
                function(err) { callback(); });
            }
          ],function()
@@ -123,13 +122,11 @@ $(function(){
                   {
                     user_login_status = status;
                     login_status_update();
-                    magazines_container.show();
                   });
              }
              else
              {
                login_status_update();
-               magazines_container.show();
              }
              
              magazines_load(data, magazines_list, magazines_loaded_handle);
@@ -356,10 +353,11 @@ $(function(){
              return cb && cb(new Error(_(sprintf("Counldn't parse `%s`"), 
                                          filename)));
 
-           var has_featured = featured && featured.height() > 0;
-           reader_wrp.toggleClass('no-featured', !has_featured);
+           var has_featured = featured.length > 0 && featured.height() > 0 &&
+             featured.is(':visible');
+           magazines_container.toggleClass('no-featured', !has_featured);
            global_ctx.has_featured = has_featured;
-
+           
            list.html('');
            for(var i = 0, l = items.length; i < l; ++i)
            {
@@ -369,6 +367,7 @@ $(function(){
              item.ThumbnailUrl = 
                magazine_file_url(data, magazine_get_thumbnail_by_filename(fn));
            }
+
            for(var i = has_featured ? 1 : 0, l = items.length; i < l; ++i)
            {
              var item = items[i];
