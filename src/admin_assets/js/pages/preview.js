@@ -17,7 +17,17 @@ $(function()
            if(err)
              return notifyUserError("You should setup app first! <a href=\"setup.html\">Click Here!</a>");
            $('#preview-content').show();
-           var setup_obj = res ? $.plist($.parseXML(res.Body.toString())) : {};
+           var setup_obj = res ? $.plist($.parseXML(res.Body.toString())) : {},
+           base_url = '//reader.librelio.com',
+           frame_src = base_url + '?' + querystring.stringify({
+             wapublisher: s3AuthObj.rootDirectory,
+             waapp: app_name
+           }),
+           frame_src_html5 = base_url + '?' + querystring.stringify({
+             wapublisher: s3AuthObj.rootDirectory,
+             waapp: app_name, 
+             waversion: 'html5'
+           });
            // set app active state
            function set_toggle_name()
            {
@@ -48,25 +58,25 @@ $(function()
                     $this.prop('disabled', false);
                     set_toggle_name.call($this);
                     if(!err)
-                        reader.prop('src', reader.prop('src'));
+                    {
+                      if(setup_obj.Active)
+                      {
+                        reader.show();
+                        reader.prop('src', frame_src_html5);
+                      }
+                      else
+                        reader.hide();
+                    }
                   });
              });
-           var base_url = '//reader.librelio.com';
-           $('#reader-link').attr('href', base_url + '?' + 
-                                             querystring.stringify({
-                                               wapublisher: 
-                                                     s3AuthObj.rootDirectory,
-                                               waapp: app_name
-                                             }));
+           
+           $('#reader-link').attr('href', frame_src);
            var reader = $('<iframe/>');
            reader.prop('id', 'reader');
-           reader.attr('src', base_url + '?' + 
-                                             querystring.stringify({
-                                               wapublisher: 
-                                                     s3AuthObj.rootDirectory,
-                                               waapp: app_name, 
-                                               waversion: 'html5'
-                                             }));
+           if(setup_obj.Active)
+             reader.attr('src', frame_src_html5);
+           else
+             reader.hide();
            $('#reader-wrapper').append(reader);
          });
     });
