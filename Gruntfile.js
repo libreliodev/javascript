@@ -16,6 +16,7 @@ module.exports = function (grunt) {
     csvreader_assets = src_dir + '/csvreader_assets',
     tsvreader_assets = src_dir + '/tsvreader_assets',
     pdfreader_assets = src_dir + '/pdfreader_assets',
+    tablereader_assets = src_dir + '/tablereader_assets',
     reader_assets_src_dir = src_dir + '/reader_assets',
     admin_assets_src_dir = src_dir + '/admin_assets',
     webviews_assets_src_dir = src_dir + '/webviews_assets';
@@ -424,7 +425,8 @@ module.exports = function (grunt) {
                             './js/bootstrap-timepicker.min.js'],
                       dest: admin_assets_dist_dir + '/lib/bootstrap-timepicker/'
                     },
-                    // formbuilder
+
+                    /* copy jquery-ui */
                     { expand:true, cwd:'bower_components/jquery-ui/ui/minified',
                       src: [ "jquery.ui.core.min.js", "jquery.ui.widget.min.js",
                              "jquery.ui.mouse.min.js", 
@@ -432,6 +434,15 @@ module.exports = function (grunt) {
                              "jquery.ui.droppable.min.js", 
                              "jquery.ui.sortable.min.js" ],
                       dest: admin_assets_dist_dir + '/lib/' },
+                    { expand:true, cwd:'bower_components/jquery-ui/ui/minified',
+                      src: [ "jquery.ui.core.min.js", "jquery.ui.widget.min.js",
+                             "jquery.ui.mouse.min.js", 
+                             "jquery.ui.draggable.min.js",
+                             "jquery.ui.droppable.min.js", 
+                             "jquery.ui.sortable.min.js" ],
+                      dest: reader_assets_dist_dir + '/lib/' },
+                  
+                    // formbuilder
                     { src: 'bower_components/backbone-deep-model/distribution/deep-model.min.js',
                       dest: admin_assets_dist_dir + '/lib/backbone/deep-model.min.js' },
                     { src: 'bower_components/backbone/backbone.js',
@@ -788,7 +799,31 @@ module.exports = function (grunt) {
                         cwd: 'bower_components/taffydb/',
                         src: ['taffy-min.js'],
                         dest: webviews_assets_dist_dir + '/lib'
-                    }
+                    },
+                  /* copy pivottable.js dist */
+                    {
+                        expand: true,
+                        cwd: 'bower_components/pivottable/dist/',
+                        src: ['./**'],
+                        dest: admin_assets_dist_dir + '/lib/pivottable/'
+                    },
+                    {
+                        expand: true,
+                        cwd: 'bower_components/pivottable/dist/',
+                        src: ['./**'],
+                        dest: reader_assets_dist_dir + '/lib/pivottable/'
+                    },
+                  /* copy tablereader assets to reader & admin */
+                    {
+                        expand: true,
+                        cwd: tablereader_assets, src: ['js/**'],
+                        dest: reader_assets_dist_dir + '/'
+                    },
+                    {
+                        expand: true,
+                        cwd: tablereader_assets, src: ['js/**'],
+                        dest: admin_assets_dist_dir + '/'
+                    },
                 ]
             }
         },
