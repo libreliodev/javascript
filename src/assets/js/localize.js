@@ -57,10 +57,15 @@
       });
   }
   localize.eval_all = localize_eval_all;
+  localize.aliases = {
+    'fr': 'fr-FR'
+  };
   localize.setLocale = function(locale, opts, cb)
   {
     if(typeof opts == 'function')
       cb = opts;
+    if(localize.aliases[locale])
+      locale = localize.aliases[locale];
     if(opts.icu === undefined || opts.icu)
     {
       var icu = document.createElement('script');
