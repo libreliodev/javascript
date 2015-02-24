@@ -1,3 +1,15 @@
+function url_origin(s)
+{
+  s = s || '';
+  var pttrn = /https?:\/\/[^\/]+/,
+  match = pttrn.exec(s);
+  if(match)
+    return match[0];
+  match = pttrn.exec(document.location+'');
+  if(match)
+    return match[0];
+  return '';
+}
 function path_without_query(s)
 {
   s = s || '';
