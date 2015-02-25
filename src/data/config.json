@@ -12,5 +12,6 @@
     "idFedFBUsersRoleArn": "arn:aws:iam::105216790221:role/RoleForFacebook",
     "idFedGPUsersRoleArn": "arn:aws:iam::105216790221:role/RoleForGoogle",
     "GoogleClientId": "1012641315687.apps.googleusercontent.com",
+    "backendUrl": "http://localhost/libreliodev-php",
     "locale": "en-US"
 }
