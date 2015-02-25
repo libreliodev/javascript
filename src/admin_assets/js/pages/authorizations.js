@@ -4,7 +4,7 @@ $(function()
   app_dir = get_app_dir(app_name),
   auth_key = app_dir + '/APP_/Uploads/authorizations_.plist',
   oauth_origin = 'http://localhost',
-  oauth_url = oauth_origin+'/libreliodev-php/admin/oauth.php';
+  oauth_url = oauth_origin+'/php/admin/oauth.php';
   if(!app_name)
     return;
 
