@@ -151,7 +151,8 @@ gapi.analytics.ready(function()
 				  query: {
 					ids: 'ga:' + ga_profile.id,
 					metrics: 'ga:totalEvents',
-					dimensions: 'ga:eventLabel',
+					'start-date':'2005-01-01',
+					dimensions: 'ga:eventLabel,ga:yearMonth,ga:operatingSystem',
 					filters: 'ga:eventAction=@Succeeded'
 				  }
 				});
@@ -168,10 +169,12 @@ gapi.analytics.ready(function()
 				  			//Publications are inside directories having the same name as the file
 				  			if (d.fileName&&((d.folderName == d.fileName)|| (d.folderName+'_' == d.fileName))){
 				  				var obj = {};
-				  				obj.folderName= d.folderName;
-				  				obj.qty = +d[1];
-								if (d.fileName.lastIndexOf('_') == d.fileName.length - 1) obj.type='paid';//Paid publications have a file name ending with _
-								else obj.type='free';
+				  				obj.Publication= d.folderName;
+				  				obj.YearMonth = d[1]
+				  				obj.OS = d[2]
+				  				obj.Qty = +d[3];
+								if (d.fileName.lastIndexOf('_') == d.fileName.length - 1) obj.Type='Paid';//Paid publications have a file name ending with _
+								else obj.Type='Free';
 				  				publications.push(obj);
 				  			}
 
@@ -181,7 +184,22 @@ gapi.analytics.ready(function()
 				  	
 	
 				  	console.log(publications);
-				  	$("#pivotstable").pivotUI(publications);
+				  	
+					var sum = $.pivotUtilities.aggregatorTemplates.sum;
+					var numberFormat = $.pivotUtilities.numberFormat;
+					var intFormat = numberFormat({digitsAfterDecimal: 0}); 
+
+				  	$("#pivotstable").pivotUI(
+				  		publications,   
+				  		{
+							rows: ["Publication"],
+							cols: ["Type"],
+							aggregators: {"Quantity":function() { return sum(intFormat)(["Qty"]) }},
+							hiddenAttributes: ["Qty"]
+						}
+
+				  		
+				  	);
 
 
 				  	
