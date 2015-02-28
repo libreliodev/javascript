@@ -3,23 +3,29 @@ title: Tracking
 page_id: Tracking
 icon: fa fa-bar-chart-o
 stylesheets:
+- lib/pivottable/pivot.min.css
 - css/pages/analytics.css
+- css/pages/pivots.min.css
 javascripts:
-- js/pages/analytics.js
 - lib/jquery.plist.js
+- lib/querystring.min.js
+- lib/path.min.js
 - lib/async.js
+- lib/d3.min.js
+- lib/jquery.ui.core.min.js
+- lib/jquery.ui.widget.min.js
+- lib/jquery.ui.mouse.min.js
+- lib/jquery.ui.draggable.min.js
+- lib/jquery.ui.droppable.min.js
+- lib/jquery.ui.sortable.min.js
+- lib/pivottable/pivot.min.js
+- js/tablereader.js
+- js/pages/analytics.js
+
+
 --- 
-         <div class="col-lg-12">
-                <div class="box">
-                  	<div id="collapse4" class="body">
-						<div id="page-loading-indicator">
-						  <img src="assets/img/loader-big-snake.gif" alt="Loading..." />
-						</div>
-						<div id="auth-button-wrp"></div>
-						<div id="date-range-selector-1-container"></div>
-                	</div>
-                </div>
-              </div>
+
+         
  			<div class="col-lg-12">
                 <div class="box">
                   <header>
@@ -45,7 +51,9 @@ javascripts:
                     <h5 localize="">Downloads</h5>
                   </header>
                   <div  class="body">
-                  	            <div id="chart_div" ></div>
+					<div id="pivotstable">
+ 					</div>
+
                    </div>
      			</div>
               </div>         

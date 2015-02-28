@@ -3,8 +3,8 @@ $(function()
   var app_name = storage.getItem(config.storageAppNameKey),
   app_dir = get_app_dir(app_name),
   auth_key = app_dir + '/APP_/Uploads/authorizations_.plist',
-  oauth_origin = url_origin(config.backendUrl),
-  oauth_url = config.backendUrl+'/admin/oauth.php';
+  oauth_origin = 'http://localhost',
+  oauth_url = oauth_origin+'/php/admin/oauth.php';
   if(!app_name)
     return;
 
