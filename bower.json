@@ -44,7 +44,7 @@
     "canvasloader": "~0.9.1",
     "bootstrap-timepicker": "~0.2.6",
     "pdfjs-dist": "~1.0.1135",
-    "pivottable": "~1.3.0"
+    "pivottable": "*"
   },
   "resolutions": {
     "font-awesome": ">=4.2.0",
