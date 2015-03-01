@@ -153,10 +153,12 @@ gapi.analytics.ready(function()
 					metrics: 'ga:totalEvents',
 					'start-date':'2005-01-01',
 					dimensions: 'ga:eventLabel,ga:yearMonth,ga:operatingSystem',
-					filters: 'ga:eventAction=@Succeeded'
+					filters: 'ga:eventAction=@Succeeded',
+					'max-results':10000
 				  }
 				});
 				report.on('success', function(response) {
+					//console.log(response);
 				  var data = response.rows;
 				  var publications = [];
 				  	data.forEach(function(d, i) { 
@@ -183,7 +185,7 @@ gapi.analytics.ready(function()
 				  	
 				  	
 	
-				  	console.log(publications);
+				  	//console.log(publications);
 				  	
 					var sum = $.pivotUtilities.aggregatorTemplates.sum;
 					var numberFormat = $.pivotUtilities.numberFormat;
@@ -208,6 +210,70 @@ gapi.analytics.ready(function()
 
 
 				report.execute();      
+                   
+                   var report2 = new gapi.analytics.report.Data({
+				  query: {
+					ids: 'ga:' + ga_profile.id,
+					metrics: 'ga:uniqueScreenviews',
+					'start-date':'2005-01-01',
+					dimensions: 'ga:screenName,ga:yearMonth,ga:operatingSystem',
+					filters: 'ga:screenName=@Downloading/',
+					'max-results':10000
+
+				  }
+				});
+				report2.on('success', function(response) {
+				 //console.log(response);
+				  var data = response.rows;
+				  var publications2 = [];
+				  	data.forEach(function(d, i) { 
+				  		console.log(d[0]);
+				  		d.filePath=d[0].match(/\/\/?(.[^\?]+)(.*)/)[1]; 
+				  		parts  = d[0].match(/(.*)\/(.*)/);
+				  		if (parts){
+							d.fileName = parts[2];
+				  				var obj = {};
+				  				obj.Publication= d.fileName;
+				  				obj.YearMonth = d[1]
+				  				obj.OS = d[2]
+				  				obj.Qty = +d[3];
+				  				obj.Type='Free'
+								if (d.fileName.lastIndexOf('_') == d.fileName.length - 1) {
+									obj.Type='Paid';//Paid publications have a file name ending with _
+									obj.Publication = d.fileName.substring(0, d.fileName.length - 1);//Remove final _
+								}
+				  				publications2.push(obj);
+
+				  		}
+				  	});
+				  	
+				  	
+	
+				  	console.log(publications2);
+				  	
+					var sum = $.pivotUtilities.aggregatorTemplates.sum;
+					var numberFormat = $.pivotUtilities.numberFormat;
+					var intFormat = numberFormat({digitsAfterDecimal: 0}); 
+
+				  	$("#pivotstable2").pivotUI(
+				  		publications2,   
+				  		{
+							rows: ["Publication"],
+							cols: ["Type"],
+							aggregators: {"Quantity":function() { return sum(intFormat)(["Qty"]) }},
+							hiddenAttributes: ["Qty"]
+						}
+
+				  		
+				  	);
+
+
+				  	
+
+				});
+
+
+				report2.execute();      
       
            }
          });
