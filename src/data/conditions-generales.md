@@ -1,4 +1,4 @@
-_ Dernière mise à jour: 17 novembre 2014_
+_ Dernière mise à jour: 14 mars 2015_
 
 Les  conditions générales qui suivent sont applicables pour l’ensemble de prestations de Librelio à des clients français, ayant fait l’objet préalable d’un devis approuvé par le Client, mentionnant ces conditions.
 
@@ -28,7 +28,7 @@ Librelio informera, dans la mesure du possible le Client, dans un délai raison
 ### 3- Maintenance
 
 Dans le cadre de prestations dont le devis mentionne la maintenance d'applications , Librelio s'engage :  
-- • à maintenir en bon état de fonctionnement les applications couvertes par la prestation, sur les systèmes d'exploitation les plus récents, ainsi que les deux versions antérieures
+- • à maintenir en bon état de fonctionnement les applications couvertes par la prestation, sur les systèmes d'exploitation les plus récents, ainsi qu'une version antérieures
 - • à publier sur internet les informations concernant évolutions apportées aux applications maintenues ou informer directement le Client
 - • à effectuer la révision des application (modifications, adaptation, développement, etc.) s'imposant à la suite d'un changement dans la réglementation en vigueur à condition que le système installé chez l'utilisateur le permette.
  
