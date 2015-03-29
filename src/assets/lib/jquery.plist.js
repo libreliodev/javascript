@@ -130,7 +130,8 @@
                 {
                     var r = '';
                     for(var key in obj)
-                        if(typeof key != 'undefined')
+                        if(typeof key != 'undefined' && 
+                           typeof obj[key] != 'undefined')
                             r += indentStr(indentLen+1) + 
                                 elmToString('key', key) + newline() +
                                 plistElementsToString(obj[key], opts, 

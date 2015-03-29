@@ -7,7 +7,11 @@ $(function()
       pdf_viewer.off('headersReceived', arguments.callee);
       if(typeof update_fn == 'string' && update_fn.length > 0)
       {
-        $.ajax(s3bucket_file_url(update_fn), {
+        var pdf_url = pdf_viewer.pdfviewer('get', 'pdf_url');
+        if(!pdf_url)
+          return;
+        var pdf_url_dir = url_dir(pdf_url);
+        $.ajax(pdf_url_dir + '/' + update_fn, {
           success: function(data)
           {
             try {
@@ -89,8 +93,11 @@ function pdfreader_parse_annotations_update(obj)
         id: data.ID,
         subtype: 'Link',
         rect: (data.Rect||'').split(' ').map(parseFloat),
-        remove: data.Action == 'Remove'
+        remove: data.Action == 'Remove',
+        add: data.Action == 'Add'
       };
+      if(typeof data.IndexAtPage == 'number')
+        annot.IndexAtPage = data.IndexAtPage;
       annots.push(annot);
       switch(annot.subtype)
       {

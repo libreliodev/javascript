@@ -820,6 +820,7 @@
     {
       var self = this,
       o = self.data(pvobj_key);
+      o.pdf_url = pdf_url;
       async.series([ function(next)
       {
         function xhrGetResponseHeaders(xhr)

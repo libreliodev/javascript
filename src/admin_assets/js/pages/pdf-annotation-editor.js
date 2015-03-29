@@ -4,7 +4,7 @@ app_dir = get_app_dir(app_name),
 doc_query = querystring.parse(get_url_query(document.location+'')),
 pdf_url = doc_query ? doc_query.waurl : null, s3_key,
 external_b = doc_query ? typeof doc_query.external != 'undefined' : null,
-pdf_url_dir, annots_key, update_header_fn;
+pdf_url_dir, annots_key, annots_fn, update_header_fn;
 
 
 $(function(){
@@ -23,8 +23,8 @@ $(function(){
   {
     setTimeout(function()
       {
-        annots_key = path.dirname(pdf_url) + '/' + 
-          path.basename(pdf_url, path.extname(pdf_url)) + '_updates.plist';
+        annots_fn = path.basename(pdf_url, path.extname(pdf_url)) + '_updates.plist';
+        annots_key = path.dirname(pdf_url) + '/' + annots_fn;
         var saved_data = localStorage.getItem(annots_key);
         if(saved_data)
         {
@@ -196,7 +196,7 @@ $(function(){
             Bucket: config.s3Bucket,
             Key: s3_key,
             Metadata: {
-              update: annots_key
+              update: annots_fn
             }
           }, function(err, res)
              {
@@ -307,8 +307,10 @@ $(function(){
         if(!hasChanged(annot))
           continue;
         var annot_data = {
-          Action: annot.remove ? 'Remove' : 'Add'
+          Action: annot.remove ? 'Remove' : (annot.add ? 'Add' : 'Edit')
         };
+        if(annot_data.Action != 'Add')
+          annot_data.IndexAtPage = annot.IndexAtPage;
         if(annot.id)
           annot_data.ID = annot.id;
         pres.push(annot_data);
@@ -522,7 +524,13 @@ $(function(){
             {
               var cdata = $.extend(true, {}, data);
               cdata.pdf_data = data;
+              cdata.IndexAtPage = i;
               add_annot(cdata);
+            }
+            else
+            {
+              annot.pdf_data = data;
+              annot.IndexAtPage = i;
             }
           }
         }
@@ -603,6 +611,7 @@ $(function(){
             var annots = annotations['p' + page.index];
             el = annot_editor_link_create(data, page);
             data.id = genRandId();
+            data.add = true;
             annots.push(data);
             $links_div.append(el);
             data.element = el;
