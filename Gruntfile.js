@@ -190,6 +190,15 @@ module.exports = function (grunt) {
                     {expand: true, cwd: 'src/templates/pages', src: ['*.hbs'], dest: admin_dist_dir}
                 ]
             },
+            pages_frame: {
+                // Target-level options
+                options: {
+                    layout: 'default_frame.hbs'
+                },
+                files: [
+                    {expand: true, cwd: 'src/templates/pages', src: ['*.hbs'], dest: admin_dist_dir+'/frames/'}
+                ]
+            },
             login: {
                 options: {
                     layout: 'login.hbs'

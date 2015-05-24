@@ -1,4 +1,41 @@
-$(function(){
+var docQuery = path.parseQuery(document.location.search.slice(1));
+// automatic login
+if(docQuery.autologin)
+{
+  (function(){
+    try {
+      var auth_obj = JSON.parse(storage.getItem(config.storageAuthKey));
+      if(auth_obj && 
+         docQuery.accessKeyId == auth_obj.accessKeyId &&
+         docQuery.secretAccessKey == auth_obj.secretAccessKey &&
+         docQuery.rootDirectory == auth_obj.rootDirectory &&
+         (!docQuery.selectedApp || 
+          docQuery.selectedApp == auth_obj.selectedApp))
+      {
+        redirectLoggedInUser();
+        return;
+      }
+    } catch(e) { }
+    var hideit = true;
+    $(function(){ if(hideit) $('body').hide() });
+    loginWithAccessKey(docQuery.accessKeyId, docQuery.secretAccessKey, 
+                     docQuery.rootDirectory, docQuery.selectedApp,
+                     function(err)
+      {
+        if(err)
+        {
+          alert(err);
+          hideit = false;
+          $('body').show();
+          return;
+        }
+        redirectLoggedInUser();
+      });
+  })()
+}
+else
+{
+  $(function(){
     $('.form-signin').bind('submit', function(e)
         {
             e.preventDefault();
@@ -23,90 +60,19 @@ $(function(){
                 selectedApp = rootDirectory.substr(rds_idx + 1);
                 rootDirectory = rootDirectory.substring(0, rds_idx);
             }
-            AWS.config.update({
-                accessKeyId: accessKeyId,
-                secretAccessKey: secretAccessKey
-            });
-            AWS.config.region = config.s3BucketRegion;
-            var s3 = new AWS.S3({ region: config.s3BucketRegion, maxRetries: 1 }),
-            bucket = config.s3Bucket;
             $('button', form).prop('disabled', true);
-            s3.listObjects({
-                Bucket: bucket,
-                Prefix: rootDirectory + "/" + 
-                    (selectedApp ? selectedApp + '/' : ''),
-                MaxKeys: 1
-            }, function(err, data)
-               {
-                   function continue_job()
-                   {
-                       if(selectedApp)
-                           storage.setItem(config.storageAppNameKey,
-                                           selectedApp);
-                       $submitBtn.ladda( 'stop' );
-                       redirectLoggedInUser();
-                   }
-                   if(err)
-                   {
-                       $submitBtn.ladda( 'stop' );
-                       alert(_("Couldn't connect to aws s3") + ": " + err);
-                   }
-                   else if(!data || !data.Contents || 
-                           data.Contents.length <= 0)
-                   {
-                       $submitBtn.ladda( 'stop' );
-                       alert(_("Invalid directory!"));
-                   }
-                   else
-                   {
-                       if(!storage)
-                           alert(_("This app does not support your browser"));
-                       else
-                       {
-                           var auth_obj = {
-                               method: 'main',
-                               accessKeyId: accessKeyId,
-                               secretAccessKey: secretAccessKey,
-                               rootDirectory: rootDirectory
-                           };
-                           storage.type = 'local';
-                           var storage_t = $('#remember-me').prop('checked') ?
-                               'local' : 'session';
-                           storage.setItem('storage-type', storage_t);
-                           
-                           storage.type = storage_t;
-                           var prevObj = storage.getItem(config.storageAuthKey);
-                           if(!prevObj || prevObj.accessKeyId != accessKeyId) 
-                               clearUserStorage(); // clear user info
-                           storage.setItem(config.storageAuthKey, JSON.stringify(auth_obj));
-                           if(selectedApp)
-                           {
-                               storage.setItem(config.singleAppModeKey, "1");
-                               continue_job();
-                           }
-                           else
-                           {
-                               /* select default app before redirect! */
-                               s3ListDirectories(s3, {
-                                   Bucket: config.s3Bucket,
-                                   Prefix: auth_obj.rootDirectory + '/'
-                               }, function(err, apps)
-                                  {
-                                  if(err)
-                                  {
-                                      alert(err);
-                                      return;
-                                  }
-                                  if(apps.length > 0)
-                                      selectedApp = apps[0];
-                                  continue_job();
-                              })
-                           }
-                       }
-                   }
-
-                   $('button', form).prop('disabled', false);
-               });
+            loginWithAccessKey(accessKeyId, secretAccessKey, rootDirectory,
+                               selectedApp, function(err)
+              {
+                $submitBtn.ladda( 'stop' );
+                $('button', form).prop('disabled', false);
+                if(err)
+                {
+                  alert(err);
+                  return;
+                }
+                redirectLoggedInUser();
+              });
             return false;
         });
     // social network authentication starts
@@ -140,7 +106,8 @@ $(function(){
              }
              return false;
          });
-});
+  });
+}
 function idFedLogin(opts, cb)
 {
     /* opts_ex = {
@@ -279,4 +246,86 @@ function clearUserStorage()
 {
     storage.setItem(config.storageAppNameKey, '');
     storage.setItem(config.singleAppModeKey, '');
+}
+function loginWithAccessKey(accessKeyId, secretAccessKey, rootDirectory,
+                            selectedApp, callback)
+{
+  AWS.config.update({
+      accessKeyId: accessKeyId,
+      secretAccessKey: secretAccessKey
+  });
+  AWS.config.region = config.s3BucketRegion;
+  var s3 = new AWS.S3({ region: config.s3BucketRegion, maxRetries: 1 }),
+  bucket = config.s3Bucket;
+  s3.listObjects({
+      Bucket: bucket,
+      Prefix: rootDirectory + "/" + 
+          (selectedApp ? selectedApp + '/' : ''),
+      MaxKeys: 1
+  }, function(err, data)
+     {
+         function continue_job()
+         {
+           if(selectedApp)
+             storage.setItem(config.storageAppNameKey,
+                             selectedApp);
+           callback();
+         }
+         if(err)
+         {
+             callback(_("Couldn't connect to aws s3") + ": " + err);
+         }
+         else if(!data || !data.Contents || 
+                 data.Contents.length <= 0)
+         {
+             callback(_("Invalid directory!"));
+         }
+         else
+         {
+             if(!storage)
+                 callback(_("This app does not support your browser"));
+             else
+             {
+                 var auth_obj = {
+                     method: 'main',
+                     accessKeyId: accessKeyId,
+                     secretAccessKey: secretAccessKey,
+                     rootDirectory: rootDirectory
+                 };
+                 storage.type = 'local';
+                 var storage_t = $('#remember-me').prop('checked') ?
+                     'local' : 'session';
+                 storage.setItem('storage-type', storage_t);
+
+                 storage.type = storage_t;
+                 var prevObj = storage.getItem(config.storageAuthKey);
+                 if(!prevObj || prevObj.accessKeyId != accessKeyId) 
+                     clearUserStorage(); // clear user info
+                 storage.setItem(config.storageAuthKey, JSON.stringify(auth_obj));
+                 if(selectedApp)
+                 {
+                     storage.setItem(config.singleAppModeKey, "1");
+                     continue_job();
+                 }
+                 else
+                 {
+                     /* select default app before redirect! */
+                     s3ListDirectories(s3, {
+                         Bucket: config.s3Bucket,
+                         Prefix: auth_obj.rootDirectory + '/'
+                     }, function(err, apps)
+                        {
+                          if(err)
+                          {
+                            callback(err);
+                            return;
+                          }
+                          if(apps.length > 0)
+                            selectedApp = apps[0];
+                          continue_job();
+                        })
+                 }
+             }
+         }
+     });
 }

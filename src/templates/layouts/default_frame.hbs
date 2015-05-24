@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8">
+        <title localize>{{ title }}</title>
+	<!--Mobile first-->
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<!--IE Compatibility modes-->
+	<meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="msapplication-TileColor" content="#5bc0de">
+        <meta name="msapplication-TileImage" content="{{assets}}/img/metis-tile.png">
+        <!-- Bootstrap -->
+        <link rel="stylesheet" href="{{assets}}/lib/bootstrap/css/bootstrap.min.css">
+        <!-- Font Awesome -->
+        <link rel="stylesheet" href="{{assets}}/lib/Font-Awesome/css/font-awesome.min.css">
+	<!-- Metis core stylesheet -->
+        <link rel="stylesheet" href="{{assets}}/css/main.css">
+        <link rel="stylesheet" href="{{assets}}/css/theme.css">
+        {{#if stylesheets}}
+        {{css stylesheets}}
+        {{/if}}
+
+        {{#if cdncss}}
+        {{cdn cdncss}}
+        {{/if}}
+	<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+	<!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+	<!--[if lt IE 9]>
+	  <script src="{{assets}}/lib/html5shiv/html5shiv.js"></script>
+	  <script src="{{assets}}/lib/respond/respond.min.js"></script>
+	<![endif]-->
+	<!--Modernizr 3.0-->
+        <script src="{{assets}}/lib/modernizr-build.min.js"></script>
+
+
+        <script src="{{assets}}/lib/jquery.min.js"></script>
+        <script src="{{assets}}/lib/d3.min.js"></script>
+        <script src="{{assets}}/lib/bootstrap/js/bootstrap.min.js"></script>
+	      <script src="{{assets}}/js/utils.js"></script>
+	      <script src="{{assets}}/js/storage.js"></script>
+        <script src="https://sdk.amazonaws.com/js/aws-sdk-2.1.5.min.js"></script>
+        <script src="{{assets}}/lib/screenfull/screenfull.js"></script>
+        <script src="{{assets}}/lib/formLoading/spin.js"></script>
+        <script src="{{assets}}/lib/formLoading/ladda.jquery.js"></script>
+        <script src="{{assets}}/lib/bootbox.min.js"></script>
+
+        <script>
+          var config = {{ jsonStringify config }},
+          assets = '{{ assets }}';
+        </script>
+        <script src="{{assets}}/js/dhtml.js"></script>
+        <script src="{{assets}}/lib/localeplanet/icu_{{config.locale}}.js"></script>
+        <script src="{{assets}}/lib/sprintf.min.js"></script>
+        <script src="{{assets}}/lib/localeplanet/translate.js"></script>
+        <script src="{{assets}}/js/localize.js"></script>
+        <script src="{{assets}}/js/main.min.js"></script>
+
+        {{#if cdnjs}}
+        {{cdn cdnjs}}
+        {{/if}}
+
+        {{#if javascripts}}
+        {{js javascripts}}
+        {{/if}}
+
+        {{#if scripts}}
+        <script>
+            {{scripts}}
+        </script>
+        {{/if}}
+        
+    </head>
+    <body{{#if theme}} class="{{theme}}"{{/if}}>
+      <div id="frame-wrp">
+        {{> body }}
+      </div>
+    </body>
+</html>
