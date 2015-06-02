@@ -3,11 +3,38 @@ var docQuery = path.parseQuery(document.location.search.slice(1));
 if(docQuery.autologin)
 {
   (function(){
+    var credentials;
+    if(docQuery.credentials)
+    {
+      credentials = JSON.parse(docQuery.credentials);
+      var conv = {
+        "AccessKeyId": "accessKeyId",
+        "SecretAccessKey": "secretAccessKey",
+        "SessionToken": "sessionToken"
+      };
+      for(var key in conv)
+      {
+        if(credentials[key])
+        {
+          credentials[conv[key]] = credentials[key];
+          delete credentials[key];
+        }
+      }
+    }
+    else
+    {
+      credentials = {
+        accessKeyId: docQuery.accessKeyId,
+        secretAccessKey: docQuery.secretAccessKey
+      };
+    }
+    if(!credentials)
+      return;
     try {
       var auth_obj = JSON.parse(storage.getItem(config.storageAuthKey));
       if(auth_obj && 
-         docQuery.accessKeyId == auth_obj.accessKeyId &&
-         docQuery.secretAccessKey == auth_obj.secretAccessKey &&
+         (auth_obj.method == 'main' && 
+          compareCredentials(auth_obj.credentials, credentials)) &&
          docQuery.rootDirectory == auth_obj.rootDirectory &&
          (!docQuery.selectedApp || 
           docQuery.selectedApp == auth_obj.selectedApp))
@@ -18,9 +45,9 @@ if(docQuery.autologin)
     } catch(e) { }
     var hideit = true;
     $(function(){ if(hideit) $('body').hide() });
-    loginWithAccessKey(docQuery.accessKeyId, docQuery.secretAccessKey, 
-                     docQuery.rootDirectory, docQuery.selectedApp,
-                     function(err)
+    loginWithCredentials(credentials, 
+                         docQuery.rootDirectory, docQuery.selectedApp,
+                         function(err)
       {
         if(err)
         {
@@ -61,8 +88,12 @@ else
                 rootDirectory = rootDirectory.substring(0, rds_idx);
             }
             $('button', form).prop('disabled', true);
-            loginWithAccessKey(accessKeyId, secretAccessKey, rootDirectory,
-                               selectedApp, function(err)
+            var credentials = {
+              accessKeyId: accessKeyId,
+              secretAccessKey: secretAccessKey
+            };
+            loginWithCredentials(credentials, rootDirectory, selectedApp, 
+                                 function(err)
               {
                 $submitBtn.ladda( 'stop' );
                 $('button', form).prop('disabled', false);
@@ -247,13 +278,9 @@ function clearUserStorage()
     storage.setItem(config.storageAppNameKey, '');
     storage.setItem(config.singleAppModeKey, '');
 }
-function loginWithAccessKey(accessKeyId, secretAccessKey, rootDirectory,
-                            selectedApp, callback)
+function loginWithCredentials(credentials, rootDirectory, selectedApp, callback)
 {
-  AWS.config.update({
-      accessKeyId: accessKeyId,
-      secretAccessKey: secretAccessKey
-  });
+  AWS.config.credentials = new AWS.Credentials(credentials);
   AWS.config.region = config.s3BucketRegion;
   var s3 = new AWS.S3({ region: config.s3BucketRegion, maxRetries: 1 }),
   bucket = config.s3Bucket;
@@ -288,8 +315,7 @@ function loginWithAccessKey(accessKeyId, secretAccessKey, rootDirectory,
              {
                  var auth_obj = {
                      method: 'main',
-                     accessKeyId: accessKeyId,
-                     secretAccessKey: secretAccessKey,
+                     credentials: credentials,
                      rootDirectory: rootDirectory
                  };
                  storage.type = 'local';
@@ -299,7 +325,10 @@ function loginWithAccessKey(accessKeyId, secretAccessKey, rootDirectory,
 
                  storage.type = storage_t;
                  var prevObj = storage.getItem(config.storageAuthKey);
-                 if(!prevObj || prevObj.accessKeyId != accessKeyId) 
+                 prevObj = prevObj ? JSON.parse(prevObj) : null;
+                 if(!prevObj || 
+                    !(prevObj.method == 'main' && 
+                      compareCredentials(prevObj, credentials)))
                      clearUserStorage(); // clear user info
                  storage.setItem(config.storageAuthKey, JSON.stringify(auth_obj));
                  if(selectedApp)
@@ -328,4 +357,11 @@ function loginWithAccessKey(accessKeyId, secretAccessKey, rootDirectory,
              }
          }
      });
+}
+function compareCredentials(c1, c2)
+{
+  return c1.accessKeyId == c2.accessKeyId && 
+    c1.secretAccessKey == c2.secretAccessKey &&
+    ((!c1.sessionToken && !c2.sessionToken) ||
+     (c1.sessionToken == c2.sessionToken));
 }

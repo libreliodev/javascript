@@ -95,8 +95,7 @@ else
         else
         {
             AWS.config.update({
-                accessKeyId: s3AuthObj.accessKeyId,
-                secretAccessKey: s3AuthObj.secretAccessKey
+                credentials: new AWS.Credentials(s3AuthObj.credentials)
             });
             initAWSS3();
         }
