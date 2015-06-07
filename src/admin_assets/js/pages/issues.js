@@ -166,11 +166,12 @@ $(function() {
         },
         policy_str = CryptoJS.enc.Base64.stringify(
             CryptoJS.enc.Utf8.parse(JSON.stringify(policy))),
-        signature = CryptoJS.HmacSHA1(policy_str, s3AuthObj.secretAccessKey)
+        signature = CryptoJS.HmacSHA1(policy_str, 
+                                      s3AuthObj.credentials.secretAccessKey)
             .toString(CryptoJS.enc.Base64);
         var post = {
             acl: 'private',
-            AWSAccessKeyId: s3AuthObj.accessKeyId,
+            AWSAccessKeyId: s3AuthObj.credentials.accessKeyId,
             policy: policy_str,
             signature: signature,
             'Content-Type': '$Content-Type',
