@@ -153,7 +153,7 @@ gapi.analytics.ready(function()
 					metrics: 'ga:totalEvents',
 					'start-date':'2005-01-01',
 					dimensions: 'ga:eventLabel,ga:yearMonth,ga:operatingSystem',
-					filters: 'ga:eventAction=@Succeeded',
+					filters: 'ga:eventAction=@ucceeded',
 					'max-results':10000
 				  }
 				});
@@ -162,14 +162,19 @@ gapi.analytics.ready(function()
 				  var data = response.rows;
 				  var publications = [];
 				  	data.forEach(function(d, i) { 
-				  		d.filePath=d[0].match(/\/\/?(.[^\?]+)(.*)/)[1]; 
-				  		parts  = (d.filePath).match(/(.*)\/(.*)\.(.*)/);
-				  		if (parts){
-							d.folderName = parts[1];
-							d.fileName = parts[2];
-							d.fileExtension = parts[3];
-				  			//Publications are inside directories having the same name as the file
-				  			if (d.fileName&&((d.folderName == d.fileName)|| (d.folderName+'_' == d.fileName))){
+				  		parts = d[0].split('?')
+				  		d.filePath= parts[0]; //Remove args
+				  		console.log(d.filePath);
+				  		parts2  = (d.filePath).split('/');
+				  		if (parts2.length>1){
+	
+							d.folderName = parts2[parts2.length-2];
+							d.fileNameAndExtension = parts2[parts2.length-1];
+							parts3 = (d.fileNameAndExtension).split('.');
+							d.fileName = parts3[0];
+							d.fileExtension = parts3[1];
+				  			//Publications are inside directories have the pdf extension
+				  			if (d.fileExtension=='pdf'){
 				  				var obj = {};
 				  				obj.Publication= d.folderName;
 				  				obj.YearMonth = d[1]
