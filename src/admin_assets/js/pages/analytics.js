@@ -105,47 +105,6 @@ gapi.analytics.ready(function()
            {
 			
 				
-           	 var dateRange1 = {
-				'start-date': '5daysAgo',
-				'end-date': 'yesterday'
-			  };
-			  
-
-             var countryDataChart = new gapi.analytics.googleCharts.DataChart({
-               query: {
-                 ids: 'ga:' + ga_profile.id,
-                 metrics: 'ga:sessions',
-                 dimensions: 'ga:country',
-               },
-               chart: {
-                 container: 'country-chart',
-                 type: 'GEO',
-                 options: {
-                   width: '100%'
-                 }
-               }
-             });
-            countryDataChart.set({query: dateRange1});
-
-             countryDataChart.execute();
-
-             var deviceDataChart = new gapi.analytics.googleCharts.DataChart({
-               query: {
-                 ids: 'ga:' + ga_profile.id,
-                 metrics: 'ga:sessions',
-                 dimensions: 'ga:mobileDeviceModel',
-                 sort: '-ga:sessions',
-                 'max-results': 10
-               },
-               chart: {
-                 container: 'device-chart',
-                 type: 'PIE',
-                 options: {
-                   width: '100%'
-                 }
-               }
-             });
-             deviceDataChart.execute(); 
              
              var report = new gapi.analytics.report.Data({
 				  query: {
