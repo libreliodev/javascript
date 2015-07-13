@@ -216,28 +216,28 @@ gapi.analytics.ready(function()
 					ids: 'ga:' + ga_profile.id,
 					metrics: 'ga:uniqueScreenviews',
 					'start-date':'2005-01-01',
-					dimensions: 'ga:screenName,ga:yearMonth,ga:operatingSystem',
-					filters: 'ga:screenName=@Downloading/',
+					dimensions: 'ga:screenName,ga:yearMonth',
+					filters: 'ga:screenName=@PDFReader/',
 					'max-results':10000
 
 				  }
 				});
 				report2.on('success', function(response) {
-				 //console.log(response);
+				 console.log(response);
 				  var data = response.rows;
 				  var publications2 = [];
 				  	data.forEach(function(d, i) { 
-				  		console.log(d[0]);
-				  		d.filePath=d[0].match(/\/\/?(.[^\?]+)(.*)/)[1]; 
-				  		parts  = d[0].match(/(.*)\/(.*)/);
+				  		//console.log(d[0]);
+				  		parts  = d[0].match(/(.*?)\/(.*?)\/page(.*?)/);
 				  		if (parts){
 							d.fileName = parts[2];
+							d.page = parts[3];
 				  				var obj = {};
-				  				obj.Publication= d.fileName;
+				  				obj.Publication= parts[2];
 				  				obj.YearMonth = d[1]
-				  				obj.OS = d[2]
-				  				obj.Qty = +d[3];
-				  				obj.Type='Free'
+				  				obj.Qty = +d[2];
+				  				obj.Type='Free';
+				  				obj.Page= parts[3];
 								if (d.fileName.lastIndexOf('_') == d.fileName.length - 1) {
 									obj.Type='Paid';//Paid publications have a file name ending with _
 									obj.Publication = d.fileName.substring(0, d.fileName.length - 1);//Remove final _
@@ -249,7 +249,7 @@ gapi.analytics.ready(function()
 				  	
 				  	
 	
-				  	console.log(publications2);
+				  	//console.log(publications2);
 				  	
 					var sum = $.pivotUtilities.aggregatorTemplates.sum;
 					var numberFormat = $.pivotUtilities.numberFormat;
