@@ -1,6 +1,6 @@
-_ Dernière mise à jour: 14 mars 2015_
+_ Dernière mise à jour: 13 août 2015_
 
-Les  conditions générales qui suivent sont applicables pour l’ensemble de prestations de Librelio à des clients français, ayant fait l’objet préalable d’un devis approuvé par le Client, mentionnant ces conditions.
+Les  conditions générales qui suivent sont applicables pour l’ensemble de prestations de Librelio, ayant fait l’objet préalable d’un devis ou d'une proposition approuvé par le Client, mentionnant ces conditions.
 
 ### 1- Propriété intellectuelle
 
